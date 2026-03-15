@@ -1,0 +1,8 @@
+flask
+flask-cors
+google-generativeai
+requests
+pyjwt
+bcrypt
+schedule
+gunicorn

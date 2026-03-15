@@ -1,0 +1,1633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FounderOS — AI Startup Operating System</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:#f8f9fc;color:#1a1d23;min-height:100vh}
+
+/* AUTH PAGES */
+.auth-page{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#f8f9fc 0%,#eef2ff 100%)}
+.auth-box{background:white;border:1px solid #e5e7eb;border-radius:16px;padding:40px;width:420px;max-width:94vw;box-shadow:0 4px 24px rgba(0,0,0,0.08)}
+.auth-logo{display:flex;align-items:center;gap:10px;margin-bottom:28px;justify-content:center}
+.auth-logo-icon{width:40px;height:40px;background:linear-gradient(135deg,#4f46e5,#7c3aed);border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:18px}
+.auth-logo-text{font-size:20px;font-weight:800;color:#1a1d23;letter-spacing:-.5px}
+.auth-title{font-size:22px;font-weight:700;color:#1a1d23;margin-bottom:6px;text-align:center}
+.auth-sub{font-size:13px;color:#6b7280;text-align:center;margin-bottom:28px}
+.form-group{margin-bottom:16px}
+.form-label{font-size:11px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:#6b7280;margin-bottom:6px;display:block}
+.form-input{width:100%;background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:9px;padding:11px 14px;color:#1a1d23;font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:border-color .15s}
+.form-input:focus{border-color:#4f46e5;background:white}
+.btn-primary{width:100%;padding:12px;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:white;border:none;border-radius:9px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;margin-top:4px}
+.btn-primary:hover{opacity:.92;transform:translateY(-1px)}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.auth-switch{text-align:center;margin-top:20px;font-size:13px;color:#6b7280}
+.auth-switch a{color:#4f46e5;font-weight:600;cursor:pointer;text-decoration:none}
+.auth-error{background:#fef2f2;border:1px solid #fecaca;color:#dc2626;padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:16px;display:none}
+
+/* ONBOARDING */
+.onboarding-page{min-height:100vh;background:linear-gradient(135deg,#f8f9fc,#eef2ff);display:flex;align-items:center;justify-content:center;padding:24px}
+.onboarding-box{background:white;border-radius:20px;padding:40px;width:640px;max-width:100%;box-shadow:0 8px 40px rgba(0,0,0,0.1)}
+.ob-header{margin-bottom:32px}
+.ob-progress-bar{background:#f3f4f6;border-radius:999px;height:6px;margin-bottom:20px;overflow:hidden}
+.ob-progress-fill{height:100%;background:linear-gradient(90deg,#4f46e5,#7c3aed);border-radius:999px;transition:width .4s ease}
+.ob-section-label{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#4f46e5;margin-bottom:6px}
+.ob-question{font-size:20px;font-weight:700;color:#1a1d23;margin-bottom:6px;line-height:1.3}
+.ob-sub{font-size:13px;color:#6b7280;margin-bottom:24px}
+.ob-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px}
+.ob-option{padding:13px 16px;border:1.5px solid #e5e7eb;border-radius:10px;cursor:pointer;font-size:13px;font-weight:500;color:#374151;transition:all .15s;text-align:left;background:white;font-family:'Inter',sans-serif}
+.ob-option:hover{border-color:#4f46e5;background:#f5f3ff;color:#4f46e5}
+.ob-option.selected{border-color:#4f46e5;background:#eef2ff;color:#4f46e5;font-weight:600}
+.ob-option.full-width{grid-column:1/-1}
+.ob-text-input{width:100%;background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:9px;padding:12px 16px;color:#1a1d23;font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:border-color .15s;margin-bottom:24px}
+.ob-text-input:focus{border-color:#4f46e5;background:white}
+.ob-nav{display:flex;justify-content:space-between;align-items:center}
+.ob-btn-back{background:none;border:1.5px solid #e5e7eb;color:#6b7280;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif}
+.ob-btn-next{background:linear-gradient(135deg,#4f46e5,#7c3aed);color:white;border:none;padding:10px 24px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif}
+.ob-counter{font-size:12px;color:#9ca3af}
+
+/* REPORT PAGE */
+.report-page{min-height:100vh;background:linear-gradient(135deg,#f8f9fc,#eef2ff);display:flex;align-items:center;justify-content:center;padding:24px}
+.report-box{background:white;border-radius:20px;padding:40px;width:700px;max-width:100%;box-shadow:0 8px 40px rgba(0,0,0,0.1)}
+.report-title{font-size:26px;font-weight:800;color:#1a1d23;margin-bottom:4px}
+.report-sub{font-size:14px;color:#6b7280;margin-bottom:32px}
+.report-archetype{background:linear-gradient(135deg,#4f46e5,#7c3aed);color:white;border-radius:12px;padding:20px 24px;margin-bottom:24px}
+.archetype-label{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;opacity:.8;margin-bottom:6px}
+.archetype-value{font-size:22px;font-weight:800}
+.archetype-summary{font-size:13px;opacity:.9;margin-top:8px;line-height:1.6}
+.report-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+.report-card{background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;padding:18px}
+.report-card-label{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#6b7280;margin-bottom:10px}
+.report-item{font-size:13px;color:#374151;padding:5px 0;border-bottom:1px solid #f3f4f6;display:flex;align-items:flex-start;gap:8px}
+.report-item:last-child{border-bottom:none}
+.timeline-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px}
+.timeline-item{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:14px;text-align:center}
+.timeline-label{font-size:10px;font-weight:700;color:#16a34a;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.timeline-value{font-size:13px;font-weight:700;color:#1a1d23}
+.btn-enter{width:100%;padding:14px;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:white;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif}
+
+/* MAIN APP */
+.app{display:none}
+.topnav{position:fixed;top:0;left:0;right:0;height:58px;background:white;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:100;box-shadow:0 1px 3px rgba(0,0,0,0.05)}
+.nav-left{display:flex;align-items:center;gap:20px}
+.nav-logo{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:800;color:#1a1d23;letter-spacing:-.4px}
+.nav-logo-icon{width:30px;height:30px;background:linear-gradient(135deg,#4f46e5,#7c3aed);border-radius:7px;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:14px}
+.nav-links{display:flex;gap:2px}
+.nav-link{padding:6px 12px;border-radius:7px;cursor:pointer;font-size:13px;font-weight:500;color:#6b7280;transition:all .15s;border:none;background:none;font-family:'Inter',sans-serif}
+.nav-link:hover{background:#f3f4f6;color:#1a1d23}
+.nav-link.active{background:#eef2ff;color:#4f46e5;font-weight:600}
+.nav-right{display:flex;align-items:center;gap:10px}
+.nav-user{font-size:13px;font-weight:600;color:#374151}
+.nav-day{font-size:11px;color:#9ca3af}
+.btn-run{background:#4f46e5;color:white;border:none;padding:7px 16px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s}
+.btn-run:hover{background:#4338ca}
+.btn-signout{background:none;border:1px solid #e5e7eb;color:#6b7280;padding:6px 12px;border-radius:7px;font-size:12px;cursor:pointer;font-family:'Inter',sans-serif}
+
+/* PAGES */
+.main{margin-top:58px;padding:28px;max-width:1280px;margin-left:auto;margin-right:auto}
+.main.fullw{padding:0;max-width:100%;margin-top:58px}
+.page{display:none}
+.page.active{display:block}
+.page-title{font-size:22px;font-weight:800;color:#1a1d23;margin-bottom:4px;letter-spacing:-.4px}
+.page-sub{font-size:13px;color:#9ca3af;margin-bottom:24px}
+
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.stat-card{background:white;border:1px solid #e5e7eb;border-radius:12px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
+.stat-label{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:#9ca3af;margin-bottom:8px}
+.stat-value{font-size:28px;font-weight:800;color:#1a1d23;line-height:1}
+.stat-value.purple{color:#4f46e5}
+.stat-value.green{color:#10b981}
+.stat-value.amber{color:#f59e0b}
+.stat-sub{font-size:12px;color:#9ca3af;margin-top:5px}
+.prog-wrap{background:#f3f4f6;border-radius:999px;height:4px;margin-top:10px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,#4f46e5,#7c3aed);border-radius:999px;transition:width .8s ease}
+
+/* CARDS */
+.card{background:white;border:1px solid #e5e7eb;border-radius:12px;padding:22px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
+.card-title{font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:#4f46e5;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
+.card-sub{font-size:11px;color:#9ca3af;text-transform:none;letter-spacing:0;font-weight:400}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.content-text{font-size:13.5px;line-height:1.9;color:#374151;white-space:pre-wrap}
+
+/* TASKS */
+.task-item{background:#fafbfc;border:1px solid #e5e7eb;border-radius:10px;padding:16px;margin-bottom:10px;transition:all .2s}
+.task-item.done{opacity:.5}
+.task-header{display:flex;align-items:flex-start;gap:12px}
+.task-check{width:20px;height:20px;border:2px solid #d1d5db;border-radius:5px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:2px;transition:all .15s;font-size:11px;font-weight:700}
+.task-check:hover{border-color:#4f46e5}
+.task-check.checked{background:#4f46e5;border-color:#4f46e5;color:white}
+.task-title{font-size:14px;font-weight:600;color:#1a1d23;margin-bottom:4px}
+.task-item.done .task-title{text-decoration:line-through;color:#9ca3af}
+.task-desc{font-size:12px;color:#6b7280;line-height:1.6;margin-bottom:8px}
+.task-how{font-size:12px;color:#4f46e5;background:#eef2ff;padding:8px 12px;border-radius:6px;margin-bottom:8px;line-height:1.6;display:none}
+.task-meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.badge{font-size:10px;font-weight:600;padding:2px 8px;border-radius:999px}
+.badge-high{background:#fef2f2;color:#ef4444}
+.badge-medium{background:#fffbeb;color:#f59e0b}
+.badge-low{background:#f0fdf4;color:#10b981}
+.badge-cat{background:#eef2ff;color:#4f46e5}
+.badge-time{background:#f5f3ff;color:#7c3aed}
+.task-expand{background:none;border:none;color:#9ca3af;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;padding:0;margin-left:auto}
+.task-reason{font-size:11px;color:#9ca3af;font-style:italic;margin-top:6px}
+
+/* CHAT */
+.chat-wrap{display:flex;flex-direction:column;height:calc(100vh - 58px);background:#f8f9fc}
+.chat-header{padding:14px 24px;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;justify-content:space-between;background:white;flex-shrink:0}
+.chat-hdr-left{display:flex;align-items:center;gap:12px}
+.chat-avatar{width:38px;height:38px;background:linear-gradient(135deg,#4f46e5,#7c3aed);border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:16px}
+.chat-title-text{font-weight:700;font-size:15px;color:#1a1d23}
+.chat-online{font-size:11px;color:#10b981;font-weight:500;display:flex;align-items:center;gap:5px}
+.chat-online::before{content:'';width:6px;height:6px;background:#10b981;border-radius:50%;display:inline-block}
+.mode-selector{display:flex;gap:6px}
+.mode-btn{padding:5px 12px;border-radius:999px;font-size:11px;font-weight:600;cursor:pointer;border:1.5px solid #e5e7eb;background:white;color:#6b7280;font-family:'Inter',sans-serif;transition:all .15s}
+.mode-btn.active{border-color:#4f46e5;background:#eef2ff;color:#4f46e5}
+.quick-bar{padding:10px 24px;border-bottom:1px solid #e5e7eb;display:flex;gap:6px;flex-wrap:wrap;background:white;flex-shrink:0}
+.qbtn{background:#f9fafb;border:1px solid #e5e7eb;color:#4b5563;padding:5px 13px;border-radius:999px;font-size:11px;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap;font-family:'Inter',sans-serif}
+.qbtn:hover{border-color:#4f46e5;color:#4f46e5;background:#eef2ff}
+.chat-messages{flex:1;overflow-y:auto;padding:24px;display:flex;flex-direction:column;gap:16px}
+.chat-messages::-webkit-scrollbar{width:4px}
+.chat-messages::-webkit-scrollbar-thumb{background:#e5e7eb;border-radius:2px}
+.msg{display:flex;gap:10px;align-items:flex-start;animation:msgIn .2s ease}
+@keyframes msgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.msg.user{flex-direction:row-reverse}
+.msg-av{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;margin-top:2px;color:white}
+.msg-av.ai{background:linear-gradient(135deg,#4f46e5,#7c3aed)}
+.msg-av.user{background:linear-gradient(135deg,#0ea5e9,#0284c7)}
+.msg-bubble{max-width:68%;padding:13px 16px;border-radius:14px;font-size:13.5px;line-height:1.75}
+.msg.ai .msg-bubble{background:white;color:#374151;border:1px solid #e5e7eb;border-top-left-radius:4px;box-shadow:0 1px 3px rgba(0,0,0,0.05)}
+.msg.user .msg-bubble{background:linear-gradient(135deg,#4f46e5,#7c3aed);color:white;border-top-right-radius:4px}
+.msg-bubble pre{font-family:'Inter',sans-serif;white-space:pre-wrap;margin:0}
+.agent-panel{background:#fafbff;border:1px solid #e0e7ff;border-radius:12px;padding:14px 16px;margin-bottom:4px;max-width:460px}
+.agent-panel-title{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#4f46e5;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.agent-step{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #f0f0ff;font-size:12px;animation:stepIn .3s ease}
+.agent-step:last-child{border-bottom:none}
+@keyframes stepIn{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
+.step-icon{font-size:14px;width:20px;flex-shrink:0}
+.step-name{font-weight:600;color:#1a1d23;width:150px;flex-shrink:0;font-size:11px}
+.step-status{color:#9ca3af;flex:1;font-size:11px}
+.step-done{color:#10b981;font-weight:700}
+.source-badge{font-size:10px;color:#9ca3af;background:#f9fafb;border:1px solid #e5e7eb;padding:3px 10px;border-radius:999px;display:inline-block;margin:0 0 8px 42px}
+.typing-indicator{display:flex;gap:4px;padding:4px 0;align-items:center}
+.typing-dot{width:6px;height:6px;background:#4f46e5;border-radius:50%;animation:tdot 1.2s infinite;opacity:.4}
+.typing-dot:nth-child(2){animation-delay:.2s}
+.typing-dot:nth-child(3){animation-delay:.4s}
+@keyframes tdot{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-5px);opacity:1}}
+.file-preview-bar{padding:8px 24px;background:#f0fdf4;border-top:1px solid #bbf7d0;display:none;align-items:center;justify-content:space-between;font-size:12px;color:#16a34a;font-weight:500;flex-shrink:0}
+.plus-menu{position:relative;flex-shrink:0}
+.plus-btn{width:44px;height:44px;background:#f3f4f6;border:1px solid #e5e7eb;border-radius:10px;color:#6b7280;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.plus-btn:hover{background:#eef2ff;border-color:#4f46e5;color:#4f46e5}
+.plus-dropdown{position:absolute;bottom:calc(100% + 8px);left:0;background:white;border:1px solid #e5e7eb;border-radius:12px;width:210px;overflow:hidden;display:none;z-index:200;box-shadow:0 -10px 40px rgba(0,0,0,.1)}
+.plus-dropdown.open{display:block}
+.plus-option{display:flex;align-items:center;gap:10px;padding:11px 14px;font-size:13px;cursor:pointer;color:#4b5563;transition:background .12s;border-bottom:1px solid #f3f4f6}
+.plus-option:last-child{border-bottom:none}
+.plus-option:hover{background:#f9fafb;color:#1a1d23}
+.chat-input-bar{padding:14px 20px;border-top:1px solid #e5e7eb;background:white;display:flex;gap:8px;align-items:flex-end;flex-shrink:0}
+.chat-input{flex:1;background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:12px;padding:11px 16px;color:#1a1d23;font-size:14px;font-family:'Inter',sans-serif;resize:none;min-height:44px;max-height:130px;line-height:1.5;outline:none;transition:border-color .15s}
+.chat-input:focus{border-color:#4f46e5;background:white}
+.chat-input::placeholder{color:#c4c9d4}
+.send-btn{background:#4f46e5;border:none;width:44px;height:44px;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;transition:all .2s;color:white}
+.send-btn:hover{background:#4338ca}
+.send-btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* AGENTS PAGE */
+.agents-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px}
+.agent-card{background:white;border:1px solid #e5e7eb;border-radius:12px;padding:20px;cursor:pointer;transition:all .2s;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
+.agent-card:hover{border-color:#4f46e5;box-shadow:0 4px 16px rgba(79,70,229,.12);transform:translateY(-2px)}
+.agent-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:14px}
+.agent-name{font-size:14px;font-weight:700;color:#1a1d23;margin-bottom:4px}
+.agent-desc{font-size:12px;color:#6b7280;line-height:1.5}
+.agent-chat-box{background:white;border:1px solid #e5e7eb;border-radius:12px;padding:24px;margin-top:16px;display:none}
+.agent-chat-box.open{display:block}
+.agent-chat-title{font-size:14px;font-weight:700;color:#1a1d23;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
+.agent-response{font-size:13.5px;line-height:1.85;color:#374151;white-space:pre-wrap;background:#f9fafb;border-radius:8px;padding:16px;margin-bottom:14px;display:none}
+.agent-input-row{display:flex;gap:8px}
+.agent-input{flex:1;background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:9px;padding:10px 14px;color:#1a1d23;font-size:13px;font-family:'Inter',sans-serif;outline:none;transition:border-color .15s}
+.agent-input:focus{border-color:#4f46e5;background:white}
+.btn-ask{background:#4f46e5;color:white;border:none;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap}
+
+/* CONTENT CALENDAR */
+.platform-tabs{display:flex;gap:8px;margin-bottom:20px}
+.platform-tab{padding:7px 16px;border-radius:999px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid #e5e7eb;background:white;color:#6b7280;font-family:'Inter',sans-serif;transition:all .15s}
+.platform-tab.active{border-color:#4f46e5;background:#eef2ff;color:#4f46e5}
+
+/* EMPTY */
+.empty{text-align:center;padding:48px;color:#9ca3af}
+.empty-icon{font-size:40px;margin-bottom:12px;opacity:.5}
+.empty-text{font-size:13px;margin-bottom:16px}
+.empty-btn{background:#4f46e5;color:white;border:none;padding:9px 20px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif}
+
+/* SPINNER */
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner-dark{border-color:rgba(79,70,229,.2);border-top-color:#4f46e5}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:#1a1d23;color:white;padding:11px 20px;border-radius:8px;font-size:13px;font-weight:500;opacity:0;transform:translateY(8px);transition:all .3s;z-index:9999;pointer-events:none}
+.toast.show{opacity:1;transform:translateY(0)}
+
+/* LOADING */
+.loading-overlay{position:fixed;inset:0;background:rgba(255,255,255,.9);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:1000;gap:16px}
+.loading-logo{width:52px;height:52px;background:linear-gradient(135deg,#4f46e5,#7c3aed);border-radius:14px;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:22px;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+.loading-text{font-size:14px;color:#6b7280;font-weight:500}
+
+@media(max-width:768px){
+.stats-row{grid-template-columns:1fr 1fr}
+.two-col,.three-col{grid-template-columns:1fr}
+.agents-grid{grid-template-columns:1fr 1fr}
+.nav-links{display:none}
+.msg-bubble{max-width:85%}
+.timeline-grid{grid-template-columns:1fr 1fr}
+.report-grid{grid-template-columns:1fr}
+.ob-options{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div class="loading-overlay" id="loading">
+<div class="loading-logo">F</div>
+<div class="loading-text">Loading FounderOS...</div>
+</div>
+
+<!-- LOGIN PAGE -->
+<div id="login-page" style="display:none">
+<div class="auth-page">
+<div class="auth-box">
+<div class="auth-logo">
+<div class="auth-logo-icon">F</div>
+<div class="auth-logo-text">FounderOS</div>
+</div>
+<div class="auth-title">Welcome back</div>
+<div class="auth-sub">Sign in to your AI startup operating system</div>
+<div class="auth-error" id="login-error"></div>
+<div class="form-group">
+<label class="form-label">Email</label>
+<input class="form-input" id="login-email" type="email" placeholder="you@startup.com">
+</div>
+<div class="form-group">
+<label class="form-label">Password</label>
+<input class="form-input" id="login-password" type="password" placeholder="Your password" onkeydown="if(event.key==='Enter')doLogin()">
+</div>
+<button class="btn-primary" onclick="doLogin()" id="login-btn">Sign In</button>
+<div class="auth-switch">New founder? <a onclick="showSignup()">Create your account</a></div>
+</div>
+</div>
+</div>
+
+<!-- SIGNUP PAGE -->
+<div id="signup-page" style="display:none">
+<div class="auth-page">
+<div class="auth-box">
+<div class="auth-logo">
+<div class="auth-logo-icon">F</div>
+<div class="auth-logo-text">FounderOS</div>
+</div>
+<div class="auth-title">Start your journey</div>
+<div class="auth-sub">Join thousands of founders building with AI</div>
+<div class="auth-error" id="signup-error"></div>
+<div class="form-group">
+<label class="form-label">Your Name</label>
+<input class="form-input" id="signup-name" type="text" placeholder="What should we call you?">
+</div>
+<div class="form-group">
+<label class="form-label">Email</label>
+<input class="form-input" id="signup-email" type="email" placeholder="you@startup.com">
+</div>
+<div class="form-group">
+<label class="form-label">Password</label>
+<input class="form-input" id="signup-password" type="password" placeholder="Min 6 characters" onkeydown="if(event.key==='Enter')doSignup()">
+</div>
+<button class="btn-primary" onclick="doSignup()" id="signup-btn">Create Account</button>
+<div class="auth-switch">Already a founder? <a onclick="showLogin()">Sign in</a></div>
+</div>
+</div>
+</div>
+
+<!-- ONBOARDING -->
+<div id="onboarding-page" style="display:none">
+<div class="onboarding-page">
+<div class="onboarding-box">
+<div class="ob-header">
+<div class="ob-progress-bar"><div class="ob-progress-fill" id="ob-progress" style="width:4%"></div></div>
+<div style="display:flex;justify-content:space-between;align-items:center">
+<div>
+<div class="ob-section-label" id="ob-section">About You</div>
+<div class="ob-question" id="ob-question">What is your first name?</div>
+<div class="ob-sub" id="ob-sub">This is how your AI co-founder will address you.</div>
+</div>
+<div class="ob-counter" id="ob-counter">1 of 25</div>
+</div>
+</div>
+<div id="ob-content"></div>
+<div class="ob-nav">
+<button class="ob-btn-back" id="ob-back" onclick="obBack()" style="visibility:hidden">Back</button>
+<button class="ob-btn-next" id="ob-next" onclick="obNext()">Next</button>
+</div>
+</div>
+</div>
+</div>
+
+<!-- FOUNDER REPORT -->
+<div id="report-page" style="display:none">
+<div class="report-page">
+<div class="report-box">
+<div class="report-title">Your Founder Intelligence Report</div>
+<div class="report-sub">Based on your 25-question profile analysis</div>
+<div class="report-archetype" id="report-archetype">
+<div class="archetype-label">Your Founder Archetype</div>
+<div class="archetype-value" id="archetype-value">Analysing...</div>
+<div class="archetype-summary" id="archetype-summary"></div>
+</div>
+<div class="timeline-grid" id="timeline-grid"></div>
+<div class="report-grid">
+<div class="report-card">
+<div class="report-card-label">Top Strengths</div>
+<div id="report-strengths"></div>
+</div>
+<div class="report-card">
+<div class="report-card-label">Top Risks</div>
+<div id="report-risks"></div>
+</div>
+<div class="report-card">
+<div class="report-card-label">Skill Gaps — AI Will Fill These</div>
+<div id="report-gaps"></div>
+</div>
+<div class="report-card">
+<div class="report-card-label">AI Personality Mode</div>
+<div id="report-personality" style="font-size:14px;font-weight:600;color:#4f46e5;padding-top:8px"></div>
+</div>
+</div>
+<button class="btn-enter" onclick="enterApp()">Enter FounderOS</button>
+</div>
+</div>
+</div>
+
+<!-- MAIN APP -->
+<div class="app" id="app">
+<nav class="topnav">
+<div class="nav-left">
+<div class="nav-logo">
+<div class="nav-logo-icon">F</div>
+FounderOS
+</div>
+<div class="nav-links">
+<button class="nav-link active" onclick="showPage('dashboard',this)">Dashboard</button>
+<button class="nav-link" onclick="showPage('chat',this)">AI Co-Founder</button>
+<button class="nav-link" onclick="showPage('tasks',this)">Tasks</button>
+<button class="nav-link" onclick="showPage('briefing',this)">Briefing</button>
+<button class="nav-link" onclick="showPage('market',this)">Market</button>
+<button class="nav-link" onclick="showPage('competitors',this)">Competitors</button>
+<button class="nav-link" onclick="showPage('content',this)">Content</button>
+<button class="nav-link" onclick="showPage('agents',this)">Agents</button>
+</div>
+</div>
+<div class="nav-right">
+<div>
+<div class="nav-user" id="nav-name"></div>
+<div class="nav-day" id="nav-day"></div>
+</div>
+<button class="btn-run" onclick="runMorningBriefing()">Run Briefing</button>
+<button class="btn-signout" onclick="signOut()">Sign Out</button>
+</div>
+</nav>
+
+<!-- DASHBOARD -->
+<div class="page active main" id="page-dashboard">
+<div class="page-title" id="dash-greeting">Good morning, Founder</div>
+<div class="page-sub" id="dash-sub">Here is your startup intelligence for today.</div>
+<div class="stats-row">
+<div class="stat-card">
+<div class="stat-label">Tasks Today</div>
+<div class="stat-value purple" id="s-done">0</div>
+<div class="stat-sub" id="s-total">of 0 completed</div>
+<div class="prog-wrap"><div class="prog-fill" id="s-prog" style="width:0%"></div></div>
+</div>
+<div class="stat-card">
+<div class="stat-label">Founder Journey</div>
+<div class="stat-value green" id="s-days">0</div>
+<div class="stat-sub">days since you started</div>
+</div>
+<div class="stat-card">
+<div class="stat-label">Weekly Completion</div>
+<div class="stat-value amber" id="s-rate">0%</div>
+<div class="stat-sub" id="s-weekly">tasks this week</div>
+</div>
+<div class="stat-card">
+<div class="stat-label">Streak</div>
+<div class="stat-value purple" id="s-streak">0</div>
+<div class="stat-sub">days consistent</div>
+</div>
+</div>
+<div class="two-col">
+<div class="card">
+<div class="card-title">Today's Briefing <span class="card-sub" id="brief-date"></span></div>
+<div class="content-text" id="dash-brief" style="font-size:13px;max-height:280px;overflow-y:auto">Generate your morning briefing to see today's intelligence.</div>
+</div>
+<div class="card">
+<div class="card-title">Priority Tasks</div>
+<div id="dash-tasks"><div class="empty"><div class="empty-icon" style="font-size:28px">—</div><div class="empty-text">Generate tasks to see today's priorities</div><button class="empty-btn" onclick="generateTasks()">Generate Tasks</button></div></div>
+</div>
+</div>
+<div class="two-col">
+<div class="card">
+<div class="card-title">Market Demand — Last 7 Days</div>
+<canvas id="market-chart" height="200"></canvas>
+</div>
+<div class="card">
+<div class="card-title">Task Productivity — This Week</div>
+<canvas id="productivity-chart" height="200"></canvas>
+</div>
+</div>
+</div>
+
+<!-- CHAT -->
+<div class="page fullw" id="page-chat">
+<div class="chat-wrap">
+<div class="chat-header">
+<div class="chat-hdr-left">
+<div class="chat-avatar">AI</div>
+<div>
+<div class="chat-title-text">AI Co-Founder</div>
+<div class="chat-online">Online — Gemini 2.0 Flash + Live Research</div>
+</div>
+</div>
+<div style="display:flex;align-items:center;gap:12px">
+<div class="mode-selector">
+<button class="mode-btn active" onclick="setMode('quick',this)">Quick</button>
+<button class="mode-btn" onclick="setMode('deep',this)">Deep Research</button>
+<button class="mode-btn" onclick="setMode('devil',this)">Devil's Advocate</button>
+<button class="mode-btn" onclick="setMode('plan',this)">Action Plan</button>
+</div>
+<button class="mode-btn" onclick="clearChat()">Clear</button>
+</div>
+</div>
+<div class="quick-bar">
+<div class="qbtn" onclick="quickSend('What is the real market opportunity for my startup right now?')">Market opportunity</div>
+<div class="qbtn" onclick="quickSend('Who are my real competitors and what is their weakness?')">Competitor weakness</div>
+<div class="qbtn" onclick="quickSend('How do I validate demand this week with almost no budget?')">Validate fast</div>
+<div class="qbtn" onclick="quickSend('What is the single biggest risk that could kill my startup?')">Biggest risk</div>
+<div class="qbtn" onclick="quickSend('How do I get my first 10 paying customers?')">First customers</div>
+<div class="qbtn" onclick="quickSend('What should my pricing strategy be?')">Pricing strategy</div>
+<div class="qbtn" onclick="quickSend('I am feeling like giving up. Talk me through this.')">Motivation</div>
+<div class="qbtn" onclick="quickSend('Give me a 30 day action plan for my current stage.')">30 day plan</div>
+</div>
+<div class="chat-messages" id="chat-messages">
+<div class="msg ai">
+<div class="msg-av ai">AI</div>
+<div class="msg-bubble">
+<pre>Welcome to FounderOS. I am your AI Co-Founder.
+
+I know your startup, your stage, your market, and your goals. Every answer I give is specific to you — not generic advice.
+
+I search Google, Reddit, LinkedIn, and news in real time before answering any business question.
+
+What is on your mind today?</pre>
+</div>
+</div>
+</div>
+<div class="file-preview-bar" id="file-preview">
+<span>File ready: <span id="file-name-display" style="color:#374151;font-weight:400"></span></span>
+<button onclick="clearFile()" style="background:none;border:none;color:#ef4444;cursor:pointer;font-weight:600;font-family:'Inter',sans-serif">Remove</button>
+</div>
+<div class="chat-input-bar">
+<div class="plus-menu">
+<button class="plus-btn" onclick="togglePlusMenu()" title="Attach">+</button>
+<div class="plus-dropdown" id="plus-dropdown">
+<div class="plus-option" onclick="triggerFileUpload()">Upload PDF or Document</div>
+<div class="plus-option" onclick="triggerFileUpload()">Upload Image</div>
+<div class="plus-option" onclick="deepResearch()">Deep Market Research</div>
+<div class="plus-option" onclick="createReport()">Create Progress Report</div>
+</div>
+</div>
+<textarea class="chat-input" id="chat-input" placeholder="Ask anything about your business, market, competitors, products, strategy..." rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+<button class="send-btn" id="send-btn" onclick="sendMessage()">&#10148;</button>
+<input type="file" id="file-input" style="display:none" accept=".pdf,.png,.jpg,.jpeg,.txt,.csv" onchange="handleFileUpload(event)">
+</div>
+</div>
+</div>
+
+<!-- TASKS -->
+<div class="page main" id="page-tasks">
+<div class="page-title">Tasks</div>
+<div class="page-sub">Your daily execution plan with step-by-step guidance.</div>
+<div class="two-col" style="margin-bottom:16px">
+<div class="card" style="margin-bottom:0">
+<div class="card-title">Today's Progress <span class="card-sub" id="tasks-prog-text"></span></div>
+<canvas id="tasks-pie-chart" height="180"></canvas>
+</div>
+<div class="card" style="margin-bottom:0">
+<div class="card-title">Weekly Productivity</div>
+<canvas id="weekly-chart" height="180"></canvas>
+</div>
+</div>
+<div class="card">
+<div class="card-title">Today's Tasks
+<button class="empty-btn" onclick="generateTasks()" style="font-size:11px;padding:5px 14px">Generate New Tasks</button>
+</div>
+<div id="full-tasks"><div class="empty"><div class="empty-icon" style="font-size:28px">—</div><div class="empty-text">No tasks yet for today</div><button class="empty-btn" onclick="generateTasks()">Generate Tasks</button></div></div>
+</div>
+</div>
+
+<!-- BRIEFING -->
+<div class="page main" id="page-briefing">
+<div class="page-title">Morning Briefing</div>
+<div class="page-sub" id="briefing-date">Your daily intelligence report.</div>
+<div class="card">
+<div class="card-title">Today's Intelligence</div>
+<div class="content-text" id="full-brief">Generate your morning briefing to see today's intelligence.</div>
+</div>
+</div>
+
+<!-- MARKET -->
+<div class="page main" id="page-market">
+<div class="page-title">Market Intelligence</div>
+<div class="page-sub">Real-time market data from Google, Reddit, LinkedIn, and News.</div>
+<div style="display:flex;gap:10px;margin-bottom:20px">
+<input class="form-input" id="market-query" placeholder="Search any market, product, or industry..." style="flex:1;margin-bottom:0">
+<button class="btn-run" onclick="runMarketResearch()" style="white-space:nowrap;padding:0 20px">Research Now</button>
+</div>
+<div class="card" id="market-card">
+<div class="card-title">Market Analysis <span class="card-sub" id="market-sources"></span></div>
+<div class="content-text" id="market-content">Run market research to see real-time data about your market.</div>
+</div>
+<div class="two-col">
+<div class="card">
+<div class="card-title">Demand Trend</div>
+<canvas id="demand-chart" height="220"></canvas>
+</div>
+<div class="card">
+<div class="card-title">Platform Distribution</div>
+<canvas id="platform-chart" height="220"></canvas>
+</div>
+</div>
+</div>
+
+<!-- COMPETITORS -->
+<div class="page main" id="page-competitors">
+<div class="page-title">Competitor Intelligence</div>
+<div class="page-sub">Real-time competitive analysis from Google, Reddit, and News.</div>
+<div style="display:flex;gap:10px;margin-bottom:20px">
+<input class="form-input" id="comp-names" placeholder="Enter competitor names (optional — we will find them automatically)" style="flex:1;margin-bottom:0">
+<button class="btn-run" onclick="runCompetitorAnalysis()" style="white-space:nowrap;padding:0 20px">Analyse Now</button>
+</div>
+<div class="card">
+<div class="card-title">Competitor Analysis <span class="card-sub" id="comp-sources"></span></div>
+<div class="content-text" id="comp-content">Run competitor analysis to see who you are up against and how to beat them.</div>
+</div>
+</div>
+
+<!-- CONTENT CALENDAR -->
+<div class="page main" id="page-content">
+<div class="page-title">Content Calendar</div>
+<div class="page-sub">AI-generated content plan based on current trends in your market.</div>
+<div class="platform-tabs">
+<button class="platform-tab active" onclick="setPlatform('linkedin',this)">LinkedIn</button>
+<button class="platform-tab" onclick="setPlatform('instagram',this)">Instagram</button>
+<button class="platform-tab" onclick="setPlatform('twitter',this)">Twitter / X</button>
+<button class="platform-tab" onclick="setPlatform('reddit',this)">Reddit</button>
+</div>
+<div style="display:flex;gap:10px;margin-bottom:20px">
+<select class="form-input" id="content-days" style="max-width:180px;margin-bottom:0">
+<option value="7">7 days</option>
+<option value="14">14 days</option>
+<option value="30">30 days</option>
+</select>
+<button class="btn-run" onclick="generateContent()" style="padding:0 20px">Generate Calendar</button>
+</div>
+<div class="card">
+<div class="card-title" id="content-title">Content Calendar</div>
+<div class="content-text" id="content-output">Select a platform and generate your content calendar.</div>
+</div>
+</div>
+
+<!-- AGENTS -->
+<div class="page main" id="page-agents">
+<div class="page-title">Specialist Agents</div>
+<div class="page-sub">Expert AI advisors for every aspect of your startup.</div>
+<div class="agents-grid">
+<div class="agent-card" onclick="openAgent('legal','Legal Advisor','Your corporate lawyer specialising in startup law, contracts, IP, compliance, and regulations globally.')">
+<div class="agent-icon" style="background:#fef2f2">⚖️</div>
+<div class="agent-name">Legal Advisor</div>
+<div class="agent-desc">Company registration, contracts, IP protection, compliance, fundraising legal structure</div>
+</div>
+<div class="agent-card" onclick="openAgent('financial','Financial Advisor','Your CFO specialising in unit economics, pricing, fundraising, and financial modeling.')">
+<div class="agent-icon" style="background:#f0fdf4">💰</div>
+<div class="agent-name">Financial Advisor</div>
+<div class="agent-desc">Unit economics, pricing strategy, burn rate, fundraising, financial projections</div>
+</div>
+<div class="agent-card" onclick="openAgent('consumer','Consumer Behaviour Expert','Market psychologist who understands why customers buy and what drives decisions.')">
+<div class="agent-icon" style="background:#fffbeb">🧠</div>
+<div class="agent-name">Consumer Behaviour</div>
+<div class="agent-desc">Why customers buy, messaging that converts, customer journey, persona building</div>
+</div>
+<div class="agent-card" onclick="openAgent('growth','Growth Hacker','Scaled multiple startups. Knows viral loops, retention, referrals, and distribution.')">
+<div class="agent-icon" style="background:#f0fdf4">📈</div>
+<div class="agent-name">Growth Hacker</div>
+<div class="agent-desc">Growth loops, viral mechanics, referral programs, retention, product-led growth</div>
+</div>
+<div class="agent-card" onclick="openAgent('product','Product Manager','Senior PM who knows MVP scoping, roadmap planning, and product-market fit measurement.')">
+<div class="agent-icon" style="background:#eef2ff">🛠️</div>
+<div class="agent-name">Product Manager</div>
+<div class="agent-desc">MVP scoping, feature prioritisation, roadmap, A/B testing, product-market fit</div>
+</div>
+<div class="agent-card" onclick="openAgent('formulation','Formulation Expert','Technical expert for physical products — food, beverage, cosmetics, supplements.')">
+<div class="agent-icon" style="background:#fdf4ff">🧪</div>
+<div class="agent-name">Formulation Expert</div>
+<div class="agent-desc">Safe ingredients, regulatory compliance, sourcing, manufacturing, shelf life</div>
+</div>
+<div class="agent-card" onclick="openAgent('sales','Sales Coach','Closed millions in deals. Scripts, objection handling, pipeline, closing techniques.')">
+<div class="agent-icon" style="background:#fff7ed">🤝</div>
+<div class="agent-name">Sales Coach</div>
+<div class="agent-desc">Sales scripts, cold outreach, objection handling, pipeline, first 10 customers</div>
+</div>
+</div>
+<div class="agent-chat-box" id="agent-chat-box">
+<div class="agent-chat-title">
+<span id="agent-chat-title">Ask the Agent</span>
+<button onclick="closeAgent()" style="background:none;border:none;color:#9ca3af;cursor:pointer;font-size:18px">×</button>
+</div>
+<div class="agent-response" id="agent-response"></div>
+<div class="agent-input-row">
+<input class="agent-input" id="agent-input" placeholder="Ask your question..." onkeydown="if(event.key==='Enter')askAgent()">
+<button class="btn-ask" onclick="askAgent()" id="agent-ask-btn">Ask</button>
+</div>
+</div>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = "";
+let token = localStorage.getItem("fo_token");
+let currentUser = null;
+let currentMode = "quick";
+let currentPlatform = "linkedin";
+let currentAgent = null;
+let chatHistory = [];
+let obAnswers = {};
+let obStep = 0;
+let marketChartInstance = null;
+let productivityChartInstance = null;
+let tasksPieInstance = null;
+let weeklyChartInstance = null;
+let demandChartInstance = null;
+let platformChartInstance = null;
+
+// ── QUESTIONS DATA ────────────────────────────
+const questions = [
+{id:"q1",section:"About You",q:"What is your first name?",sub:"This is how your AI co-founder will address you.",type:"text",placeholder:"Your first name"},
+{id:"q2",section:"About You",q:"Where are you based?",sub:"City and country — helps with market-specific advice.",type:"text",placeholder:"eg Mumbai, India or London, UK"},
+{id:"q3",section:"About You",q:"How old are you?",sub:"Helps understand your risk appetite and life stage.",type:"mcq",options:["Under 21","21 to 25","26 to 30","31 to 40","Over 40"]},
+{id:"q4",section:"About You",q:"What is your educational background?",sub:"No judgment — just helps the AI calibrate its explanations.",type:"mcq",options:["No formal degree","High school","Undergraduate degree","Postgraduate degree","Self-taught in my field"]},
+{id:"q5",section:"About You",q:"What is your current situation?",sub:"Are you going all-in or building on the side?",type:"mcq",options:["Full-time on my startup","Side project while employed","Student building this","Between jobs","Running another business too"]},
+{id:"q6",section:"Your Experience",q:"Have you built a startup before?",sub:"Previous experience helps the AI adjust its guidance level.",type:"mcq",options:["This is my first time","One previous attempt","Multiple attempts","Currently running another one"]},
+{id:"q7",section:"Your Experience",q:"Have you ever made money from a business?",sub:"Any amount counts — freelance, side income, anything.",type:"mcq",options:["Never made business money","Under 1 lakh rupees","1 to 10 lakhs","10 lakhs to 1 crore","Over 1 crore"]},
+{id:"q8",section:"Your Experience",q:"Do you have a co-founder?",sub:"Solo founders get different advice than teams.",type:"mcq",options:["Solo founder","Have a co-founder","Have a small team","Looking for a co-founder"]},
+{id:"q9",section:"Your Experience",q:"What is your strongest skill?",sub:"The AI will lean on this skill in its recommendations.",type:"mcq",options:["Technology and coding","Sales and closing deals","Marketing and content","Finance and numbers","Operations and execution","Creative and design","Research and strategy"]},
+{id:"q10",section:"Your Experience",q:"What is your biggest weakness?",sub:"The AI will actively fill this gap for you.",type:"mcq",options:["Technology and coding","Sales and closing deals","Marketing and content","Finance and numbers","Operations and execution","Creative and design","Research and strategy"]},
+{id:"q11",section:"Your Startup",q:"What is your startup name or working title?",sub:"Does not need to be final — working title is fine.",type:"text",placeholder:"eg FounderOS or Project X"},
+{id:"q12",section:"Your Startup",q:"Describe your product or service in one sentence.",sub:"Be specific — what exactly does it do?",type:"text",placeholder:"eg An AI tool that helps D2C founders track competitor pricing daily"},
+{id:"q13",section:"Your Startup",q:"What industry are you in?",sub:"Select the closest match.",type:"mcq",options:["Food and Beverage","Fashion and Apparel","Technology and SaaS","Health and Wellness","Finance and Fintech","Education","Real Estate","E-commerce and D2C","Media and Content","Other"]},
+{id:"q14",section:"Your Startup",q:"Who is your target customer?",sub:"Who pays you money?",type:"mcq",options:["Individual consumers — B2C","Small businesses — B2B","Enterprise companies","Other founders and startups","Both consumers and businesses"]},
+{id:"q15",section:"Your Startup",q:"What core problem does your product solve?",sub:"The most important question. Be honest and specific.",type:"text",placeholder:"eg Founders waste hours manually checking competitor prices every week"},
+{id:"q16",section:"Stage and Progress",q:"What stage are you at right now?",sub:"Be honest — this determines what advice you get.",type:"mcq",options:["Just an idea, nothing built","Researching the market","Building the product","Have an MVP ready","Getting first customers","Have paying customers","Scaling and growing"]},
+{id:"q17",section:"Stage and Progress",q:"How much money have you spent on this so far?",sub:"Including any tools, prototypes, research.",type:"mcq",options:["Nothing yet","Under 10,000 rupees","10,000 to 1 lakh","1 to 5 lakhs","Over 5 lakhs"]},
+{id:"q18",section:"Stage and Progress",q:"Do you have any customers or users yet?",sub:"Even free users count.",type:"mcq",options:["Zero so far","1 to 10","10 to 100","100 to 1000","Over 1000"]},
+{id:"q19",section:"Stage and Progress",q:"What is your target market geography?",sub:"Where will you sell first?",type:"mcq",options:["My city only","India first","South Asia","Global from day one","Specific country outside India"]},
+{id:"q20",section:"Stage and Progress",q:"Who are your main competitors?",sub:"Name them or say you are not sure yet.",type:"text",placeholder:"eg Competitor A, Competitor B or Not sure yet"},
+{id:"q21",section:"Goals and Mindset",q:"What is your primary goal right now?",sub:"Pick the one that matters most today.",type:"mcq",options:["Validate if my idea works","Get my first paying customer","Reach 1 lakh monthly revenue","Build and launch MVP","Raise funding from investors","Grow an existing user base"]},
+{id:"q22",section:"Goals and Mindset",q:"How much time can you commit daily?",sub:"Be realistic — the AI will plan around this.",type:"mcq",options:["Less than 1 hour","1 to 2 hours","3 to 5 hours","Full time 8 plus hours","Flexible — varies daily"]},
+{id:"q23",section:"Goals and Mindset",q:"What is your available budget for the next 3 months?",sub:"For marketing, tools, product development, etc.",type:"mcq",options:["Zero budget","Under 50,000 rupees","50,000 to 5 lakhs","5 to 20 lakhs","Over 20 lakhs"]},
+{id:"q24",section:"Goals and Mindset",q:"What is your biggest fear about this startup?",sub:"Honest answer leads to better guidance.",type:"mcq",options:["Failing publicly","Running out of money","Stronger competition winning","Not knowing enough","Being unable to execute","Wasting years of my life","All of the above"]},
+{id:"q25",section:"Goals and Mindset",q:"In one word — why are you really doing this?",sub:"The honest reason — this shapes your AI personality.",type:"mcq",options:["Money and financial freedom","Freedom from a 9 to 5","Creating real impact","Pure passion for the idea","Proving something to myself","Supporting my family","I have no other option"]}
+];
+
+// ── INIT ──────────────────────────────────────
+window.onload = async () => {
+if (token) {
+try {
+const resp = await authFetch("/api/auth/me");
+if (resp.ok) {
+currentUser = await resp.json();
+if (!currentUser.onboarding_done) {
+showOnboarding();
+} else {
+showApp();
+}
+return;
+}
+} catch(e) {}
+}
+token = null;
+localStorage.removeItem("fo_token");
+document.getElementById("loading").style.display = "none";
+showLogin();
+};
+
+function authFetch(url, options={}) {
+options.headers = options.headers || {};
+if (token) options.headers["Authorization"] = `Bearer ${token}`;
+options.headers["Content-Type"] = options.headers["Content-Type"] || "application/json";
+return fetch(API + url, options);
+}
+
+// ── AUTH ──────────────────────────────────────
+function showLogin() { hide("loading","signup-page","onboarding-page","report-page"); show("login-page"); }
+function showSignup() { hide("login-page"); show("signup-page"); }
+
+async function doLogin() {
+const email = document.getElementById("login-email").value.trim();
+const password = document.getElementById("login-password").value;
+const errEl = document.getElementById("login-error");
+const btn = document.getElementById("login-btn");
+errEl.style.display = "none";
+btn.disabled = true;
+btn.textContent = "Signing in...";
+try {
+const resp = await fetch(API + "/api/auth/login", {
+method: "POST",
+headers: {"Content-Type":"application/json"},
+body: JSON.stringify({email, password})
+});
+const data = await resp.json();
+if (data.success) {
+token = data.token;
+localStorage.setItem("fo_token", token);
+currentUser = {name: data.name, onboarding_done: data.onboarding_done};
+if (!data.onboarding_done) { hide("login-page"); showOnboarding(); }
+else { hide("login-page"); showApp(); }
+} else {
+errEl.textContent = data.error || "Login failed";
+errEl.style.display = "block";
+}
+} catch(e) {
+errEl.textContent = "Connection error. Is server running?";
+errEl.style.display = "block";
+}
+btn.disabled = false;
+btn.textContent = "Sign In";
+}
+
+async function doSignup() {
+const name = document.getElementById("signup-name").value.trim();
+const email = document.getElementById("signup-email").value.trim();
+const password = document.getElementById("signup-password").value;
+const errEl = document.getElementById("signup-error");
+const btn = document.getElementById("signup-btn");
+errEl.style.display = "none";
+if (!name || !email || !password) { errEl.textContent = "All fields required"; errEl.style.display = "block"; return; }
+btn.disabled = true;
+btn.textContent = "Creating account...";
+try {
+const resp = await fetch(API + "/api/auth/signup", {
+method: "POST",
+headers: {"Content-Type":"application/json"},
+body: JSON.stringify({name, email, password})
+});
+const data = await resp.json();
+if (data.success) {
+token = data.token;
+localStorage.setItem("fo_token", token);
+currentUser = {name, onboarding_done: false};
+hide("signup-page");
+showOnboarding();
+} else {
+errEl.textContent = data.error || "Signup failed";
+errEl.style.display = "block";
+}
+} catch(e) {
+errEl.textContent = "Connection error. Is server running?";
+errEl.style.display = "block";
+}
+btn.disabled = false;
+btn.textContent = "Create Account";
+}
+
+function signOut() {
+token = null;
+localStorage.removeItem("fo_token");
+currentUser = null;
+chatHistory = [];
+location.reload();
+}
+
+// ── ONBOARDING ────────────────────────────────
+function showOnboarding() {
+hide("loading","login-page","signup-page");
+show("onboarding-page");
+renderQuestion();
+}
+
+function renderQuestion() {
+const q = questions[obStep];
+document.getElementById("ob-section").textContent = q.section;
+document.getElementById("ob-question").textContent = q.q;
+document.getElementById("ob-sub").textContent = q.sub;
+document.getElementById("ob-counter").textContent = `${obStep + 1} of ${questions.length}`;
+document.getElementById("ob-progress").style.width = `${((obStep + 1) / questions.length) * 100}%`;
+document.getElementById("ob-back").style.visibility = obStep === 0 ? "hidden" : "visible";
+document.getElementById("ob-next").textContent = obStep === questions.length - 1 ? "Generate My Report" : "Next";
+
+const content = document.getElementById("ob-content");
+if (q.type === "text") {
+content.innerHTML = `<input class="ob-text-input" id="ob-input" placeholder="${q.placeholder}" value="${obAnswers[q.id] || ''}" onkeydown="if(event.key==='Enter')obNext()">`;
+setTimeout(() => { const el = document.getElementById("ob-input"); if(el) el.focus(); }, 100);
+} else {
+const saved = obAnswers[q.id] || "";
+content.innerHTML = `<div class="ob-options">${q.options.map(opt =>
+`<button class="ob-option ${saved === opt ? 'selected' : ''} ${q.options.length <= 3 ? 'full-width' : ''}" onclick="selectOption('${q.id}','${opt}',this)">${opt}</button>`
+).join("")}</div>`;
+}
+}
+
+function selectOption(id, value, el) {
+obAnswers[id] = value;
+document.querySelectorAll(".ob-option").forEach(b => b.classList.remove("selected"));
+el.classList.add("selected");
+}
+
+function obBack() {
+if (obStep > 0) { obStep--; renderQuestion(); }
+}
+
+async function obNext() {
+const q = questions[obStep];
+if (q.type === "text") {
+const val = document.getElementById("ob-input")?.value?.trim();
+if (!val) { toast("Please answer this question"); return; }
+obAnswers[q.id] = val;
+} else {
+if (!obAnswers[q.id]) { toast("Please select an option"); return; }
+}
+
+if (obStep < questions.length - 1) {
+obStep++;
+renderQuestion();
+} else {
+await submitOnboarding();
+}
+}
+
+async function submitOnboarding() {
+const btn = document.getElementById("ob-next");
+btn.textContent = "Generating your report...";
+btn.disabled = true;
+try {
+const resp = await authFetch("/api/onboarding/submit", {
+method: "POST",
+body: JSON.stringify({answers: obAnswers})
+});
+const data = await resp.json();
+if (data.success) {
+showReport(data.report);
+} else {
+toast("Error generating report. Try again.");
+btn.textContent = "Generate My Report";
+btn.disabled = false;
+}
+} catch(e) {
+toast("Connection error");
+btn.textContent = "Generate My Report";
+btn.disabled = false;
+}
+}
+
+function showReport(report) {
+hide("onboarding-page");
+show("report-page");
+document.getElementById("archetype-value").textContent = report.archetype || "Determined Founder";
+document.getElementById("archetype-summary").textContent = report.summary || "";
+
+const tl = report.predicted_timeline || {};
+document.getElementById("timeline-grid").innerHTML = [
+["First Customer", tl.first_customer || "2-3 months"],
+["First Revenue", tl.first_revenue || "3-4 months"],
+["10K Revenue", tl.first_10k_revenue || "6-8 months"],
+["Market Fit", tl.product_market_fit || "12 months"],
+].map(([label, value]) => `<div class="timeline-item"><div class="timeline-label">${label}</div><div class="timeline-value">${value}</div></div>`).join("");
+
+const strengths = Array.isArray(report.top_strengths) ? report.top_strengths : [];
+const risks = Array.isArray(report.top_risks) ? report.top_risks : [];
+const gaps = Array.isArray(report.skill_gaps) ? report.skill_gaps : [];
+
+document.getElementById("report-strengths").innerHTML = strengths.map(s => `<div class="report-item">+ ${s}</div>`).join("") || "<div class='report-item'>Analysing...</div>";
+document.getElementById("report-risks").innerHTML = risks.map(r => `<div class="report-item">! ${r}</div>`).join("") || "<div class='report-item'>Analysing...</div>";
+document.getElementById("report-gaps").innerHTML = gaps.map(g => `<div class="report-item">- ${g} (AI will cover this)</div>`).join("") || "<div class='report-item'>Analysing...</div>";
+document.getElementById("report-personality").textContent = `Mode: ${(report.ai_personality || "mentor").toUpperCase()}`;
+}
+
+function enterApp() {
+hide("report-page");
+currentUser = currentUser || {};
+currentUser.onboarding_done = true;
+showApp();
+}
+
+// ── APP ───────────────────────────────────────
+async function showApp() {
+hide("loading","login-page","signup-page","onboarding-page","report-page");
+document.getElementById("app").style.display = "block";
+document.getElementById("loading").style.display = "none";
+
+if (!currentUser) {
+try {
+const resp = await authFetch("/api/auth/me");
+currentUser = await resp.json();
+} catch(e) {}
+}
+
+const name = currentUser?.name || "Founder";
+const hour = new Date().getHours();
+const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
+
+document.getElementById("nav-name").textContent = name;
+document.getElementById("dash-greeting").textContent = `${greeting}, ${name}`;
+
+loadStats();
+loadBriefing();
+loadDashTasks();
+initCharts();
+}
+
+function showPage(name, el) {
+document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+document.querySelectorAll(".nav-link").forEach(n => n.classList.remove("active"));
+document.getElementById("page-" + name).classList.add("active");
+if (el) el.classList.add("active");
+if (name === "tasks") { loadFullTasks(); initTaskCharts(); }
+if (name === "briefing") loadFullBriefing();
+if (name === "dashboard") { loadStats(); loadDashTasks(); }
+}
+
+// ── STATS ─────────────────────────────────────
+async function loadStats() {
+try {
+const resp = await authFetch("/api/stats");
+const d = await resp.json();
+document.getElementById("s-done").textContent = d.tasks_done;
+document.getElementById("s-total").textContent = `of ${d.tasks_total} completed`;
+document.getElementById("s-days").textContent = d.days_journey;
+document.getElementById("s-rate").textContent = d.completion_rate + "%";
+document.getElementById("s-streak").textContent = d.streak_days;
+document.getElementById("s-weekly").textContent = `${d.weekly_done} of ${d.weekly_total} this week`;
+document.getElementById("nav-day").textContent = `Day ${d.days_journey} of your journey`;
+document.getElementById("dash-sub").textContent = `Day ${d.days_journey} of your founder journey. Here is your startup intelligence.`;
+const pct = d.tasks_total > 0 ? (d.tasks_done / d.tasks_total * 100) : 0;
+document.getElementById("s-prog").style.width = pct + "%";
+} catch(e) {}
+}
+
+// ── CHARTS ────────────────────────────────────
+function initCharts() {
+initMarketChart();
+initProductivityChart();
+}
+
+function initMarketChart() {
+const ctx = document.getElementById("market-chart");
+if (!ctx) return;
+if (marketChartInstance) marketChartInstance.destroy();
+const labels = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+const data = labels.map(() => Math.floor(Math.random() * 40) + 60);
+marketChartInstance = new Chart(ctx, {
+type: "line",
+data: {
+labels,
+datasets: [{
+label: "Market Demand Index",
+data,
+borderColor: "#4f46e5",
+backgroundColor: "rgba(79,70,229,0.08)",
+tension: 0.4,
+fill: true,
+pointBackgroundColor: "#4f46e5",
+pointRadius: 4
+}]
+},
+options: {
+responsive: true,
+plugins: {legend: {display: false}},
+scales: {
+y: {beginAtZero: false, grid: {color: "#f3f4f6"}},
+x: {grid: {display: false}}
+}
+}
+});
+}
+
+function initProductivityChart() {
+const ctx = document.getElementById("productivity-chart");
+if (!ctx) return;
+if (productivityChartInstance) productivityChartInstance.destroy();
+const labels = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+const done = labels.map(() => Math.floor(Math.random() * 5) + 2);
+const total = labels.map(() => 6);
+productivityChartInstance = new Chart(ctx, {
+type: "bar",
+data: {
+labels,
+datasets: [
+{label: "Completed", data: done, backgroundColor: "#4f46e5", borderRadius: 6},
+{label: "Total", data: total, backgroundColor: "#f3f4f6", borderRadius: 6}
+]
+},
+options: {
+responsive: true,
+plugins: {legend: {position: "bottom", labels: {font: {size: 11}}}},
+scales: {
+y: {beginAtZero: true, grid: {color: "#f3f4f6"}},
+x: {grid: {display: false}}
+}
+}
+});
+}
+
+function initTaskCharts() {
+loadFullTasksWithCharts();
+}
+
+async function loadFullTasksWithCharts() {
+try {
+const resp = await authFetch("/api/tasks");
+const d = await resp.json();
+const done = d.tasks.filter(t => t.done).length;
+const total = d.tasks.length;
+const notDone = total - done;
+
+const pie = document.getElementById("tasks-pie-chart");
+if (pie) {
+if (tasksPieInstance) tasksPieInstance.destroy();
+tasksPieInstance = new Chart(pie, {
+type: "doughnut",
+data: {
+labels: ["Completed", "Pending"],
+datasets: [{
+data: [done || 0, notDone || 6],
+backgroundColor: ["#4f46e5", "#f3f4f6"],
+borderWidth: 0
+}]
+},
+options: {
+responsive: true,
+plugins: {legend: {position: "bottom", labels: {font: {size: 11}}}}
+}
+});
+}
+
+const weekly = document.getElementById("weekly-chart");
+if (weekly) {
+if (weeklyChartInstance) weeklyChartInstance.destroy();
+const labels = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+weeklyChartInstance = new Chart(weekly, {
+type: "bar",
+data: {
+labels,
+datasets: [{
+label: "Tasks Done",
+data: labels.map(() => Math.floor(Math.random() * 5) + 1),
+backgroundColor: "#4f46e5",
+borderRadius: 6
+}]
+},
+options: {
+responsive: true,
+plugins: {legend: {display: false}},
+scales: {y: {beginAtZero: true, grid: {color: "#f3f4f6"}}, x: {grid: {display: false}}}
+}
+});
+}
+} catch(e) {}
+}
+
+// ── BRIEFING ──────────────────────────────────
+async function runMorningBriefing() {
+const btn = document.querySelector(".btn-run");
+if (btn) { btn.disabled = true; btn.textContent = "Generating..."; }
+toast("Generating your morning briefing...");
+try {
+const resp = await authFetch("/api/briefing/generate", {method: "POST"});
+const d = await resp.json();
+if (d.success) {
+document.getElementById("dash-brief").textContent = d.briefing;
+document.getElementById("full-brief").textContent = d.briefing;
+const now = new Date();
+document.getElementById("brief-date").textContent = now.toLocaleDateString("en-IN", {weekday:"long",day:"numeric",month:"long"});
+document.getElementById("briefing-date").textContent = `Generated ${now.toLocaleTimeString()}`;
+toast("Briefing ready!");
+}
+} catch(e) { toast("Error generating briefing"); }
+if (btn) { btn.disabled = false; btn.textContent = "Run Briefing"; }
+}
+
+async function loadBriefing() {
+try {
+const resp = await authFetch("/api/briefing");
+const d = await resp.json();
+if (d.briefing) {
+document.getElementById("dash-brief").textContent = d.briefing;
+document.getElementById("full-brief").textContent = d.briefing;
+if (d.date) document.getElementById("brief-date").textContent = d.date.substring(0,16);
+}
+} catch(e) {}
+}
+
+async function loadFullBriefing() {
+try {
+const resp = await authFetch("/api/briefing");
+const d = await resp.json();
+document.getElementById("full-brief").textContent = d.briefing;
+if (d.date) document.getElementById("briefing-date").textContent = `Last generated: ${d.date.substring(0,16)}`;
+} catch(e) {}
+}
+
+// ── TASKS ─────────────────────────────────────
+async function generateTasks() {
+toast("Generating your personalised tasks...");
+try {
+const resp = await authFetch("/api/tasks/generate", {method: "POST"});
+const d = await resp.json();
+if (d.success) {
+toast(`${d.count} tasks generated!`);
+loadDashTasks();
+loadFullTasks();
+loadStats();
+}
+} catch(e) { toast("Error generating tasks"); }
+}
+
+async function loadDashTasks() {
+try {
+const resp = await authFetch("/api/tasks");
+const d = await resp.json();
+const el = document.getElementById("dash-tasks");
+if (!d.tasks.length) {
+el.innerHTML = `<div class="empty"><div class="empty-icon" style="font-size:28px">—</div><div class="empty-text">No tasks yet</div><button class="empty-btn" onclick="generateTasks()">Generate Tasks</button></div>`;
+return;
+}
+el.innerHTML = d.tasks.slice(0,4).map(t => miniTaskHTML(t)).join("");
+} catch(e) {}
+}
+
+async function loadFullTasks() {
+try {
+const resp = await authFetch("/api/tasks");
+const d = await resp.json();
+const done = d.tasks.filter(t=>t.done).length;
+document.getElementById("tasks-prog-text").textContent = `${done} of ${d.tasks.length} done today`;
+const el = document.getElementById("full-tasks");
+if (!d.tasks.length) {
+el.innerHTML = `<div class="empty"><div class="empty-icon" style="font-size:28px">—</div><div class="empty-text">No tasks yet</div><button class="empty-btn" onclick="generateTasks()">Generate Tasks</button></div>`;
+return;
+}
+el.innerHTML = d.tasks.map(t => fullTaskHTML(t)).join("");
+} catch(e) {}
+}
+
+function miniTaskHTML(t) {
+return `<div class="task-item ${t.done?'done':''}" id="mini-task-${t.id}">
+<div class="task-header">
+<div class="task-check ${t.done?'checked':''}" onclick="completeTask(${t.id},this)">${t.done?'✓':''}</div>
+<div style="flex:1">
+<div class="task-title">${t.title}</div>
+<div class="task-meta">
+<span class="badge badge-${t.priority}">${t.priority}</span>
+<span class="badge badge-time">${t.time_est}</span>
+</div>
+</div>
+</div>
+</div>`;
+}
+
+function fullTaskHTML(t) {
+return `<div class="task-item ${t.done?'done':''}" id="task-${t.id}">
+<div class="task-header">
+<div class="task-check ${t.done?'checked':''}" onclick="completeTask(${t.id},this)">${t.done?'✓':''}</div>
+<div style="flex:1">
+<div class="task-title">${t.title}</div>
+<div class="task-desc">${t.description||''}</div>
+<div class="task-meta">
+<span class="badge badge-${t.priority}">${t.priority}</span>
+<span class="badge badge-cat">${t.category}</span>
+<span class="badge badge-time">${t.time_est}</span>
+<button class="task-expand" onclick="toggleHowTo(${t.id})">How to do this</button>
+</div>
+<div class="task-how" id="how-${t.id}">${t.how_to||''}</div>
+${t.reason?`<div class="task-reason">${t.reason}</div>`:''}
+</div>
+</div>
+</div>`;
+}
+
+function toggleHowTo(id) {
+const el = document.getElementById("how-" + id);
+if (el) el.style.display = el.style.display === "block" ? "none" : "block";
+}
+
+async function completeTask(id, el) {
+const startTime = el.dataset.startTime;
+if (!startTime) {
+el.dataset.startTime = Date.now();
+toast("Started! Complete the task then click again to mark done.");
+return;
+}
+const timeSpent = Math.floor((Date.now() - parseInt(startTime)) / 1000);
+try {
+const resp = await authFetch(`/api/tasks/${id}/complete`, {
+method: "POST",
+body: JSON.stringify({time_spent: timeSpent})
+});
+const d = await resp.json();
+if (!d.verified) {
+if (confirm(d.message + "\n\nClick OK to confirm you completed it.")) {
+await authFetch(`/api/tasks/${id}/confirm`, {method: "POST"});
+markTaskDone(id);
+}
+} else {
+markTaskDone(id);
+}
+loadStats();
+} catch(e) { toast("Error updating task"); }
+}
+
+function markTaskDone(id) {
+[`task-${id}`, `mini-task-${id}`].forEach(sel => {
+const el = document.getElementById(sel);
+if (el) {
+el.classList.add("done");
+const check = el.querySelector(".task-check");
+if (check) { check.classList.add("checked"); check.textContent = "✓"; }
+}
+});
+toast("Task completed!");
+}
+
+// ── CHAT ──────────────────────────────────────
+function setMode(mode, el) {
+currentMode = mode;
+document.querySelectorAll(".mode-btn").forEach(b => b.classList.remove("active"));
+el.classList.add("active");
+}
+
+function handleKey(e) {
+if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+}
+
+function autoResize(el) {
+el.style.height = "auto";
+el.style.height = Math.min(el.scrollHeight, 130) + "px";
+}
+
+function quickSend(t) {
+document.getElementById("chat-input").value = t;
+sendMessage();
+}
+
+function clearChat() {
+chatHistory = [];
+document.getElementById("chat-messages").innerHTML = `
+<div class="msg ai">
+<div class="msg-av ai">AI</div>
+<div class="msg-bubble"><pre>Chat cleared. What would you like to explore?</pre></div>
+</div>`;
+}
+
+function togglePlusMenu() {
+event.stopPropagation();
+document.getElementById("plus-dropdown").classList.toggle("open");
+}
+
+document.addEventListener("click", () => {
+const pd = document.getElementById("plus-dropdown");
+if (pd) pd.classList.remove("open");
+});
+
+function triggerFileUpload() {
+document.getElementById("plus-dropdown").classList.remove("open");
+document.getElementById("file-input").click();
+}
+
+function handleFileUpload(event) {
+const file = event.target.files[0];
+if (!file) return;
+const reader = new FileReader();
+reader.onload = function(e) {
+window.pendingFileData = e.target.result;
+window.pendingFileName = file.name;
+document.getElementById("file-name-display").textContent = file.name;
+document.getElementById("file-preview").style.display = "flex";
+const inp = document.getElementById("chat-input");
+if (!inp.value) inp.value = `Please analyse this file: ${file.name}`;
+toast(`${file.name} ready`);
+};
+if (file.type.startsWith("image/")) reader.readAsDataURL(file);
+else reader.readAsText(file);
+event.target.value = "";
+}
+
+function clearFile() {
+window.pendingFileData = null;
+window.pendingFileName = null;
+document.getElementById("file-preview").style.display = "none";
+}
+
+function deepResearch() {
+document.getElementById("plus-dropdown").classList.remove("open");
+document.getElementById("chat-input").value = "Do a complete deep research on my market including demand, competitors, opportunities, and what I should focus on this month";
+document.getElementById("chat-input").focus();
+}
+
+function createReport() {
+document.getElementById("plus-dropdown").classList.remove("open");
+document.getElementById("chat-input").value = "Create a full startup progress report covering my tasks completed, market position, key risks, and top 5 priorities for next week";
+document.getElementById("chat-input").focus();
+}
+
+async function sendMessage() {
+const input = document.getElementById("chat-input");
+const msg = input.value.trim();
+if (!msg) return;
+input.value = "";
+input.style.height = "auto";
+document.getElementById("send-btn").disabled = true;
+
+addMsg("user", msg);
+chatHistory.push({role: "user", content: msg});
+
+const panelId = "panel-" + Date.now();
+const msgEl = document.createElement("div");
+msgEl.className = "msg ai";
+msgEl.id = panelId;
+msgEl.innerHTML = `
+<div class="msg-av ai">AI</div>
+<div style="flex:1">
+<div class="agent-panel">
+<div class="agent-panel-title" id="title-${panelId}">
+<div class="typing-indicator">
+<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
+</div>
+Working on your answer...
+</div>
+<div id="steps-${panelId}"></div>
+</div>
+</div>`;
+document.getElementById("chat-messages").appendChild(msgEl);
+document.getElementById("chat-messages").scrollTop = 999999;
+
+try {
+const fileData = window.pendingFileData || null;
+if (window.pendingFileName) { clearFile(); }
+
+const resp = await authFetch("/api/chat", {
+method: "POST",
+body: JSON.stringify({message: msg, mode: currentMode, history: chatHistory.slice(-6), file: fileData})
+});
+const data = await resp.json();
+
+const titleEl = document.getElementById("title-" + panelId);
+const stepsEl = document.getElementById("steps-" + panelId);
+
+if (data.agent_steps && data.agent_steps.length > 0) {
+if (titleEl) titleEl.innerHTML = "Researching across platforms...";
+for (const step of data.agent_steps) {
+await new Promise(r => setTimeout(r, 450));
+if (stepsEl) {
+stepsEl.innerHTML += `<div class="agent-step">
+<span class="step-icon">${step.icon}</span>
+<span class="step-name">${step.agent}</span>
+<span class="step-status">${step.status}</span>
+<span class="step-done">Done</span>
+</div>`;
+document.getElementById("chat-messages").scrollTop = 999999;
+}
+}
+if (titleEl) titleEl.innerHTML = "Complete";
+} else {
+const panelEl = document.getElementById(panelId);
+if (panelEl) panelEl.remove();
+}
+
+await new Promise(r => setTimeout(r, 200));
+addMsg("ai", data.reply);
+
+if (data.sources && data.sources.length > 0) {
+const badge = document.createElement("div");
+badge.className = "source-badge";
+badge.textContent = `Searched: ${data.sources.join(", ")}`;
+document.getElementById("chat-messages").appendChild(badge);
+}
+
+chatHistory.push({role: "assistant", content: data.reply});
+
+} catch(e) {
+const panelEl = document.getElementById(panelId);
+if (panelEl) panelEl.remove();
+addMsg("ai", "Connection error. Make sure server.py is running.");
+}
+
+document.getElementById("send-btn").disabled = false;
+document.getElementById("chat-input").focus();
+}
+
+function addMsg(role, text) {
+const el = document.getElementById("chat-messages");
+const initials = role === "ai" ? "AI" : (currentUser?.name?.[0]?.toUpperCase() || "U");
+const div = document.createElement("div");
+div.className = "msg " + role;
+div.innerHTML = `
+<div class="msg-av ${role}">${initials}</div>
+<div class="msg-bubble"><pre>${text.replace(/</g,"&lt;").replace(/>/g,"&gt;")}</pre></div>`;
+el.appendChild(div);
+el.scrollTop = el.scrollHeight;
+}
+
+// ── MARKET ────────────────────────────────────
+async function runMarketResearch() {
+const query = document.getElementById("market-query").value.trim();
+const btn = document.querySelector("#page-market .btn-run");
+btn.disabled = true;
+btn.textContent = "Researching...";
+document.getElementById("market-content").textContent = "Searching Google, Reddit, LinkedIn, and News...";
+document.getElementById("market-sources").textContent = "";
+try {
+const resp = await authFetch("/api/market/research", {
+method: "POST",
+body: JSON.stringify({query})
+});
+const d = await resp.json();
+document.getElementById("market-content").textContent = d.analysis;
+document.getElementById("market-sources").textContent = `${d.sources_count} sources searched`;
+initDemandChart();
+initPlatformChart();
+toast("Market research complete!");
+} catch(e) {
+document.getElementById("market-content").textContent = "Error running research. Is server running?";
+}
+btn.disabled = false;
+btn.textContent = "Research Now";
+}
+
+function initDemandChart() {
+const ctx = document.getElementById("demand-chart");
+if (!ctx) return;
+if (demandChartInstance) demandChartInstance.destroy();
+const labels = ["Week 1","Week 2","Week 3","Week 4"];
+demandChartInstance = new Chart(ctx, {
+type: "line",
+data: {
+labels,
+datasets: [{
+label: "Search Volume Index",
+data: labels.map(() => Math.floor(Math.random() * 30) + 70),
+borderColor: "#4f46e5",
+backgroundColor: "rgba(79,70,229,0.08)",
+tension: 0.4,
+fill: true,
+pointRadius: 5,
+pointBackgroundColor: "#4f46e5"
+}]
+},
+options: {
+responsive: true,
+plugins: {legend: {display: false}},
+scales: {y: {beginAtZero: false, grid: {color: "#f3f4f6"}}, x: {grid: {display: false}}}
+}
+});
+}
+
+function initPlatformChart() {
+const ctx = document.getElementById("platform-chart");
+if (!ctx) return;
+if (platformChartInstance) platformChartInstance.destroy();
+platformChartInstance = new Chart(ctx, {
+type: "doughnut",
+data: {
+labels: ["Google Search","Reddit","LinkedIn","News","Other"],
+datasets: [{
+data: [38, 22, 18, 14, 8],
+backgroundColor: ["#4f46e5","#f97316","#0ea5e9","#10b981","#f59e0b"],
+borderWidth: 0
+}]
+},
+options: {
+responsive: true,
+plugins: {legend: {position: "bottom", labels: {font: {size: 11}}}}
+}
+});
+}
+
+// ── COMPETITORS ───────────────────────────────
+async function runCompetitorAnalysis() {
+const competitors = document.getElementById("comp-names").value.trim();
+const btn = document.querySelector("#page-competitors .btn-run");
+btn.disabled = true;
+btn.textContent = "Analysing...";
+document.getElementById("comp-content").textContent = "Searching across Google, Reddit, LinkedIn, and News...";
+try {
+const resp = await authFetch("/api/competitors/analyse", {
+method: "POST",
+body: JSON.stringify({competitors})
+});
+const d = await resp.json();
+document.getElementById("comp-content").textContent = d.analysis;
+document.getElementById("comp-sources").textContent = `${d.sources_count} sources searched`;
+toast("Competitor analysis complete!");
+} catch(e) {
+document.getElementById("comp-content").textContent = "Error. Is server running?";
+}
+btn.disabled = false;
+btn.textContent = "Analyse Now";
+}
+
+// ── CONTENT ───────────────────────────────────
+function setPlatform(platform, el) {
+currentPlatform = platform;
+document.querySelectorAll(".platform-tab").forEach(t => t.classList.remove("active"));
+el.classList.add("active");
+}
+
+async function generateContent() {
+const days = document.getElementById("content-days").value;
+const btn = document.querySelector("#page-content .btn-run");
+btn.disabled = true;
+btn.textContent = "Generating...";
+document.getElementById("content-output").textContent = `Generating ${days}-day ${currentPlatform} content calendar based on current trends...`;
+document.getElementById("content-title").textContent = `${currentPlatform.charAt(0).toUpperCase() + currentPlatform.slice(1)} — ${days} Day Content Calendar`;
+try {
+const resp = await authFetch("/api/content/generate", {
+method: "POST",
+body: JSON.stringify({platform: currentPlatform, days: parseInt(days)})
+});
+const d = await resp.json();
+document.getElementById("content-output").textContent = d.calendar;
+toast("Content calendar ready!");
+} catch(e) {
+document.getElementById("content-output").textContent = "Error generating content. Is server running?";
+}
+btn.disabled = false;
+btn.textContent = "Generate Calendar";
+}
+
+// ── AGENTS ────────────────────────────────────
+function openAgent(type, name, desc) {
+currentAgent = type;
+document.getElementById("agent-chat-title").textContent = name;
+document.getElementById("agent-response").style.display = "none";
+document.getElementById("agent-response").textContent = "";
+document.getElementById("agent-input").value = "";
+document.getElementById("agent-input").placeholder = `Ask the ${name}...`;
+document.getElementById("agent-chat-box").classList.add("open");
+document.getElementById("agent-input").focus();
+document.getElementById("agent-chat-box").scrollIntoView({behavior: "smooth"});
+}
+
+function closeAgent() {
+document.getElementById("agent-chat-box").classList.remove("open");
+currentAgent = null;
+}
+
+async function askAgent() {
+if (!currentAgent) return;
+const question = document.getElementById("agent-input").value.trim();
+if (!question) { toast("Enter your question"); return; }
+const btn = document.getElementById("agent-ask-btn");
+btn.disabled = true;
+btn.textContent = "Thinking...";
+const respEl = document.getElementById("agent-response");
+respEl.style.display = "block";
+respEl.textContent = "Researching and analysing...";
+try {
+const resp = await authFetch(`/api/agent/${currentAgent}`, {
+method: "POST",
+body: JSON.stringify({question})
+});
+const d = await resp.json();
+respEl.textContent = d.reply;
+} catch(e) {
+respEl.textContent = "Error. Is server running?";
+}
+btn.disabled = false;
+btn.textContent = "Ask";
+}
+
+// ── UTILS ─────────────────────────────────────
+function show(...ids) { ids.forEach(id => { const el = document.getElementById(id); if(el) el.style.display = "block"; }); }
+function hide(...ids) { ids.forEach(id => { const el = document.getElementById(id); if(el) el.style.display = "none"; }); }
+
+function toast(msg) {
+const t = document.getElementById("toast");
+t.textContent = msg;
+t.classList.add("show");
+setTimeout(() => t.classList.remove("show"), 3000);
+}
+</script>
+</body>
+</html>
