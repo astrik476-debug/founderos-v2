@@ -1214,17 +1214,16 @@ def home():
     except:
         return "<h1>FounderOS</h1><p>dashboard.html not found</p>"
 
+# Run setup_db when imported by gunicorn too
+setup_db()
+
 if __name__ == "__main__":
     setup_db()
     print("\n" + "="*52)
     print("  FOUNDEROS — AI STARTUP OPERATING SYSTEM v2")
     print("="*52)
     print(f"  Chat AI:   Groq Llama 3.3 70B — unlimited")
-    print(f"  Deep AI:   Groq DeepSeek R1 — unlimited")
-    print(f"  Onboard:   Gemini 1.5 Flash — once per user")
-    print(f"  Search:    Serper — Google Reddit LinkedIn News")
-    print(f"  Auth:      JWT with bcrypt")
-    print(f"  DB:        SQLite")
+    print(f"  Search:    Serper — Google Reddit LinkedIn")
     print("="*52)
     print("  Open http://localhost:5000 in browser")
     print("="*52 + "\n")
