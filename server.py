@@ -1227,4 +1227,5 @@ if __name__ == "__main__":
     print("="*52)
     print("  Open http://localhost:5000 in browser")
     print("="*52 + "\n")
-    app.run(debug=False, port=5000, host="0.0.0.0")
+port = int(os.environ.get("PORT", 5000))
+app.run(debug=False, port=port, host="0.0.0.0")
