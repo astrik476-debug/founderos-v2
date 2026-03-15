@@ -15,9 +15,9 @@ CORS(app, supports_credentials=True)
 DB = "founderos.db"
 
 # ── API KEYS ──────────────────────────────────
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "AIzaSyBoNTLjmjlFJee2kA-kTXqndab4vTkbhxI")
-SERPER_API_KEY = os.environ.get("SERPER_API_KEY", "20c4cf85e36338e4f6b434263017a3aeb403d16c")
-GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "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")
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "GEMINI_API_KEY")
+SERPER_API_KEY = os.environ.get("SERPER_API_KEY", "SERPER_API_KEY")
+GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "GROQ_API_KEY")
 JWT_SECRET = "founderos-jwt-secret-2024"
 
 # Gemini — only for onboarding report (runs once per user)
