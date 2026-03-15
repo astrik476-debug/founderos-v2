@@ -1,8 +1,8 @@
 flask
 flask-cors
-google-generativeai
+google-genai
 requests
 pyjwt
 bcrypt
-schedule
 gunicorn
+groq
