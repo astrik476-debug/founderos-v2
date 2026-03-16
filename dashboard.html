@@ -575,7 +575,8 @@ What is on your mind today?</pre>
 <div class="page-title">Competitor Intelligence</div>
 <div class="page-sub">Real-time competitive analysis from Google, Reddit, and News.</div>
 <div style="display:flex;gap:10px;margin-bottom:20px">
-<input class="form-input" id="comp-names" placeholder="Enter competitor names (optional — we will find them automatically)" style="flex:1;margin-bottom:0">
+<input class="form-input" id="comp-names" placeholder="Enter competitor names (optional)" style="flex:1;margin-bottom:0">
+<input class="form-input" id="comp-location" placeholder="Location eg India, USA, UK, Global" style="width:200px;margin-bottom:0">
 <button class="btn-run" onclick="runCompetitorAnalysis()" style="white-space:nowrap;padding:0 20px">Analyse Now</button>
 </div>
 <div class="card">
@@ -1526,25 +1527,26 @@ plugins: {legend: {position: "bottom", labels: {font: {size: 11}}}}
 
 // ── COMPETITORS ───────────────────────────────
 async function runCompetitorAnalysis() {
-const competitors = document.getElementById("comp-names").value.trim();
-const btn = document.querySelector("#page-competitors .btn-run");
-btn.disabled = true;
-btn.textContent = "Analysing...";
-document.getElementById("comp-content").textContent = "Searching across Google, Reddit, LinkedIn, and News...";
-try {
-const resp = await authFetch("/api/competitors/analyse", {
-method: "POST",
-body: JSON.stringify({competitors})
-});
-const d = await resp.json();
-document.getElementById("comp-content").textContent = d.analysis;
-document.getElementById("comp-sources").textContent = `${d.sources_count} sources searched`;
-toast("Competitor analysis complete!");
-} catch(e) {
-document.getElementById("comp-content").textContent = "Error. Is server running?";
-}
-btn.disabled = false;
-btn.textContent = "Analyse Now";
+  const competitors = document.getElementById("comp-names").value.trim();
+  const location = document.getElementById("comp-location").value.trim() || "India";
+  const btn = document.querySelector("#page-competitors .btn-run");
+  btn.disabled = true;
+  btn.textContent = "Analysing...";
+  document.getElementById("comp-content").textContent = `Searching competitors in ${location} across Google, Reddit, LinkedIn, and News...`;
+  try {
+    const resp = await authFetch("/api/competitors/analyse", {
+      method: "POST",
+      body: JSON.stringify({competitors, location})
+    });
+    const d = await resp.json();
+    document.getElementById("comp-content").textContent = d.analysis;
+    document.getElementById("comp-sources").textContent = `${d.sources_count} sources searched in ${location}`;
+    toast("Competitor analysis complete!");
+  } catch(e) {
+    document.getElementById("comp-content").textContent = "Error. Is server running?";
+  }
+  btn.disabled = false;
+  btn.textContent = "Analyse Now";
 }
 
 // ── CONTENT ───────────────────────────────────
