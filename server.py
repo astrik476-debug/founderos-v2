@@ -607,25 +607,32 @@ def chat(user):
         "mentor": "Be wise and balanced. Guide rather than dictate. Ask powerful questions."
     }
 
-    system = f"""You are an elite AI Co-Founder. Not a generic chatbot. A real co-founder who knows this founder deeply.
+  system = f"""You are an elite startup advisor — brutally sharp, data-driven, and specific. You combine the expertise of a YC partner, McKinsey consultant, and serial entrepreneur.
 
 {context}
 
-Personality mode: {personality}
+Personality: {personality}
 {personality_map.get(personality, '')}
 
-CRITICAL RULES:
-1. Use the founder name, startup name, and product naturally in every response.
-2. NEVER give generic advice. Every answer must be specific to their product, market, stage, and goals.
-3. If they say they want to quit — do NOT agree. Pull the market data provided. Show them evidence. Give them one small win to focus on right now.
-4. FORMAT every business response: One line brief summary at top. Then 3 to 5 bullet points. Then section THIS WEEK with 3 specific actions.
-5. Answer about ANY product in ANY industry anywhere in the world — food, fashion, tech, health, D2C, B2B, SaaS, physical products, services, anything.
-6. For formulation questions about any product — give safe accurate guidance with regulatory notes.
-7. For personal questions about burnout motivation co-founder conflict — respond as a trusted advisor who knows them well.
-8. Keep responses under 350 words unless asked for deep research.
-9. Greetings — respond warmly using their name, reference their journey days, ask one sharp question. No bullet points for greetings.
-10. NEVER say you cannot find data. Always give your best analysis using the research data provided.
-"""
+RESPONSE RULES — follow every single one:
+
+FORMAT:
+- Line 1: One sharp insight specific to their situation. No generic opener.
+- Then 4-6 bullet points. Each bullet must be specific, actionable, and contain a real number, name, or example.
+- End with THIS WEEK: exactly 3 actions they can do in the next 7 days. Each action must have a specific platform, tool, or contact method.
+
+QUALITY RULES:
+- NEVER say "it's important to" or "you should consider" — just say what to do
+- NEVER give generic advice that could apply to any business
+- ALWAYS use the founder's actual product name {profile.get('product', '')} and market {profile.get('market', '')}
+- ALWAYS reference real competitor names, real platforms, real numbers from the research data
+- For sales pitches: give the FULL pitch structure — Hook, Problem, Solution, Proof, Offer, CTA. Write it out completely, not just advice about what to include
+- For competitor analysis: name real local competitors first, then global ones. Always specify which country they operate in
+- For formulations: give actual ingredients, ratios, and regulatory body names
+- For pricing: give actual numbers based on the market data
+- For motivation questions: pull a real market statistic that validates their idea, then give one small specific action
+- Keep total response under 400 words unless writing a full pitch or report
+- NEVER start with "Certainly" "Great question" "Absolutely" or any filler opener"""
 
     history_text = ""
     for h in history[-6:]:
@@ -767,56 +774,61 @@ Keep each section to 3 to 5 bullet points. Use real data. No waffle.
 @require_auth
 def competitor_analysis(user):
     profile = get_profile(user["id"])
-    data = request.json
-    competitor_names = data.get("competitors", "")
-    product = profile.get("product", "")
-    industry = profile.get("industry", "")
+   data = request.json
+competitor_names = data.get("competitors", "")
+location = data.get("location", profile.get("market", "India"))
+product = profile.get("product", "")
+industry = profile.get("industry", "")
 
-    search_queries = {
-        "top_competitors": (f"top competitors {product} {industry} 2025", "search"),
-        "pricing": (f"{competitor_names or product} competitor pricing strategy", "search"),
-        "reddit": (f"{product} {industry} best alternative complaints", "reddit_native"),
-        "news": (f"{competitor_names or industry} startup funding news 2025", "news"),
-        "weaknesses": (f"{competitor_names or product} problems complaints reviews", "search"),
-        "gaps": (f"{industry} market gap underserved customers 2025", "search"),
-    }
+search_queries = {
+    "local_competitors": (f"top competitors {product} {industry} {location} 2025", "search"),
+    "global_competitors": (f"top competitors {product} {industry} global 2025", "search"),
+    "pricing": (f"{product} {industry} {location} pricing strategy competitors", "search"),
+    "reddit": (f"{product} {industry} {location} best alternative complaints", "reddit_native"),
+    "news": (f"{industry} startup {location} funding news 2025", "news"),
+    "weaknesses": (f"{competitor_names or product} {location} problems complaints reviews", "search"),
+}
 
     all_results = multi_search(search_queries)
     web_data = format_search_results(all_results)
     total = sum(len(v) for v in all_results.values())
 
-    prompt = f"""
-You are a competitive intelligence expert.
+  prompt = f"""
+You are a competitive intelligence expert who specialises in {location} markets.
 
 Founder Context:
 {build_context(user, profile)}
 
-Live Competitive Research from {total} sources:
+Target Location: {location}
+Live Research from {total} sources:
 {web_data}
 
-Generate competitor intelligence report with these sections:
+Generate competitor intelligence report in this EXACT structure:
 
-TOP COMPETITORS
-Name real competitors. For each: what they do, estimated pricing, their strength, their weakness.
+LOCAL COMPETITORS IN {location.upper()}
+Name 3-5 real competitors operating in {location}. For each:
+- Company name and website
+- What they sell and at what price
+- Their biggest strength
+- Their biggest weakness customers complain about
 
-WHERE THEY ARE WEAK
-Specific complaints and gaps customers have about existing solutions.
+GLOBAL COMPETITORS
+Name 2-3 global players in this space with their market position.
 
-YOUR POSITIONING
-Where this founder should position given their stage and resources.
+WHERE LOCAL COMPETITORS ARE WEAK
+3 specific gaps based on customer complaints and research data.
 
-WHAT COMPETITORS ARE DOING NOW
-Recent moves, content, campaigns based on research data.
+YOUR COMPETITIVE ADVANTAGE
+Based on the founder's product and stage, exactly where they should position against local competition.
 
-STRATEGY TO WIN
-3 specific moves this founder can take in the next 30 days to take market share.
+STRATEGY TO WIN {location.upper()} MARKET
+3 specific moves in the next 30 days. Each must include a platform, tool, or specific action.
 
-REVENUE ESTIMATES
-Estimated revenue range of top 2 to 3 competitors based on available signals.
+ESTIMATED MARKET SHARE
+Revenue estimates for top local competitors based on available signals.
 
-Be specific. Name real companies. Use real data from research above.
+Be specific. Name real companies. Separate local from global clearly.
 """
-
     analysis = ask_groq(prompt, max_tokens=1200)
 
     conn = get_db()
@@ -1101,7 +1113,7 @@ def specialist_agent(user, agent_type):
         f"- {r.get('snippet', '')}" for r in search_results
     ])
 
-    prompt = f"""
+  prompt = f"""
 {context}
 
 Live Research:
@@ -1109,9 +1121,18 @@ Live Research:
 
 Founder Question: {question}
 
-Answer as the specialist you are. Be completely specific to their startup and market.
-Format: Brief summary first. Then bullet points. Then 2 to 3 specific actions they can take this week.
-Under 400 words.
+Answer as a world-class {agent_type} specialist who has worked with 100+ startups.
+
+RULES:
+- Give specific actionable answers, not general advice
+- Use real numbers, real platform names, real examples
+- If asked for a sales pitch — write the FULL pitch, not advice about pitches
+- If asked for a contract — give actual clauses, not general guidance
+- If asked for pricing — give actual numbers
+- If asked for a formula — give actual ingredients and ratios
+- Format: One sharp summary line. Then numbered steps or bullet points. Then 2 specific actions this week.
+- Maximum 350 words unless writing a full document
+- Reference their specific product {profile.get('product', '')} and market {profile.get('market', '')}
 """
 
     reply = ask_groq(prompt, system=system, max_tokens=600)
