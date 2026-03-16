@@ -14,16 +14,12 @@ CORS(app, supports_credentials=True)
 
 DB = "founderos.db"
 
-# ── API KEYS ──────────────────────────────────
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "GEMINI_API_KEY")
-SERPER_API_KEY = os.environ.get("SERPER_API_KEY", "SERPER_API_KEY")
-GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "GROQ_API_KEY")
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
+SERPER_API_KEY = os.environ.get("SERPER_API_KEY", "")
+GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
 JWT_SECRET = "founderos-jwt-secret-2024"
 
-# Gemini — only for onboarding report (runs once per user)
 client_gemini = genai.Client(api_key=GEMINI_API_KEY)
-
-# Groq — for everything else (unlimited, instant)
 client_groq = Groq(api_key=GROQ_API_KEY)
 
 def ask_gemini(prompt, system="", max_tokens=1500):
@@ -94,6 +90,7 @@ def setup_db():
             stage TEXT,
             market TEXT,
             goal TEXT,
+            location TEXT,
             updated_at TEXT DEFAULT (datetime('now'))
         );
         CREATE TABLE IF NOT EXISTS tasks (
@@ -311,6 +308,7 @@ Startup: {profile.get('startup_name', 'Not specified')}
 Product: {profile.get('product', 'Not specified')}
 Industry: {profile.get('industry', 'Not specified')}
 Stage: {profile.get('stage', 'idea')}
+Location: {profile.get('location', profile.get('market', 'India'))}
 Target Market: {profile.get('market', 'Not specified')}
 Primary Goal: {profile.get('goal', 'Not specified')}
 Archetype: {profile.get('archetype', 'Not analyzed yet')}
@@ -398,6 +396,7 @@ def submit_onboarding(user):
         "stage": answers.get("q16", "idea"),
         "market": answers.get("q19", ""),
         "goal": answers.get("q21", ""),
+        "location": answers.get("q2", "India"),
     }
     prompt = f"""
 Analyze this founder profile from their onboarding answers.
@@ -405,7 +404,7 @@ Analyze this founder profile from their onboarding answers.
 Answers:
 {json.dumps(answers, indent=2)}
 
-Generate a Founder Intelligence Report in this EXACT JSON format:
+Generate a Founder Intelligence Report in this EXACT JSON format with no extra text:
 {{
   "archetype": "2-4 word founder archetype",
   "predicted_revenue_date": "realistic month and year for first revenue",
@@ -422,7 +421,7 @@ Generate a Founder Intelligence Report in this EXACT JSON format:
   }}
 }}
 
-Return ONLY valid JSON. No other text. No markdown.
+Return ONLY valid JSON. No markdown. No extra text.
 """
     report_text = ask_gemini(prompt, max_tokens=1000)
     try:
@@ -456,7 +455,7 @@ Return ONLY valid JSON. No other text. No markdown.
             answers=?, archetype=?, predicted_revenue_date=?,
             top_risks=?, top_strengths=?, skill_gaps=?,
             ai_personality=?, startup_name=?, product=?,
-            industry=?, stage=?, market=?, goal=?,
+            industry=?, stage=?, market=?, goal=?, location=?,
             updated_at=datetime('now')
             WHERE user_id=?
         """, (
@@ -469,15 +468,15 @@ Return ONLY valid JSON. No other text. No markdown.
             profile_data["startup_name"], profile_data["product"],
             profile_data["industry"], profile_data["stage"],
             profile_data["market"], profile_data["goal"],
-            user["id"]
+            profile_data["location"], user["id"]
         ))
     else:
         conn.execute("""
             INSERT INTO founder_profiles
             (user_id, answers, archetype, predicted_revenue_date,
             top_risks, top_strengths, skill_gaps, ai_personality,
-            startup_name, product, industry, stage, market, goal)
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+            startup_name, product, industry, stage, market, goal, location)
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
         """, (
             user["id"], json.dumps(answers),
             report.get("archetype", ""),
@@ -488,7 +487,8 @@ Return ONLY valid JSON. No other text. No markdown.
             report.get("ai_personality", "mentor"),
             profile_data["startup_name"], profile_data["product"],
             profile_data["industry"], profile_data["stage"],
-            profile_data["market"], profile_data["goal"]
+            profile_data["market"], profile_data["goal"],
+            profile_data["location"]
         ))
     conn.execute(
         "UPDATE users SET onboarding_done=1, founder_report=? WHERE id=?",
@@ -528,11 +528,12 @@ def chat(user):
     if not is_greeting:
         industry = profile.get("industry", "")
         market = profile.get("market", "")
-        search_query = f"{message} {industry} {market}"
+        location = profile.get("location", "India")
+        search_query = f"{message} {industry} {location}"
 
         agent_steps.append({
             "agent": "Research Agent",
-            "status": "Searching Google, Reddit, LinkedIn, News simultaneously...",
+            "status": "Searching Google, Reddit, LinkedIn, News...",
             "icon": "🔍"
         })
 
@@ -540,7 +541,7 @@ def chat(user):
             "google": (search_query, "search"),
             "news": (f"{message} {industry} 2025", "news"),
             "reddit": (f"{message} {industry} founder startup", "reddit_native"),
-            "linkedin": (f"{message} {industry}", "linkedin"),
+            "linkedin": (f"{message} {industry} {location}", "linkedin"),
         }
 
         all_results = multi_search(search_queries)
@@ -550,47 +551,25 @@ def chat(user):
         if total_results > 0:
             agent_steps.append({
                 "agent": "Research Agent",
-                "status": f"Found {total_results} live sources across Google, Reddit, LinkedIn, News",
+                "status": f"Found {total_results} live sources",
                 "icon": "📡"
             })
             sources_used = list(search_queries.keys())
 
         if any(w in message_lower for w in ["market", "demand", "size", "industry", "trend"]):
-            agent_steps.append({
-                "agent": "Market Agent",
-                "status": "Analysing market data...",
-                "icon": "📊"
-            })
-        if any(w in message_lower for w in ["competitor", "competition", "vs", "compare", "alternative"]):
-            agent_steps.append({
-                "agent": "Competitor Agent",
-                "status": "Mapping competitive landscape...",
-                "icon": "🔎"
-            })
-        if any(w in message_lower for w in ["formula", "ingredient", "recipe", "make", "formulation", "how to make"]):
-            agent_steps.append({
-                "agent": "Formulation Agent",
-                "status": "Checking technical specifications...",
-                "icon": "🧪"
-            })
-        if any(w in message_lower for w in ["legal", "register", "tax", "gst", "compliance", "contract"]):
-            agent_steps.append({
-                "agent": "Legal Agent",
-                "status": "Reviewing legal requirements...",
-                "icon": "⚖️"
-            })
-        if any(w in message_lower for w in ["price", "pricing", "revenue", "profit", "margin", "fundraise", "money"]):
-            agent_steps.append({
-                "agent": "Financial Agent",
-                "status": "Running financial analysis...",
-                "icon": "💰"
-            })
-        if any(w in message_lower for w in ["quit", "give up", "stop", "fail", "hopeless", "not working", "depressed"]):
-            agent_steps.append({
-                "agent": "Motivation Agent",
-                "status": "Pulling real founder success data...",
-                "icon": "💪"
-            })
+            agent_steps.append({"agent": "Market Agent", "status": "Analysing market data...", "icon": "📊"})
+        if any(w in message_lower for w in ["competitor", "competition", "vs", "compare"]):
+            agent_steps.append({"agent": "Competitor Agent", "status": "Mapping competitive landscape...", "icon": "🔎"})
+        if any(w in message_lower for w in ["formula", "ingredient", "recipe", "make", "formulation"]):
+            agent_steps.append({"agent": "Formulation Agent", "status": "Checking technical specs...", "icon": "🧪"})
+        if any(w in message_lower for w in ["legal", "register", "tax", "gst", "compliance"]):
+            agent_steps.append({"agent": "Legal Agent", "status": "Reviewing legal requirements...", "icon": "⚖️"})
+        if any(w in message_lower for w in ["price", "pricing", "revenue", "profit", "fundraise"]):
+            agent_steps.append({"agent": "Financial Agent", "status": "Running financial analysis...", "icon": "💰"})
+        if any(w in message_lower for w in ["pitch", "sales pitch", "investor pitch"]):
+            agent_steps.append({"agent": "Sales Agent", "status": "Building pitch structure...", "icon": "🎯"})
+        if any(w in message_lower for w in ["quit", "give up", "stop", "fail", "hopeless"]):
+            agent_steps.append({"agent": "Motivation Agent", "status": "Pulling real founder data...", "icon": "💪"})
 
         agent_steps.append({
             "agent": "Synthesis Agent",
@@ -600,14 +579,15 @@ def chat(user):
 
     personality = profile.get("ai_personality", "mentor")
     personality_map = {
-        "tough-love": "Be direct and challenging. Push back on weak thinking. Demand accountability. No excuses.",
+        "tough-love": "Be direct and challenging. Push back on weak thinking. Demand accountability.",
         "encouraging": "Be warm and supportive. Celebrate progress. Keep energy high. But always honest.",
         "analytical": "Lead with data and frameworks. Use numbers. Be precise and structured.",
         "challenger": "Question every assumption. Play devil's advocate. Force harder thinking.",
         "mentor": "Be wise and balanced. Guide rather than dictate. Ask powerful questions."
     }
 
-  system = f"""You are an elite startup advisor — brutally sharp, data-driven, and specific. You combine the expertise of a YC partner, McKinsey consultant, and serial entrepreneur.
+    system = f"""You are an elite startup advisor — brutally sharp, data-driven, and specific. You combine the expertise of a YC partner, McKinsey consultant, and serial entrepreneur who has built 10 companies.
+
 {context}
 
 Personality: {personality}
@@ -615,23 +595,23 @@ Personality: {personality}
 
 RESPONSE RULES — follow every single one:
 
-FORMAT:
-- Line 1: One sharp insight specific to their situation. No generic opener.
-- Then 4-6 bullet points. Each bullet must be specific, actionable, and contain a real number, name, or example.
-- End with THIS WEEK: exactly 3 actions they can do in the next 7 days. Each action must have a specific platform, tool, or contact method.
+FORMAT FOR BUSINESS QUESTIONS:
+- Line 1: One sharp insight specific to their exact situation. Never start with "Certainly", "Great", "Absolutely" or any filler.
+- Then 4-6 bullet points. Each bullet must contain a real number, real company name, or specific platform.
+- End with THIS WEEK: exactly 3 actions they can execute in 7 days. Each action must name a specific tool, platform, or person type to contact.
 
 QUALITY RULES:
-- NEVER say "it's important to" or "you should consider" — just say what to do
-- NEVER give generic advice that could apply to any business
-- ALWAYS use the founder's actual product name {profile.get('product', '')} and market {profile.get('market', '')}
-- ALWAYS reference real competitor names, real platforms, real numbers from the research data
-- For sales pitches: give the FULL pitch structure — Hook, Problem, Solution, Proof, Offer, CTA. Write it out completely, not just advice about what to include
-- For competitor analysis: name real local competitors first, then global ones. Always specify which country they operate in
-- For formulations: give actual ingredients, ratios, and regulatory body names
-- For pricing: give actual numbers based on the market data
-- For motivation questions: pull a real market statistic that validates their idea, then give one small specific action
-- Keep total response under 400 words unless writing a full pitch or report
-- NEVER start with "Certainly" "Great question" "Absolutely" or any filler opener"""
+- NEVER say "it is important to" or "you should consider" — just say exactly what to do
+- NEVER give advice that could apply to any random business — always specific to their product and market
+- ALWAYS use their product name {profile.get('product', '')} and location {profile.get('location', 'India')} in responses
+- For SALES PITCH requests: write the COMPLETE pitch with Hook, Problem, Solution, Proof, Offer, CTA — fully written out, not just advice
+- For COMPETITOR questions: name real local competitors in their location first, then global ones
+- For FORMULATION questions: give actual ingredients, ratios, and regulatory body names
+- For PRICING questions: give actual rupee or dollar amounts based on market data
+- For MOTIVATION or QUITTING: pull one real market statistic that validates their idea. Show them what they have already built. Give one tiny action they can do in the next 10 minutes.
+- For GREETINGS: respond warmly by name, reference their journey days, ask one sharp question about their current challenge. Under 60 words. No bullet points.
+- Keep responses under 400 words unless writing a full pitch, report, or document
+- If asked for a full document — write it completely, not a summary"""
 
     history_text = ""
     for h in history[-6:]:
@@ -654,12 +634,12 @@ Previous conversation:
 Founder message: {message}
 
 Respond warmly. Use their name {user.get('name', 'Founder')}.
-Mention Day {days} of their founder journey.
-Reference their startup {profile.get('startup_name', '')} and stage {profile.get('stage', '')}.
-Ask ONE sharp question about their biggest current challenge.
-Under 80 words. Conversational. No bullet points.
+Mention Day {days} of their founder journey if more than 0.
+Reference their startup {profile.get('startup_name', '')} and current stage {profile.get('stage', '')}.
+Ask ONE sharp question about what they are working on right now.
+Under 60 words. Conversational. No bullet points. No filler words.
 """
-        reply = ask_groq(full_prompt, system=system, max_tokens=200)
+        reply = ask_groq(full_prompt, system=system, max_tokens=150)
     else:
         full_prompt = f"""
 Previous conversation:
@@ -671,7 +651,7 @@ Live research data from Google, Reddit, LinkedIn, and News:
 Founder question: {message}
 
 Answer using the live research data AND your knowledge.
-Be completely specific to their product {profile.get('product', '')} and market {profile.get('market', '')}.
+Be completely specific to their product {profile.get('product', '')} in {profile.get('location', 'India')}.
 Mode: {mode}
 """
         use_deep = mode == "deep"
@@ -705,15 +685,16 @@ def market_research(user):
     product = profile.get("product", "")
     industry = profile.get("industry", "")
     market = profile.get("market", "")
+    location = profile.get("location", "India")
     query = custom_query if custom_query else f"{product} {industry}"
 
     search_queries = {
-        "google_trends": (f"{query} market demand 2025", "search"),
-        "market_size": (f"{query} market size revenue statistics", "search"),
-        "reddit_demand": (f"{query} demand consumer interest", "reddit_native"),
-        "news": (f"{query} industry news 2025", "news"),
-        "platforms": (f"{query} popular platform social media audience", "search"),
-        "geography": (f"{query} {market} market opportunity", "search"),
+        "google_trends": (f"{query} market demand {location} 2025", "search"),
+        "market_size": (f"{query} market size revenue statistics {location}", "search"),
+        "reddit_demand": (f"{query} demand consumer interest reddit", "reddit_native"),
+        "news": (f"{query} industry news {location} 2025", "news"),
+        "platforms": (f"{query} popular platform social media {location}", "search"),
+        "global": (f"{query} global market opportunity 2025", "search"),
     }
 
     all_results = multi_search(search_queries)
@@ -721,35 +702,35 @@ def market_research(user):
     total = sum(len(v) for v in all_results.values())
 
     prompt = f"""
-You are a market intelligence analyst.
+You are a market intelligence analyst specialising in {location} markets.
 
 Founder Context:
 {build_context(user, profile)}
 
-Live Research Data from {total} sources across Google, Reddit, and News:
+Live Research from {total} sources:
 {web_data}
 
-Generate a market intelligence report with these exact sections:
+Generate market intelligence report with these exact sections:
 
-MARKET DEMAND
-Current demand level and direction with specific numbers where available.
+MARKET DEMAND IN {location.upper()}
+Current demand level with specific numbers. Is it growing or declining and why.
 
 WHERE DEMAND IS HIGHEST
-Which platforms, cities, countries. Be specific with real names.
+Which platforms, cities, age groups in {location}. Name specific places and platforms.
 
 WHAT TO POST TODAY
-3 specific content ideas based on current trends. Platform and format for each.
+3 specific content ideas based on current trends. Include exact platform, format, and hook line.
 
 MARKET SIZE
-TAM SAM SOM estimate for their specific niche with numbers.
+TAM SAM SOM for {location} market with real numbers.
 
 RISING TRENDS
-3 trends rising in their market right now with evidence from research.
+3 trends rising right now with evidence from research data.
 
-OPPORTUNITIES
-2 specific gaps or underserved opportunities in this market right now.
+GLOBAL OPPORTUNITY
+How big is the global market beyond {location}.
 
-Keep each section to 3 to 5 bullet points. Use real data. No waffle.
+Keep each section to 3-5 bullet points. Use real data. No generic statements.
 """
 
     analysis = ask_groq(prompt, max_tokens=1200)
@@ -773,61 +754,62 @@ Keep each section to 3 to 5 bullet points. Use real data. No waffle.
 @require_auth
 def competitor_analysis(user):
     profile = get_profile(user["id"])
-   data = request.json
-competitor_names = data.get("competitors", "")
-location = data.get("location", profile.get("market", "India"))
-product = profile.get("product", "")
-industry = profile.get("industry", "")
+    data = request.json
+    competitor_names = data.get("competitors", "")
+    location = data.get("location", profile.get("location", profile.get("market", "India")))
+    product = profile.get("product", "")
+    industry = profile.get("industry", "")
 
-search_queries = {
-    "local_competitors": (f"top competitors {product} {industry} {location} 2025", "search"),
-    "global_competitors": (f"top competitors {product} {industry} global 2025", "search"),
-    "pricing": (f"{product} {industry} {location} pricing strategy competitors", "search"),
-    "reddit": (f"{product} {industry} {location} best alternative complaints", "reddit_native"),
-    "news": (f"{industry} startup {location} funding news 2025", "news"),
-    "weaknesses": (f"{competitor_names or product} {location} problems complaints reviews", "search"),
-}
+    search_queries = {
+        "local_competitors": (f"top competitors {product} {industry} {location} 2025", "search"),
+        "global_competitors": (f"top competitors {product} {industry} worldwide 2025", "search"),
+        "pricing": (f"{product} {industry} {location} pricing competitors", "search"),
+        "reddit": (f"{product} {industry} best alternative complaints reddit", "reddit_native"),
+        "news": (f"{industry} startup {location} funding 2025", "news"),
+        "weaknesses": (f"{competitor_names or product} {location} problems reviews complaints", "search"),
+    }
 
     all_results = multi_search(search_queries)
     web_data = format_search_results(all_results)
     total = sum(len(v) for v in all_results.values())
 
-  prompt = f"""
-You are a competitive intelligence expert who specialises in {location} markets.
+    prompt = f"""
+You are a competitive intelligence expert specialising in {location} markets.
 
 Founder Context:
 {build_context(user, profile)}
 
-Target Location: {location}
+Search Location: {location}
 Live Research from {total} sources:
 {web_data}
 
 Generate competitor intelligence report in this EXACT structure:
 
 LOCAL COMPETITORS IN {location.upper()}
-Name 3-5 real competitors operating in {location}. For each:
-- Company name and website
-- What they sell and at what price
+Name 3-5 real companies operating in {location}. For each:
+- Company name and website if available
+- What they sell and at what price in local currency
 - Their biggest strength
-- Their biggest weakness customers complain about
+- Their biggest weakness based on customer complaints
 
 GLOBAL COMPETITORS
-Name 2-3 global players in this space with their market position.
+Name 2-3 global players with their market position and why they have not dominated {location} yet.
 
-WHERE LOCAL COMPETITORS ARE WEAK
-3 specific gaps based on customer complaints and research data.
+WHERE LOCAL COMPETITORS ARE WEAK IN {location.upper()}
+3 specific gaps based on real customer complaints from research. These are your opportunities.
 
-YOUR COMPETITIVE ADVANTAGE
-Based on the founder's product and stage, exactly where they should position against local competition.
+YOUR COMPETITIVE POSITIONING
+Exactly where to position against local competition given the founder's stage and budget.
 
-STRATEGY TO WIN {location.upper()} MARKET
-3 specific moves in the next 30 days. Each must include a platform, tool, or specific action.
+30-DAY STRATEGY TO WIN {location.upper()} MARKET
+3 specific moves. Each must name a platform, community, or specific type of person to target.
 
-ESTIMATED MARKET SHARE
-Revenue estimates for top local competitors based on available signals.
+REVENUE SIGNALS
+Estimated revenue range of top 2 local competitors based on team size, funding, and market presence.
 
-Be specific. Name real companies. Separate local from global clearly.
+Be specific. Name real companies. Clearly separate local from global.
 """
+
     analysis = ask_groq(prompt, max_tokens=1200)
 
     conn = get_db()
@@ -846,6 +828,7 @@ Be specific. Name real companies. Separate local from global clearly.
     return jsonify({
         "analysis": analysis,
         "sources_count": total,
+        "location": location,
         "success": True
     })
 
@@ -854,6 +837,7 @@ Be specific. Name real companies. Separate local from global clearly.
 def generate_tasks(user):
     profile = get_profile(user["id"])
     context = build_context(user, profile)
+    location = profile.get("location", "India")
 
     conn = get_db()
     completed_yesterday = conn.execute(
@@ -864,50 +848,65 @@ def generate_tasks(user):
         "SELECT COUNT(*) FROM tasks WHERE user_id=? AND date=date('now','-1 day')",
         (user["id"],)
     ).fetchone()[0]
+    skill_gaps = profile.get("skill_gaps", "[]")
     conn.close()
 
     prompt = f"""
 {context}
 
 Yesterday: completed {completed_yesterday} of {total_yesterday} tasks.
+Founder location: {location}
+Skill gaps to address: {skill_gaps}
 
-Generate exactly 6 tasks for today in this EXACT JSON format:
+Generate exactly 6 tasks for today. These are NOT generic tasks. Each task must be completely specific to:
+- Their product: {profile.get('product', '')}
+- Their industry: {profile.get('industry', '')}
+- Their stage: {profile.get('stage', '')}
+- Their location: {location}
+- Their skill gaps: {skill_gaps}
+
+Return ONLY a valid JSON array in this exact format:
 [
   {{
-    "title": "Short clear task title",
-    "description": "What exactly to do in 1 to 2 sentences",
-    "how_to": "Step by step instructions. Specific. Include exact platforms tools or links where relevant.",
+    "title": "Short specific task title — must mention their product or market",
+    "description": "Exactly what to do in 2 sentences. Must include a specific platform, tool, or person type.",
+    "how_to": "Step 1: [exact action with specific tool or platform]. Step 2: [exact action]. Step 3: [exact action]. Include specific websites, search terms, or contact methods they should use.",
     "category": "one of: marketing, product, sales, research, finance, legal, operations",
     "priority": "one of: high, medium, low",
-    "time_est": "eg 30 mins or 2 hours",
-    "reason": "Why this specific task matters for their startup right now in one sentence"
+    "time_est": "realistic time eg 45 mins or 2 hours",
+    "reason": "One sentence explaining exactly why this task matters for their startup right now and what outcome it will produce."
   }}
 ]
 
 Rules:
-- Tasks completely specific to their product industry and stage
-- High priority tasks first
-- Include at least one revenue generating task
-- Include at least one market research task
-- Return ONLY valid JSON array. No other text. No markdown.
+- First 2 tasks must be high priority revenue or validation tasks
+- At least one task must address a skill gap
+- At least one task must involve reaching out to a potential customer or partner
+- Every how_to must have at least 3 specific steps with real platform names
+- NEVER generate generic tasks like check emails or update social media
+- Return ONLY the JSON array. No other text. No markdown.
 """
 
-    tasks_text = ask_groq(prompt, max_tokens=1500)
+    tasks_text = ask_groq(prompt, max_tokens=2000)
 
     try:
         clean = tasks_text.strip()
         if "```" in clean:
             clean = re.sub(r'```json\n?|\n?```', '', clean)
+        start_idx = clean.find('[')
+        end_idx = clean.rfind(']') + 1
+        if start_idx != -1 and end_idx > start_idx:
+            clean = clean[start_idx:end_idx]
         tasks = json.loads(clean)
     except:
         tasks = [{
-            "title": "Research your top 3 competitors",
-            "description": "Find your 3 main competitors and document their pricing and key features",
-            "how_to": "Google your product category plus competitors. Visit their websites. Note pricing, features, and customer reviews.",
-            "category": "research",
+            "title": f"Find 5 potential customers for {profile.get('product', 'your product')} in {location}",
+            "description": f"Identify and contact 5 people who could be your first paying customers for {profile.get('product', 'your product')} in {location}.",
+            "how_to": f"Step 1: Go to LinkedIn and search for people in {location} who match your target customer profile. Step 2: Send a personalised connection request explaining what you are building. Step 3: Follow up with a specific question about their current problem your product solves.",
+            "category": "sales",
             "priority": "high",
-            "time_est": "1 hour",
-            "reason": "Understanding competition is essential before positioning your product"
+            "time_est": "1.5 hours",
+            "reason": "Finding your first customers is the single most important thing you can do right now to validate your idea and generate revenue."
         }]
 
     conn = get_db()
@@ -957,7 +956,7 @@ def complete_task(user, task_id):
         conn.close()
         return jsonify({
             "verified": False,
-            "message": f"This task is estimated {task['time_est']}. Did you actually complete it?"
+            "message": f"This task takes {task['time_est']}. Did you actually complete it?"
         })
     conn.execute(
         "UPDATE tasks SET done=1, verified=1, completed_at=datetime('now') WHERE id=? AND user_id=?",
@@ -986,12 +985,13 @@ def generate_briefing(user):
     context = build_context(user, profile)
     product = profile.get("product", "")
     industry = profile.get("industry", "")
+    location = profile.get("location", "India")
 
     search_queries = {
-        "market_news": (f"{industry} {product} market news today 2025", "news"),
-        "competitor_moves": (f"{industry} startup competitor news this week", "news"),
+        "market_news": (f"{industry} {product} {location} market news today 2025", "news"),
+        "competitor_moves": (f"{industry} startup {location} competitor news this week", "news"),
         "community": (f"{product} {industry} discussion reddit", "reddit_native"),
-        "trends": (f"{industry} trend opportunity 2025", "search"),
+        "trends": (f"{industry} {location} trend opportunity 2025", "search"),
     }
     all_results = multi_search(search_queries)
     web_data = format_search_results(all_results)
@@ -1029,33 +1029,33 @@ Today: {day_name}, {date_str}
 Day {days_journey} of their founder journey
 Last 7 days: completed {tasks_done} of {tasks_total} tasks
 
-Live Market Intelligence from Google, Reddit, and News:
+Live Market Intelligence from {location}:
 {web_data}
 
-Write briefing in these exact sections:
+Write briefing in these exact sections. Be specific and sharp:
 
-GOOD MORNING [use their actual name]
-One powerful personalised sentence. Reference Day {days_journey}.
+GOOD MORNING {user.get('name', 'Founder').upper()}
+One powerful sentence about where they are on Day {days_journey}. Reference their specific startup and what they are building.
 
 WHILE YOU WERE SLEEPING
-3 things that happened in their market overnight. Use research data. Be specific.
+3 specific things that happened in the {industry} market in {location} overnight. Use research data. Name real companies or trends.
 
 TODAY'S MARKET PULSE
-Is demand up or down for their product today. What is driving it.
+Is demand for {product} up or down today in {location}. What specific signal tells you this.
 
 MOST IMPORTANT TASK TODAY
-ONE task only. What and exactly why it matters most today.
+ONE task only. Be specific about what it is, why today, and what outcome it produces.
 
 COMPETITOR WATCH
-One specific thing a competitor did recently they should know about.
+One specific thing a competitor in {location} did recently that the founder should know about and respond to.
 
 COMMUNITY SIGNAL
-What potential customers or founders are saying about their market right now.
+What real customers or founders are saying about {industry} right now based on research data.
 
 MOTIVATION SIGNAL
-A real market signal that validates their idea. Not a generic quote.
+One real market statistic or signal that validates {profile.get('startup_name', 'their idea')}. Not a quote. A data point.
 
-Each section 2 to 3 sentences. Sharp and useful. No waffle.
+Each section 2-3 sentences maximum. Sharp. Useful. No waffle.
 """
 
     briefing = ask_groq(prompt, max_tokens=1000)
@@ -1093,48 +1093,46 @@ def specialist_agent(user, agent_type):
     question = data.get("question", "")
     profile = get_profile(user["id"])
     context = build_context(user, profile)
+    location = profile.get("location", "India")
 
     agent_systems = {
-        "legal": "You are a senior corporate lawyer specialising in startup law. You know Indian law including Companies Act, GST, FSSAI, SEBI, US law, and international regulations. Give accurate legal guidance. Always note when to consult a real lawyer for complex matters.",
-        "financial": "You are a CFO advisor for early-stage startups. You specialise in unit economics, fundraising, financial modeling, pricing strategy, and cash flow management. Give precise numerical guidance with formulas and examples.",
-        "consumer": "You are a consumer behaviour expert and market psychologist. You understand why people buy, what triggers decisions, how to craft messaging that converts, and how to map customer journeys for any product in any market.",
-        "growth": "You are a growth hacker who has scaled multiple startups from zero to millions of users. You know viral loops, referral mechanics, retention tactics, product-led growth, and distribution channels. Give specific testable experiments.",
-        "product": "You are a senior product manager from top tech companies. You know MVP scoping, feature prioritisation, product-market fit measurement, user research, and roadmap planning. Help founders build the right thing.",
-        "formulation": "You are a product formulation expert covering food and beverage, cosmetics, supplements, and consumer goods. You know ingredient safety, regulatory compliance including FSSAI FDA and EU standards, sourcing, manufacturing processes, and shelf life guidance.",
-        "sales": "You are a sales coach who has closed millions in B2B and B2C deals across India and globally. You know cold outreach, sales scripts, objection handling, pipeline management, and closing techniques. Give specific scripts the founder can use today.",
+        "legal": f"You are a senior corporate lawyer specialising in startup law in {location}. You know Indian law (Companies Act, GST, FSSAI, SEBI, Startup India), US law, and EU regulations. Give specific actionable legal guidance. Name actual forms, fees, and timelines. Note when to consult a real lawyer.",
+        "financial": f"You are a CFO who has worked with 50 early-stage startups in {location}. Give specific numbers, formulas, and calculations. Name actual platforms like Razorpay, Stripe, QuickBooks. Build unit economics with real numbers not placeholders.",
+        "consumer": f"You are a consumer behaviour expert who has studied {location} buying patterns deeply. Give specific psychological triggers, exact messaging frameworks, and real examples from {location} market. Name actual platforms and communities where the target customer spends time.",
+        "growth": f"You are a growth hacker who has grown 10 startups in {location} from zero to first 1000 users. Give specific experiments with expected results. Name actual tools, communities, and tactics that work specifically in {location}.",
+        "product": f"You are a senior PM who has shipped products used by millions in {location}. Give specific frameworks, prioritisation methods, and build vs buy decisions. Name actual tools like Notion, Figma, Mixpanel.",
+        "formulation": f"You are a product formulation chemist who has helped launch 30 consumer products in {location}. Give actual ingredient names, ratios, suppliers in {location}, and regulatory bodies like FSSAI. Include shelf life, packaging, and manufacturing cost estimates.",
+        "sales": f"You are a sales coach who has closed deals in {location} market specifically. Give actual scripts word for word. Name real platforms like LinkedIn Sales Navigator, IndiaMART, Justdial. Include follow-up sequences and objection responses specific to {location} buyer behavior.",
     }
 
     system = agent_systems.get(agent_type, agent_systems["legal"])
     search_results = serper_search(
-        f"{question} {profile.get('industry', '')}", num=5
+        f"{question} {profile.get('industry', '')} {location}", num=5
     )
     search_context = "\n".join([
         f"- {r.get('snippet', '')}" for r in search_results
     ])
 
-  prompt = f"""
+    prompt = f"""
 {context}
 
-Live Research:
+Live Research from {location}:
 {search_context}
 
 Founder Question: {question}
 
-Answer as a world-class {agent_type} specialist who has worked with 100+ startups.
-
-RULES:
-- Give specific actionable answers, not general advice
-- Use real numbers, real platform names, real examples
-- If asked for a sales pitch — write the FULL pitch, not advice about pitches
-- If asked for a contract — give actual clauses, not general guidance
-- If asked for pricing — give actual numbers
-- If asked for a formula — give actual ingredients and ratios
-- Format: One sharp summary line. Then numbered steps or bullet points. Then 2 specific actions this week.
-- Maximum 350 words unless writing a full document
-- Reference their specific product {profile.get('product', '')} and market {profile.get('market', '')}
+ANSWER RULES:
+- Give specific answers for {location} market, not generic global advice
+- If asked for a sales pitch: write the COMPLETE pitch fully, not advice about pitches
+- If asked for a script: write the actual words to say
+- If asked for a formula: give actual ingredients and quantities
+- If asked for legal steps: give actual form names, fees in rupees, and timelines
+- Use real platform names, real company names, real numbers
+- Format: One sharp summary line. Then numbered steps. Then 2 specific actions this week.
+- Maximum 400 words unless writing a full document
 """
 
-    reply = ask_groq(prompt, system=system, max_tokens=600)
+    reply = ask_groq(prompt, system=system, max_tokens=700)
     return jsonify({"reply": reply, "agent": agent_type, "success": True})
 
 @app.route("/api/content/generate", methods=["POST"])
@@ -1144,9 +1142,10 @@ def generate_content(user):
     data = request.json
     platform = data.get("platform", "linkedin")
     days = data.get("days", 7)
+    location = profile.get("location", "India")
 
     search_results = serper_search(
-        f"{profile.get('product', '')} {profile.get('industry', '')} trending content {platform} 2025",
+        f"{profile.get('product', '')} {profile.get('industry', '')} trending {platform} {location} 2025",
         num=5
     )
     trends = "\n".join([f"- {r.get('snippet', '')}" for r in search_results])
@@ -1154,20 +1153,21 @@ def generate_content(user):
     prompt = f"""
 {build_context(user, profile)}
 
-Current trends in their market on {platform}:
+Current trends in {location} on {platform}:
 {trends}
 
-Generate a {days}-day content calendar for {platform}.
+Generate a {days}-day content calendar for {platform} targeting {location} audience.
 
-For each day provide:
-- Day number and best posting time
+For each day:
+- Day number and exact best posting time for {location} timezone
 - Content type: educational, story, data, controversy, product showcase, or founder journey
-- Exact post caption ready to copy and paste
-- 5 relevant hashtags
-- One engagement hook or call to action
+- Complete post caption ready to copy and paste — not a template, actual words
+- 5 hashtags relevant to {location} and industry
+- One specific engagement hook or question to end the post
 
-Make all content specific to their product {profile.get('product', '')} and market {profile.get('market', '')}.
-Vary content types. Mix value posts with promotional posts in 4 to 1 ratio.
+Make all content specific to {profile.get('product', '')} targeting customers in {location}.
+Reference local trends, local competitors, local events where relevant.
+4 value posts for every 1 promotional post.
 """
 
     calendar = ask_groq(prompt, max_tokens=2000)
@@ -1217,7 +1217,8 @@ def get_stats(user):
         "weekly_total": weekly_total,
         "completion_rate": round(
             (weekly_done / weekly_total * 100) if weekly_total > 0 else 0
-        )
+        ),
+        "has_tasks": total > 0
     })
 
 @app.route("/api/status")
@@ -1234,10 +1235,8 @@ def home():
     except:
         return "<h1>FounderOS</h1><p>dashboard.html not found</p>"
 
-# Run setup_db when imported by gunicorn too
 setup_db()
 
 if __name__ == "__main__":
-    setup_db()
     port = int(os.environ.get("PORT", 5000))
     app.run(debug=False, port=port, host="0.0.0.0")
