@@ -608,7 +608,6 @@ def chat(user):
     }
 
   system = f"""You are an elite startup advisor — brutally sharp, data-driven, and specific. You combine the expertise of a YC partner, McKinsey consultant, and serial entrepreneur.
-
 {context}
 
 Personality: {personality}
