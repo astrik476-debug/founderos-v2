@@ -1220,7 +1220,18 @@ def get_stats(user):
         ),
         "has_tasks": total > 0
     })
-
+    
+@app.route("/api/admin/users")
+def get_all_users():
+    secret = request.args.get("key", "")
+    if secret != "founderos-admin-2024":
+        return jsonify({"error": "unauthorized"}), 401
+    conn = get_db()
+    users = conn.execute(
+        "SELECT name, email, created_at FROM users ORDER BY created_at DESC"
+    ).fetchall()
+    conn.close()
+    return jsonify({"users": [dict(u) for u in users], "total": len(users)})
 @app.route("/api/status")
 def api_status():
     return jsonify({
