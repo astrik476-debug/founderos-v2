@@ -14,290 +14,345 @@ body{font-family:'Inter',sans-serif;background:#f7f8fc;color:#1a1d23;min-height:
 .auth-page{display:flex;align-items:center;justify-content:center;min-height:100vh;background:#f7f8fc;padding:20px}
 .auth-box{background:white;border:1px solid #e8eaed;border-radius:20px;padding:36px 32px;width:100%;max-width:400px;box-shadow:0 2px 20px rgba(0,0,0,0.06)}
 .auth-logo{display:flex;align-items:center;gap:10px;margin-bottom:28px;justify-content:center}
-.auth-logo-icon{width:38px;height:38px;background:#4f46e5;border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:17px}
-.auth-logo-text{font-size:19px;font-weight:800;color:#1a1d23}
-.auth-title{font-size:22px;font-weight:700;color:#1a1d23;margin-bottom:4px;text-align:center}
+.auth-logo-icon{width:38px;height:38px;background:#1a1d23;border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:17px}
+.auth-logo-text{font-size:19px;font-weight:800;color:#1a1d23;letter-spacing:-.4px}
+.auth-title{font-size:22px;font-weight:700;color:#1a1d23;margin-bottom:4px;text-align:center;letter-spacing:-.3px}
 .auth-sub{font-size:13px;color:#6b7280;text-align:center;margin-bottom:24px;line-height:1.5}
 .form-group{margin-bottom:14px}
 .form-label{font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:#6b7280;margin-bottom:5px;display:block}
 .form-input{width:100%;background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:10px;padding:12px 14px;color:#1a1d23;font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:border-color .15s;-webkit-appearance:none}
-.form-input:focus{border-color:#4f46e5;background:white}
-.btn-primary{width:100%;padding:13px;background:#4f46e5;color:white;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;margin-top:4px}
-.btn-primary:hover{background:#4338ca}
+.form-input:focus{border-color:#1a1d23;background:white}
+.btn-primary{width:100%;padding:13px;background:#1a1d23;color:white;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;margin-top:4px}
+.btn-primary:hover{background:#2d3142}
 .btn-primary:disabled{opacity:.5;cursor:not-allowed}
 .auth-switch{text-align:center;margin-top:18px;font-size:13px;color:#6b7280}
-.auth-switch a{color:#4f46e5;font-weight:600;cursor:pointer}
+.auth-switch a{color:#1a1d23;font-weight:600;cursor:pointer;text-decoration:underline}
 .auth-error{background:#fef2f2;border:1px solid #fecaca;color:#dc2626;padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:14px;display:none}
 .forgot-link{text-align:right;margin-top:-8px;margin-bottom:14px}
-.forgot-link a{font-size:12px;color:#4f46e5;cursor:pointer;font-weight:500}
+.forgot-link a{font-size:12px;color:#6b7280;cursor:pointer;text-decoration:underline}
 
 /* ONBOARDING */
 .ob-page{min-height:100vh;background:#f7f8fc;display:flex;align-items:center;justify-content:center;padding:20px}
-.ob-box{background:white;border-radius:20px;padding:32px 28px;width:100%;max-width:560px;box-shadow:0 2px 20px rgba(0,0,0,0.06)}
-.ob-progress-bar{background:#f3f4f6;border-radius:999px;height:5px;margin-bottom:22px;overflow:hidden}
-.ob-progress-fill{height:100%;background:#4f46e5;border-radius:999px;transition:width .4s ease}
-.ob-section-label{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#4f46e5;margin-bottom:5px}
-.ob-question{font-size:18px;font-weight:700;color:#1a1d23;margin-bottom:4px;line-height:1.3}
-.ob-sub{font-size:13px;color:#6b7280;margin-bottom:20px;line-height:1.5}
-.ob-options{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:22px}
-.ob-option{padding:12px 14px;border:1.5px solid #e5e7eb;border-radius:10px;cursor:pointer;font-size:13px;font-weight:500;color:#374151;transition:all .15s;text-align:left;background:white;font-family:'Inter',sans-serif;line-height:1.4}
-.ob-option:hover{border-color:#4f46e5;background:#f5f3ff;color:#4f46e5}
-.ob-option.selected{border-color:#4f46e5;background:#eef2ff;color:#4f46e5;font-weight:600}
-.ob-option.full{grid-column:1/-1}
-.ob-option.two-only{grid-column:span 1}
-.ob-text-input{width:100%;background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:10px;padding:12px 14px;color:#1a1d23;font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:border-color .15s;margin-bottom:22px;-webkit-appearance:none}
-.ob-text-input:focus{border-color:#4f46e5;background:white}
+.ob-box{background:white;border-radius:20px;padding:36px 32px;width:100%;max-width:560px;box-shadow:0 2px 20px rgba(0,0,0,0.06)}
+.ob-progress-bar{background:#f3f4f6;border-radius:999px;height:3px;margin-bottom:28px;overflow:hidden}
+.ob-progress-fill{height:100%;background:#1a1d23;border-radius:999px;transition:width .5s ease}
+.ob-section-label{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#9ca3af;margin-bottom:6px}
+.ob-question{font-size:20px;font-weight:700;color:#1a1d23;margin-bottom:5px;line-height:1.3;letter-spacing:-.3px}
+.ob-sub{font-size:13px;color:#6b7280;margin-bottom:22px;line-height:1.6}
+.ob-options{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:24px}
+.ob-option{padding:13px 15px;border:1.5px solid #e5e7eb;border-radius:10px;cursor:pointer;font-size:13px;font-weight:500;color:#374151;transition:all .15s;text-align:left;background:white;font-family:'Inter',sans-serif;line-height:1.4}
+.ob-option:hover{border-color:#1a1d23;background:#f9fafb}
+.ob-option.selected{border-color:#1a1d23;background:#1a1d23;color:white;font-weight:600}
+.ob-text-input{width:100%;background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:10px;padding:12px 14px;color:#1a1d23;font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:border-color .15s;margin-bottom:24px;-webkit-appearance:none}
+.ob-text-input:focus{border-color:#1a1d23;background:white}
 .ob-nav{display:flex;justify-content:space-between;align-items:center}
-.ob-btn-back{background:none;border:1.5px solid #e5e7eb;color:#6b7280;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif}
-.ob-btn-next{background:#4f46e5;color:white;border:none;padding:10px 22px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif}
-.ob-counter{font-size:12px;color:#9ca3af}
+.ob-btn-back{background:none;border:1.5px solid #e5e7eb;color:#6b7280;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif}
+.ob-btn-next{background:#1a1d23;color:white;border:none;padding:10px 24px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif}
+.ob-counter{font-size:11px;color:#9ca3af;font-weight:500}
 
-/* REPORT */
+/* REPORT PAGE */
 .report-page{min-height:100vh;background:#f7f8fc;display:flex;align-items:center;justify-content:center;padding:20px}
-.report-box{background:white;border-radius:20px;padding:32px 28px;width:100%;max-width:600px;box-shadow:0 2px 20px rgba(0,0,0,0.06)}
-.report-title{font-size:22px;font-weight:800;color:#1a1d23;margin-bottom:4px}
-.report-sub{font-size:13px;color:#6b7280;margin-bottom:24px}
-.report-archetype{background:#4f46e5;color:white;border-radius:14px;padding:20px 22px;margin-bottom:20px}
-.archetype-label{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;opacity:.8;margin-bottom:5px}
-.archetype-value{font-size:21px;font-weight:800}
-.archetype-summary{font-size:13px;opacity:.9;margin-top:7px;line-height:1.6}
+.report-box{background:white;border-radius:20px;padding:36px 32px;width:100%;max-width:620px;box-shadow:0 2px 20px rgba(0,0,0,0.06)}
+.report-title{font-size:24px;font-weight:800;color:#1a1d23;margin-bottom:4px;letter-spacing:-.4px}
+.report-sub{font-size:13px;color:#9ca3af;margin-bottom:28px}
+.report-hero{background:#1a1d23;color:white;border-radius:16px;padding:24px;margin-bottom:20px}
+.report-hero-label{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;opacity:.6;margin-bottom:6px}
+.report-hero-value{font-size:22px;font-weight:800;margin-bottom:10px;letter-spacing:-.3px}
+.report-hero-summary{font-size:13px;opacity:.85;line-height:1.7}
 .report-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
 .report-card{background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;padding:16px}
-.report-card-label{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:#6b7280;margin-bottom:8px}
-.report-item{font-size:13px;color:#374151;padding:4px 0;border-bottom:1px solid #f3f4f6}
+.report-card-label{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:#9ca3af;margin-bottom:10px}
+.report-item{font-size:13px;color:#374151;padding:5px 0;border-bottom:1px solid #f3f4f6;line-height:1.4}
 .report-item:last-child{border-bottom:none}
-.timeline-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px}
-.timeline-item{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px;text-align:center}
-.timeline-label{font-size:10px;font-weight:700;color:#16a34a;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
-.timeline-value{font-size:13px;font-weight:700;color:#1a1d23}
-.btn-enter{width:100%;padding:14px;background:#4f46e5;color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif}
+.timeline-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+.tl-item{background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;padding:12px;text-align:center}
+.tl-label{font-size:9px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px}
+.tl-value{font-size:12px;font-weight:700;color:#1a1d23}
+.score-row{display:flex;gap:12px;margin-bottom:20px}
+.score-item{flex:1;background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;padding:14px;text-align:center}
+.score-label{font-size:10px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px}
+.score-value{font-size:26px;font-weight:800;color:#1a1d23}
+.score-bar{background:#e5e7eb;border-radius:999px;height:3px;margin-top:6px;overflow:hidden}
+.score-fill{height:100%;background:#1a1d23;border-radius:999px}
+.key-insight-box{background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:16px;margin-bottom:20px}
+.key-insight-label{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:#d97706;margin-bottom:6px}
+.key-insight-text{font-size:13px;color:#374151;line-height:1.6}
+.btn-enter{width:100%;padding:14px;background:#1a1d23;color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;letter-spacing:-.2px}
 
 /* APP SHELL */
 .app{display:none}
 
-/* TOP NAV — desktop */
-.topnav{position:fixed;top:0;left:0;right:0;height:56px;background:white;border-bottom:1px solid #e8eaed;display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:100}
-.nav-logo{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:800;color:#1a1d23;letter-spacing:-.3px}
-.nav-logo-icon{width:28px;height:28px;background:#4f46e5;border-radius:7px;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:13px;flex-shrink:0}
-.nav-links{display:flex;gap:2px}
+/* TOP NAV */
+.topnav{position:fixed;top:0;left:0;right:0;height:54px;background:white;border-bottom:1px solid #e8eaed;display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:100}
+.nav-logo{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:800;color:#1a1d23;letter-spacing:-.4px;text-decoration:none}
+.nav-logo-icon{width:28px;height:28px;background:#1a1d23;border-radius:7px;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:13px;flex-shrink:0}
+.nav-links{display:flex;gap:1px}
 .nav-link{padding:6px 11px;border-radius:7px;cursor:pointer;font-size:12px;font-weight:500;color:#6b7280;transition:all .15s;border:none;background:none;font-family:'Inter',sans-serif;white-space:nowrap}
 .nav-link:hover{background:#f3f4f6;color:#1a1d23}
-.nav-link.active{background:#eef2ff;color:#4f46e5;font-weight:600}
-.nav-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
-.nav-user-info{text-align:right}
-.nav-user{font-size:12px;font-weight:600;color:#374151}
-.nav-day{font-size:10px;color:#9ca3af}
-.btn-run{background:#4f46e5;color:white;border:none;padding:7px 14px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap}
-.btn-signout{background:none;border:1px solid #e5e7eb;color:#6b7280;padding:6px 10px;border-radius:7px;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif}
+.nav-link.active{background:#f3f4f6;color:#1a1d23;font-weight:600}
+.nav-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.nav-user-text{font-size:12px;font-weight:600;color:#374151}
+.nav-day-text{font-size:10px;color:#9ca3af}
 
-/* BOTTOM NAV — mobile only */
-.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #e8eaed;z-index:100;padding:8px 4px 12px}
-.bottom-nav-inner{display:flex;justify-content:space-around;align-items:center}
-.bnav-item{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 10px;border-radius:10px;cursor:pointer;border:none;background:none;font-family:'Inter',sans-serif;min-width:52px;transition:all .15s}
-.bnav-icon{font-size:20px;line-height:1}
-.bnav-label{font-size:9px;font-weight:600;color:#9ca3af;letter-spacing:.2px}
-.bnav-item.active .bnav-label{color:#4f46e5}
-.bnav-item.active .bnav-icon{transform:scale(1.1)}
+/* HAMBURGER MENU */
+.hamburger-btn{width:36px;height:36px;border:1px solid #e5e7eb;border-radius:8px;background:white;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-direction:column;gap:4px;padding:8px}
+.hamburger-line{width:16px;height:1.5px;background:#374151;border-radius:999px;transition:all .2s}
+.menu-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:200;backdrop-filter:blur(2px)}
+.menu-overlay.open{display:block}
+.side-menu{position:fixed;top:0;right:-300px;width:280px;height:100vh;background:white;z-index:201;transition:right .3s ease;overflow-y:auto;box-shadow:-4px 0 30px rgba(0,0,0,0.1)}
+.side-menu.open{right:0}
+.side-menu-header{padding:20px 20px 16px;border-bottom:1px solid #f3f4f6}
+.side-menu-user{font-size:15px;font-weight:700;color:#1a1d23;margin-bottom:2px}
+.side-menu-email{font-size:12px;color:#9ca3af}
+.side-menu-section{padding:12px 8px 4px 16px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#9ca3af}
+.side-menu-item{display:flex;align-items:center;gap:12px;padding:11px 16px;cursor:pointer;font-size:13px;font-weight:500;color:#374151;transition:background .12s;border-radius:8px;margin:2px 8px}
+.side-menu-item:hover{background:#f9fafb;color:#1a1d23}
+.side-menu-item-icon{font-size:16px;width:20px;flex-shrink:0}
+.side-menu-divider{height:1px;background:#f3f4f6;margin:8px 16px}
+.side-menu-logout{display:flex;align-items:center;gap:12px;padding:11px 16px;cursor:pointer;font-size:13px;font-weight:500;color:#ef4444;transition:background .12s;border-radius:8px;margin:2px 8px}
+.side-menu-logout:hover{background:#fef2f2}
 
 /* MOBILE TOP BAR */
 .mobile-topbar{display:none;position:fixed;top:0;left:0;right:0;height:52px;background:white;border-bottom:1px solid #e8eaed;align-items:center;justify-content:space-between;padding:0 16px;z-index:100}
-.mobile-logo{display:flex;align-items:center;gap:7px;font-size:15px;font-weight:800;color:#1a1d23}
-.mobile-logo-icon{width:26px;height:26px;background:#4f46e5;border-radius:7px;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:12px}
-.mobile-right{display:flex;align-items:center;gap:8px}
-.mobile-run-btn{background:#4f46e5;color:white;border:none;padding:6px 12px;border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif}
-.mobile-signout{background:none;border:none;color:#9ca3af;font-size:18px;cursor:pointer;padding:4px}
+.mobile-logo{display:flex;align-items:center;gap:7px;font-size:15px;font-weight:800;color:#1a1d23;letter-spacing:-.3px}
+.mobile-logo-icon{width:26px;height:26px;background:#1a1d23;border-radius:7px;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:12px}
+
+/* BOTTOM NAV */
+.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #e8eaed;z-index:100;padding:8px 0 max(12px,env(safe-area-inset-bottom))}
+.bottom-nav-inner{display:flex;justify-content:space-around;align-items:center}
+.bnav-item{display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 12px;border-radius:10px;cursor:pointer;border:none;background:none;font-family:'Inter',sans-serif;min-width:48px}
+.bnav-icon{font-size:20px;line-height:1;color:#9ca3af;transition:color .15s}
+.bnav-label{font-size:9px;font-weight:600;color:#9ca3af;letter-spacing:.2px}
+.bnav-item.active .bnav-icon{color:#1a1d23}
+.bnav-item.active .bnav-label{color:#1a1d23}
+
+/* MORE SHEET */
+.more-sheet{display:none;position:fixed;bottom:60px;left:12px;right:12px;background:white;border:1px solid #e5e7eb;border-radius:16px;z-index:99;padding:16px;box-shadow:0 -4px 30px rgba(0,0,0,0.1)}
+.more-sheet.open{display:block}
+.more-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.more-item{background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;padding:14px 12px;font-size:13px;font-weight:500;color:#374151;cursor:pointer;border:none;font-family:'Inter',sans-serif;text-align:left;transition:background .12s}
+.more-item:hover,.more-item:active{background:#f3f4f6}
 
 /* PAGES */
-.main{margin-top:56px;padding:20px;max-width:1200px;margin-left:auto;margin-right:auto;width:100%}
-.main.fullw{padding:0;max-width:100%;margin-top:56px}
+.main{margin-top:54px;padding:20px;max-width:1160px;margin-left:auto;margin-right:auto;width:100%}
+.main.fullw{padding:0;max-width:100%;margin-top:54px}
 .page{display:none}
 .page.active{display:block}
 .page-header{margin-bottom:20px}
-.page-title{font-size:20px;font-weight:800;color:#1a1d23;letter-spacing:-.3px}
-.page-sub{font-size:13px;color:#9ca3af;margin-top:3px}
+.page-title{font-size:20px;font-weight:800;color:#1a1d23;letter-spacing:-.4px}
+.page-sub{font-size:13px;color:#9ca3af;margin-top:3px;line-height:1.5}
+
+/* RUN BRIEF BTN */
+.run-brief-btn{background:#1a1d23;color:white;border:none;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s}
+.run-brief-btn:hover{background:#2d3142}
+.run-brief-btn:disabled{opacity:.4;cursor:not-allowed}
 
 /* CARDS */
-.card{background:white;border:1px solid #e8eaed;border-radius:14px;padding:18px;margin-bottom:14px}
-.card-title{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:#4f46e5;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
-.card-sub{font-size:10px;color:#9ca3af;text-transform:none;letter-spacing:0;font-weight:400}
+.card{background:white;border:1px solid #e8eaed;border-radius:14px;padding:20px;margin-bottom:14px}
+.card-label{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:#9ca3af;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
+.card-label-text{color:#9ca3af}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.content-text{font-size:13.5px;line-height:1.85;color:#374151;white-space:pre-wrap}
+.content-text{font-size:14px;line-height:1.9;color:#374151;white-space:pre-wrap}
 
-/* STATS */
+/* STATS ROW */
 .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
-.stat-card{background:white;border:1px solid #e8eaed;border-radius:14px;padding:16px}
+.stat-card{background:white;border:1px solid #e8eaed;border-radius:14px;padding:18px}
 .stat-label{font-size:10px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:#9ca3af;margin-bottom:6px}
-.stat-value{font-size:26px;font-weight:800;color:#1a1d23;line-height:1}
-.stat-value.purple{color:#4f46e5}
-.stat-value.green{color:#10b981}
-.stat-value.amber{color:#f59e0b}
+.stat-value{font-size:26px;font-weight:800;color:#1a1d23;line-height:1;letter-spacing:-.5px}
 .stat-sub{font-size:11px;color:#9ca3af;margin-top:4px}
-.prog-wrap{background:#f3f4f6;border-radius:999px;height:3px;margin-top:8px;overflow:hidden}
-.prog-fill{height:100%;background:#4f46e5;border-radius:999px;transition:width .8s ease}
+.stat-prog{background:#f3f4f6;border-radius:999px;height:2px;margin-top:10px;overflow:hidden}
+.stat-prog-fill{height:100%;background:#1a1d23;border-radius:999px;transition:width 1s ease}
 
-/* EMPTY STATE */
-.empty{text-align:center;padding:40px 20px;color:#9ca3af}
-.empty-icon{font-size:32px;margin-bottom:10px;opacity:.5}
-.empty-text{font-size:13px;margin-bottom:14px;line-height:1.5}
-.empty-btn{background:#4f46e5;color:white;border:none;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif}
+/* INTELLIGENCE CARD */
+.intel-card{background:#1a1d23;color:white;border-radius:14px;padding:20px;margin-bottom:14px}
+.intel-card-label{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;opacity:.5;margin-bottom:8px}
+.intel-card-text{font-size:13.5px;line-height:1.85;opacity:.9;max-height:200px;overflow-y:auto}
+.intel-card-text::-webkit-scrollbar{width:3px}
+.intel-card-text::-webkit-scrollbar-thumb{background:rgba(255,255,255,.2);border-radius:2px}
 
-/* TASKS */
-.task-item{background:white;border:1px solid #e8eaed;border-radius:12px;padding:16px;margin-bottom:10px;transition:all .2s}
-.task-item.done{opacity:.45}
-.task-header{display:flex;align-items:flex-start;gap:12px}
-.task-check{width:22px;height:22px;border:2px solid #d1d5db;border-radius:6px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:1px;transition:all .15s;font-size:12px;font-weight:700;min-width:22px}
-.task-check:hover{border-color:#4f46e5}
-.task-check.checked{background:#4f46e5;border-color:#4f46e5;color:white}
-.task-title{font-size:14px;font-weight:600;color:#1a1d23;margin-bottom:5px;line-height:1.4}
-.task-item.done .task-title{text-decoration:line-through;color:#9ca3af}
-.task-desc{font-size:12.5px;color:#6b7280;line-height:1.6;margin-bottom:8px}
-.task-how{font-size:12.5px;color:#374151;background:#f0f0ff;padding:10px 12px;border-radius:8px;margin-bottom:8px;line-height:1.7;display:none;border-left:3px solid #4f46e5}
-.task-how.open{display:block}
-.task-meta{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
-.badge{font-size:10px;font-weight:600;padding:2px 8px;border-radius:999px}
-.badge-high{background:#fef2f2;color:#ef4444}
-.badge-medium{background:#fffbeb;color:#f59e0b}
-.badge-low{background:#f0fdf4;color:#10b981}
-.badge-cat{background:#eef2ff;color:#4f46e5}
-.badge-time{background:#f5f3ff;color:#7c3aed}
-.task-expand{background:none;border:none;color:#4f46e5;font-size:11px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;padding:0;margin-left:auto}
-.task-reason{font-size:11px;color:#9ca3af;font-style:italic;margin-top:6px;line-height:1.4}
+/* TASK SYSTEM */
+.task-item{background:white;border:1px solid #e8eaed;border-radius:12px;margin-bottom:10px;overflow:hidden;transition:box-shadow .2s}
+.task-item:hover{box-shadow:0 2px 12px rgba(0,0,0,0.06)}
+.task-item.done{opacity:.4}
+.task-main{display:flex;align-items:flex-start;gap:14px;padding:16px}
+.task-status{flex-shrink:0;margin-top:2px}
+.task-circle{width:22px;height:22px;border:2px solid #d1d5db;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;min-width:22px}
+.task-circle:hover{border-color:#1a1d23}
+.task-circle.done{background:#1a1d23;border-color:#1a1d23}
+.task-circle.done::after{content:'';width:6px;height:10px;border:2px solid white;border-top:none;border-left:none;transform:rotate(45deg);margin-top:-2px;display:block}
+.task-body{flex:1;min-width:0}
+.task-priority-tag{display:inline-block;font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:2px 8px;border-radius:999px;margin-bottom:6px}
+.priority-critical{background:#fef2f2;color:#dc2626}
+.priority-high{background:#fff7ed;color:#ea580c}
+.priority-medium{background:#fefce8;color:#ca8a04}
+.task-title-text{font-size:14px;font-weight:600;color:#1a1d23;margin-bottom:4px;line-height:1.4}
+.task-item.done .task-title-text{text-decoration:line-through;color:#9ca3af}
+.task-description{font-size:12.5px;color:#6b7280;line-height:1.6;margin-bottom:8px}
+.task-meta-row{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.task-tag{font-size:10px;font-weight:500;padding:2px 8px;border-radius:999px;background:#f3f4f6;color:#6b7280}
+.task-time{font-size:10px;color:#9ca3af;display:flex;align-items:center;gap:3px}
+.task-expand-btn{font-size:11px;font-weight:600;color:#6b7280;background:none;border:none;cursor:pointer;font-family:'Inter',sans-serif;padding:0;margin-left:auto;white-space:nowrap}
+.task-how-section{padding:0 16px 16px 52px;border-top:1px solid #f3f4f6;display:none}
+.task-how-section.open{display:block}
+.task-how-title{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:#9ca3af;margin-bottom:8px;margin-top:12px}
+.task-how-content{font-size:13px;color:#374151;line-height:1.8;background:#f9fafb;border-radius:8px;padding:12px;border-left:3px solid #1a1d23}
+.task-outcome{font-size:12px;color:#6b7280;font-style:italic;margin-top:8px;padding:8px 12px;background:#f9fafb;border-radius:6px}
+.task-start-btn{font-size:11px;font-weight:600;color:#1a1d23;background:none;border:1.5px solid #e5e7eb;padding:5px 12px;border-radius:6px;cursor:pointer;font-family:'Inter',sans-serif;margin-top:8px;transition:all .15s}
+.task-start-btn:hover{background:#f9fafb}
+
+/* FOUNDER REPORT PANEL */
+.founder-report-panel{background:white;border:1px solid #e8eaed;border-radius:14px;padding:24px;margin-bottom:14px}
+.frp-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px}
+.frp-title{font-size:18px;font-weight:800;color:#1a1d23;letter-spacing:-.3px}
+.frp-sub{font-size:12px;color:#9ca3af;margin-top:2px}
+.frp-archetype{background:#1a1d23;color:white;border-radius:10px;padding:14px 16px;margin-bottom:16px}
+.frp-archetype-label{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;opacity:.6;margin-bottom:4px}
+.frp-archetype-value{font-size:16px;font-weight:800;letter-spacing:-.2px}
+.frp-summary{font-size:13px;opacity:.85;margin-top:6px;line-height:1.7}
+.frp-scores{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.frp-score-item{background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;padding:14px}
+.frp-score-label{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:#9ca3af;margin-bottom:8px}
+.frp-score-number{font-size:24px;font-weight:800;color:#1a1d23;line-height:1}
+.frp-score-bar{background:#e5e7eb;border-radius:999px;height:3px;margin-top:8px;overflow:hidden}
+.frp-score-fill{height:100%;background:#1a1d23;border-radius:999px;transition:width 1s ease}
+.frp-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.frp-card{background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;padding:14px}
+.frp-card-label{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:#9ca3af;margin-bottom:8px}
+.frp-card-item{font-size:13px;color:#374151;padding:4px 0;border-bottom:1px solid #f3f4f6;line-height:1.4}
+.frp-card-item:last-child{border-bottom:none}
+.frp-insight{background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:14px;margin-bottom:14px}
+.frp-insight-label{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:#d97706;margin-bottom:6px}
+.frp-insight-text{font-size:13px;color:#374151;line-height:1.6}
+.frp-style-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.frp-style-item{background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;padding:12px}
+.frp-style-label{font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:#9ca3af;margin-bottom:4px}
+.frp-style-value{font-size:12px;font-weight:600;color:#1a1d23;text-transform:capitalize}
 
 /* CHAT */
-.chat-wrap{display:flex;flex-direction:column;height:calc(100vh - 56px);background:#f7f8fc}
-.chat-header{padding:12px 18px;border-bottom:1px solid #e8eaed;display:flex;align-items:center;justify-content:space-between;background:white;flex-shrink:0}
+.chat-wrap{display:flex;flex-direction:column;height:calc(100vh - 54px);background:#f7f8fc}
+.chat-header{padding:14px 18px;border-bottom:1px solid #e8eaed;background:white;flex-shrink:0;display:flex;align-items:center;justify-content:space-between}
 .chat-hdr-left{display:flex;align-items:center;gap:10px}
-.chat-avatar{width:36px;height:36px;background:#4f46e5;border-radius:9px;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:14px;flex-shrink:0}
-.chat-title-text{font-weight:700;font-size:14px;color:#1a1d23}
-.chat-online{font-size:11px;color:#10b981;font-weight:500;display:flex;align-items:center;gap:4px}
-.chat-online::before{content:'';width:5px;height:5px;background:#10b981;border-radius:50%;display:inline-block}
-.mode-selector{display:flex;gap:5px;overflow-x:auto;padding-bottom:2px}
-.mode-selector::-webkit-scrollbar{display:none}
-.mode-btn{padding:5px 11px;border-radius:999px;font-size:11px;font-weight:600;cursor:pointer;border:1.5px solid #e5e7eb;background:white;color:#6b7280;font-family:'Inter',sans-serif;white-space:nowrap;flex-shrink:0}
-.mode-btn.active{border-color:#4f46e5;background:#eef2ff;color:#4f46e5}
-.quick-bar{padding:8px 16px;border-bottom:1px solid #e8eaed;display:flex;gap:6px;overflow-x:auto;background:white;flex-shrink:0}
-.quick-bar::-webkit-scrollbar{display:none}
-.qbtn{background:#f9fafb;border:1px solid #e5e7eb;color:#4b5563;padding:5px 12px;border-radius:999px;font-size:11px;font-weight:500;cursor:pointer;white-space:nowrap;font-family:'Inter',sans-serif;flex-shrink:0}
-.qbtn:hover{border-color:#4f46e5;color:#4f46e5;background:#eef2ff}
-.chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:14px;-webkit-overflow-scrolling:touch}
+.chat-avatar{width:36px;height:36px;background:#1a1d23;border-radius:9px;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:14px;flex-shrink:0}
+.chat-title{font-weight:700;font-size:14px;color:#1a1d23;letter-spacing:-.2px}
+.chat-subtitle{font-size:11px;color:#10b981;font-weight:500;display:flex;align-items:center;gap:4px;margin-top:1px}
+.chat-subtitle::before{content:'';width:5px;height:5px;background:#10b981;border-radius:50%;display:inline-block}
+.mode-tabs{display:flex;gap:4px;overflow-x:auto;padding-bottom:1px}
+.mode-tabs::-webkit-scrollbar{display:none}
+.mode-tab{padding:5px 12px;border-radius:999px;font-size:11px;font-weight:600;cursor:pointer;border:1.5px solid #e5e7eb;background:white;color:#6b7280;font-family:'Inter',sans-serif;white-space:nowrap;flex-shrink:0;transition:all .15s}
+.mode-tab.active{border-color:#1a1d23;background:#1a1d23;color:white}
+.quick-pills{padding:8px 16px;border-bottom:1px solid #e8eaed;display:flex;gap:6px;overflow-x:auto;background:white;flex-shrink:0}
+.quick-pills::-webkit-scrollbar{display:none}
+.qpill{background:#f9fafb;border:1px solid #e5e7eb;color:#4b5563;padding:5px 12px;border-radius:999px;font-size:11px;font-weight:500;cursor:pointer;white-space:nowrap;font-family:'Inter',sans-serif;flex-shrink:0;transition:all .15s}
+.qpill:hover,.qpill:active{border-color:#1a1d23;color:#1a1d23;background:#f3f4f6}
+.chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:16px;-webkit-overflow-scrolling:touch}
 .chat-messages::-webkit-scrollbar{width:3px}
 .chat-messages::-webkit-scrollbar-thumb{background:#e5e7eb;border-radius:2px}
-.msg{display:flex;gap:8px;align-items:flex-start;animation:msgIn .2s ease}
-@keyframes msgIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.msg{display:flex;gap:10px;align-items:flex-start;animation:msgIn .2s ease}
+@keyframes msgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 .msg.user{flex-direction:row-reverse}
-.msg-av{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;margin-top:2px;color:white;min-width:30px}
-.msg-av.ai{background:#4f46e5}
-.msg-av.user{background:#0ea5e9}
-.msg-bubble{max-width:75%;padding:11px 14px;border-radius:14px;font-size:13.5px;line-height:1.7}
+.msg-av{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:2px;color:white;min-width:30px}
+.msg-av.ai{background:#1a1d23}
+.msg-av.user{background:#374151}
+.msg-bubble{max-width:75%;padding:13px 15px;border-radius:14px;font-size:13.5px;line-height:1.75}
 .msg.ai .msg-bubble{background:white;color:#374151;border:1px solid #e8eaed;border-top-left-radius:4px}
-.msg.user .msg-bubble{background:#4f46e5;color:white;border-top-right-radius:4px}
+.msg.user .msg-bubble{background:#1a1d23;color:white;border-top-right-radius:4px}
 .msg-bubble pre{font-family:'Inter',sans-serif;white-space:pre-wrap;margin:0}
-.agent-panel{background:#fafbff;border:1px solid #e0e7ff;border-radius:12px;padding:12px 14px;margin-bottom:4px;max-width:420px}
-.agent-panel-title{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:#4f46e5;margin-bottom:8px;display:flex;align-items:center;gap:5px}
-.agent-step{display:flex;align-items:center;gap:7px;padding:5px 0;border-bottom:1px solid #f0f0ff;font-size:11.5px;animation:stepIn .3s ease}
-.agent-step:last-child{border-bottom:none}
-@keyframes stepIn{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:translateX(0)}}
-.step-icon{font-size:13px;width:18px;flex-shrink:0}
-.step-name{font-weight:600;color:#1a1d23;width:140px;flex-shrink:0;font-size:11px}
-.step-status{color:#9ca3af;flex:1;font-size:11px}
-.step-done{color:#10b981;font-weight:700;font-size:11px}
-.source-badge{font-size:10px;color:#9ca3af;background:#f9fafb;border:1px solid #e5e7eb;padding:2px 9px;border-radius:999px;display:inline-block;margin:0 0 6px 38px}
-.typing-indicator{display:flex;gap:3px;padding:3px 0;align-items:center}
-.typing-dot{width:5px;height:5px;background:#4f46e5;border-radius:50%;animation:tdot 1.2s infinite;opacity:.4}
+.sources-note{font-size:10px;color:#9ca3af;background:#f9fafb;border:1px solid #e5e7eb;padding:3px 10px;border-radius:999px;display:inline-block;margin:0 0 8px 40px}
+.typing-wrap{display:flex;gap:10px;align-items:flex-start}
+.typing-bubble{background:white;border:1px solid #e8eaed;border-radius:14px;border-top-left-radius:4px;padding:13px 16px;display:flex;gap:4px;align-items:center}
+.typing-dot{width:6px;height:6px;background:#9ca3af;border-radius:50%;animation:tdot 1.2s infinite;opacity:.5}
 .typing-dot:nth-child(2){animation-delay:.2s}
 .typing-dot:nth-child(3){animation-delay:.4s}
-@keyframes tdot{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-4px);opacity:1}}
-.file-preview-bar{padding:7px 16px;background:#f0fdf4;border-top:1px solid #bbf7d0;display:none;align-items:center;justify-content:space-between;font-size:12px;color:#16a34a;font-weight:500;flex-shrink:0}
-.plus-menu{position:relative;flex-shrink:0}
-.plus-btn{width:42px;height:42px;background:#f3f4f6;border:1px solid #e5e7eb;border-radius:10px;color:#6b7280;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
-.plus-btn:hover,.plus-btn:active{background:#eef2ff;border-color:#4f46e5;color:#4f46e5}
-.plus-dropdown{position:absolute;bottom:calc(100% + 8px);left:0;background:white;border:1px solid #e5e7eb;border-radius:12px;width:200px;overflow:hidden;display:none;z-index:200;box-shadow:0 -8px 30px rgba(0,0,0,.1)}
-.plus-dropdown.open{display:block}
-.plus-option{display:flex;align-items:center;gap:9px;padding:11px 13px;font-size:13px;cursor:pointer;color:#4b5563;transition:background .12s;border-bottom:1px solid #f3f4f6}
-.plus-option:last-child{border-bottom:none}
-.plus-option:hover,.plus-option:active{background:#f9fafb}
-.chat-input-bar{padding:10px 14px;border-top:1px solid #e8eaed;background:white;display:flex;gap:8px;align-items:flex-end;flex-shrink:0;padding-bottom:max(10px, env(safe-area-inset-bottom))}
+@keyframes tdot{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-5px);opacity:1}}
+.file-bar{padding:7px 16px;background:#f0fdf4;border-top:1px solid #bbf7d0;display:none;align-items:center;justify-content:space-between;font-size:12px;color:#16a34a;font-weight:500;flex-shrink:0}
+.plus-wrap{position:relative;flex-shrink:0}
+.plus-btn{width:42px;height:42px;background:#f3f4f6;border:1.5px solid #e5e7eb;border-radius:10px;color:#6b7280;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.plus-btn:hover,.plus-btn:active{background:#f3f4f6;border-color:#1a1d23;color:#1a1d23}
+.plus-drop{position:absolute;bottom:calc(100% + 8px);left:0;background:white;border:1px solid #e5e7eb;border-radius:12px;width:200px;overflow:hidden;display:none;z-index:200;box-shadow:0 -8px 30px rgba(0,0,0,.08)}
+.plus-drop.open{display:block}
+.plus-opt{display:flex;align-items:center;gap:9px;padding:11px 14px;font-size:13px;cursor:pointer;color:#374151;transition:background .12s;border-bottom:1px solid #f3f4f6}
+.plus-opt:last-child{border-bottom:none}
+.plus-opt:hover,.plus-opt:active{background:#f9fafb}
+.chat-bar{padding:10px 14px;border-top:1px solid #e8eaed;background:white;display:flex;gap:8px;align-items:flex-end;flex-shrink:0;padding-bottom:max(10px,env(safe-area-inset-bottom))}
 .chat-input{flex:1;background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:12px;padding:10px 14px;color:#1a1d23;font-size:14px;font-family:'Inter',sans-serif;resize:none;min-height:42px;max-height:120px;line-height:1.5;outline:none;transition:border-color .15s;-webkit-appearance:none}
-.chat-input:focus{border-color:#4f46e5;background:white}
+.chat-input:focus{border-color:#1a1d23;background:white}
 .chat-input::placeholder{color:#c4c9d4}
-.send-btn{background:#4f46e5;border:none;width:42px;height:42px;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;color:white;min-width:42px}
-.send-btn:disabled{opacity:.4;cursor:not-allowed}
+.send-btn{background:#1a1d23;border:none;width:42px;height:42px;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;color:white;min-width:42px;transition:all .2s}
+.send-btn:hover{background:#2d3142}
+.send-btn:disabled{opacity:.35;cursor:not-allowed}
 
 /* AGENTS */
 .agents-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
-.agent-card{background:white;border:1px solid #e8eaed;border-radius:12px;padding:16px;cursor:pointer;transition:all .2s}
-.agent-card:hover,.agent-card:active{border-color:#4f46e5;transform:translateY(-2px);box-shadow:0 4px 16px rgba(79,70,229,.1)}
-.agent-icon{font-size:24px;margin-bottom:10px}
+.agent-card{background:white;border:1px solid #e8eaed;border-radius:12px;padding:18px;cursor:pointer;transition:all .2s}
+.agent-card:hover,.agent-card:active{border-color:#1a1d23;box-shadow:0 4px 16px rgba(0,0,0,.06)}
+.agent-emoji{font-size:26px;margin-bottom:10px;display:block}
 .agent-name{font-size:13px;font-weight:700;color:#1a1d23;margin-bottom:3px}
 .agent-desc{font-size:11px;color:#9ca3af;line-height:1.5}
-.agent-chat-box{background:white;border:1px solid #e8eaed;border-radius:14px;padding:20px;margin-top:14px;display:none}
-.agent-chat-box.open{display:block}
-.agent-chat-title{font-size:14px;font-weight:700;color:#1a1d23;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
-.agent-response{font-size:13px;line-height:1.85;color:#374151;white-space:pre-wrap;background:#f9fafb;border-radius:8px;padding:14px;margin-bottom:12px;display:none}
-.agent-input-row{display:flex;gap:8px}
-.agent-input{flex:1;background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:9px;padding:10px 13px;color:#1a1d23;font-size:13px;font-family:'Inter',sans-serif;outline:none;-webkit-appearance:none}
-.agent-input:focus{border-color:#4f46e5}
-.btn-ask{background:#4f46e5;color:white;border:none;padding:10px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap}
+.agent-box{background:white;border:1px solid #e8eaed;border-radius:14px;padding:20px;margin-top:14px;display:none}
+.agent-box.open{display:block}
+.agent-box-header{font-size:14px;font-weight:700;color:#1a1d23;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
+.agent-reply{font-size:13.5px;line-height:1.85;color:#374151;white-space:pre-wrap;background:#f9fafb;border-radius:8px;padding:16px;margin-bottom:14px;display:none;border-left:3px solid #1a1d23}
+.agent-row{display:flex;gap:8px}
+.agent-input{flex:1;background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:9px;padding:10px 13px;color:#1a1d23;font-size:13px;font-family:'Inter',sans-serif;outline:none;-webkit-appearance:none;transition:border-color .15s}
+.agent-input:focus{border-color:#1a1d23}
+.agent-btn{background:#1a1d23;color:white;border:none;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap}
 
 /* PLATFORM TABS */
-.platform-tabs{display:flex;gap:6px;margin-bottom:16px;overflow-x:auto;padding-bottom:4px}
+.platform-tabs{display:flex;gap:6px;margin-bottom:16px;overflow-x:auto;padding-bottom:2px}
 .platform-tabs::-webkit-scrollbar{display:none}
-.platform-tab{padding:7px 14px;border-radius:999px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid #e5e7eb;background:white;color:#6b7280;font-family:'Inter',sans-serif;white-space:nowrap;flex-shrink:0}
-.platform-tab.active{border-color:#4f46e5;background:#eef2ff;color:#4f46e5}
+.platform-tab{padding:7px 14px;border-radius:999px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid #e5e7eb;background:white;color:#6b7280;font-family:'Inter',sans-serif;white-space:nowrap;flex-shrink:0;transition:all .15s}
+.platform-tab.active{border-color:#1a1d23;background:#1a1d23;color:white}
+
+/* EMPTY */
+.empty{text-align:center;padding:40px 20px;color:#9ca3af}
+.empty-icon{font-size:28px;margin-bottom:10px;opacity:.4;display:block}
+.empty-text{font-size:13px;margin-bottom:16px;line-height:1.6;color:#9ca3af}
+.empty-btn{background:#1a1d23;color:white;border:none;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif}
 
 /* LOADING */
 .loading-overlay{position:fixed;inset:0;background:white;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:1000;gap:14px}
-.loading-logo{width:48px;height:48px;background:#4f46e5;border-radius:13px;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:20px;animation:pulse 1.5s infinite}
+.loading-logo{width:46px;height:46px;background:#1a1d23;border-radius:12px;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:20px;animation:pulse 1.5s infinite}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
 .loading-text{font-size:13px;color:#9ca3af;font-weight:500}
 
 /* SPINNER */
-.spinner{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite}
+.spinner{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,.25);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
+.spinner-dark{border-color:rgba(0,0,0,.1);border-top-color:#1a1d23}
 
 /* TOAST */
-.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(8px);background:#1a1d23;color:white;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:500;opacity:0;transition:all .3s;z-index:9999;pointer-events:none;white-space:nowrap}
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(8px);background:#1a1d23;color:white;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:500;opacity:0;transition:all .3s;z-index:9999;pointer-events:none;white-space:nowrap;max-width:90vw}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* CHARTS */
-.chart-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:180px;color:#9ca3af;font-size:13px;gap:8px}
-.chart-empty-icon{font-size:28px;opacity:.4}
+/* CHART EMPTY */
+.chart-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:160px;color:#9ca3af;font-size:12px;gap:6px;text-align:center}
 
-/* ── RESPONSIVE ───────────────────── */
+/* RESPONSIVE */
 @media(max-width:768px){
-/* Hide desktop nav, show mobile */
 .topnav{display:none}
 .mobile-topbar{display:flex}
 .bottom-nav{display:block}
-
-/* Adjust page margins */
-.main{margin-top:52px;padding:14px;padding-bottom:80px}
+.main{margin-top:52px;padding:14px;padding-bottom:76px}
 .main.fullw{margin-top:52px}
-
-/* Chat fills screen properly */
 .chat-wrap{height:calc(100vh - 52px - 60px)}
-
-/* Responsive grids */
 .stats-row{grid-template-columns:1fr 1fr;gap:10px}
 .two-col{grid-template-columns:1fr}
 .agents-grid{grid-template-columns:1fr 1fr}
 .report-grid{grid-template-columns:1fr}
-.timeline-grid{grid-template-columns:1fr 1fr}
-.ob-options{grid-template-columns:1fr 1fr}
-
-/* Bigger touch targets */
-.task-check{width:24px;height:24px;min-width:24px}
-.msg-bubble{max-width:85%}
-
-/* Smaller font for stat values */
+.timeline-row{grid-template-columns:1fr 1fr}
+.frp-grid{grid-template-columns:1fr}
+.frp-style-grid{grid-template-columns:1fr 1fr}
+.frp-scores{grid-template-columns:1fr 1fr}
+.score-row{flex-direction:column}
+.msg-bubble{max-width:86%}
 .stat-value{font-size:22px}
 .page-title{font-size:18px}
+.ob-options{grid-template-columns:1fr 1fr}
 }
-
-@media(max-width:400px){
-.stats-row{grid-template-columns:1fr 1fr}
+@media(max-width:380px){
 .agents-grid{grid-template-columns:1fr 1fr}
 .ob-options{grid-template-columns:1fr}
+.frp-style-grid{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -330,7 +385,7 @@ body{font-family:'Inter',sans-serif;background:#f7f8fc;color:#1a1d23;min-height:
 </div>
 <div class="forgot-link"><a onclick="showForgot()">Forgot password?</a></div>
 <button class="btn-primary" onclick="doLogin()" id="login-btn">Sign In</button>
-<div class="auth-switch">New founder? <a onclick="showSignup()">Create account</a></div>
+<div class="auth-switch">New here? <a onclick="showSignup()">Create your account</a></div>
 </div>
 </div>
 </div>
@@ -344,7 +399,7 @@ body{font-family:'Inter',sans-serif;background:#f7f8fc;color:#1a1d23;min-height:
 <div class="auth-logo-text">FounderOS</div>
 </div>
 <div class="auth-title">Start your journey</div>
-<div class="auth-sub">Join founders building with AI</div>
+<div class="auth-sub">Join founders building with AI intelligence</div>
 <div class="auth-error" id="signup-error"></div>
 <div class="form-group">
 <label class="form-label">Your Name</label>
@@ -356,10 +411,10 @@ body{font-family:'Inter',sans-serif;background:#f7f8fc;color:#1a1d23;min-height:
 </div>
 <div class="form-group">
 <label class="form-label">Password</label>
-<input class="form-input" id="signup-password" type="password" placeholder="Min 6 characters" onkeydown="if(event.key==='Enter')doSignup()" autocomplete="new-password">
+<input class="form-input" id="signup-password" type="password" placeholder="Minimum 6 characters" onkeydown="if(event.key==='Enter')doSignup()" autocomplete="new-password">
 </div>
 <button class="btn-primary" onclick="doSignup()" id="signup-btn">Create Account</button>
-<div class="auth-switch">Already a founder? <a onclick="showLogin()">Sign in</a></div>
+<div class="auth-switch">Already have an account? <a onclick="showLogin()">Sign in</a></div>
 </div>
 </div>
 </div>
@@ -372,12 +427,10 @@ body{font-family:'Inter',sans-serif;background:#f7f8fc;color:#1a1d23;min-height:
 <div class="auth-logo-icon">F</div>
 <div class="auth-logo-text">FounderOS</div>
 </div>
-<div class="auth-title">Reset Password</div>
+<div class="auth-title">Reset your password</div>
 <div class="auth-sub">Enter your email and we will send reset instructions</div>
 <div class="auth-error" id="forgot-error"></div>
-<div id="forgot-success" style="background:#f0fdf4;border:1px solid #bbf7d0;color:#16a34a;padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:14px;display:none">
-Reset instructions sent. Check your email.
-</div>
+<div id="forgot-success" style="background:#f0fdf4;border:1px solid #bbf7d0;color:#16a34a;padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:14px;display:none">Reset instructions sent. Check your email inbox.</div>
 <div class="form-group">
 <label class="form-label">Email</label>
 <input class="form-input" id="forgot-email" type="email" placeholder="you@startup.com">
@@ -393,8 +446,8 @@ Reset instructions sent. Check your email.
 <div class="ob-page">
 <div class="ob-box">
 <div class="ob-progress-bar"><div class="ob-progress-fill" id="ob-progress" style="width:4%"></div></div>
-<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px">
-<div style="flex:1">
+<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px">
+<div style="flex:1;padding-right:16px">
 <div class="ob-section-label" id="ob-section">About You</div>
 <div class="ob-question" id="ob-question">Loading...</div>
 <div class="ob-sub" id="ob-sub"></div>
@@ -404,43 +457,42 @@ Reset instructions sent. Check your email.
 <div id="ob-content"></div>
 <div class="ob-nav">
 <button class="ob-btn-back" id="ob-back" onclick="obBack()" style="visibility:hidden">Back</button>
-<button class="ob-btn-next" id="ob-next" onclick="obNext()">Next</button>
+<button class="ob-btn-next" id="ob-next" onclick="obNext()">Continue</button>
 </div>
 </div>
 </div>
 </div>
 
-<!-- REPORT -->
+<!-- FOUNDER REPORT -->
 <div id="report-page" style="display:none">
 <div class="report-page">
 <div class="report-box">
 <div class="report-title">Your Founder Intelligence Report</div>
-<div class="report-sub">AI-generated from your 25-question profile</div>
-<div class="report-archetype" id="report-archetype">
-<div class="archetype-label">Your Founder Archetype</div>
-<div class="archetype-value" id="archetype-value">Analysing...</div>
-<div class="archetype-summary" id="archetype-summary"></div>
+<div class="report-sub">Generated from your complete profile analysis</div>
+<div class="report-hero" id="report-hero">
+<div class="report-hero-label">Your Founder Archetype</div>
+<div class="report-hero-value" id="archetype-value">Analysing...</div>
+<div class="report-hero-summary" id="archetype-summary"></div>
 </div>
-<div class="timeline-grid" id="timeline-grid"></div>
-<div class="report-grid">
-<div class="report-card">
-<div class="report-card-label">Top Strengths</div>
-<div id="report-strengths"></div>
+<div class="timeline-row" id="timeline-row"></div>
+<div class="score-row">
+<div class="score-item">
+<div class="score-label">Growth Mindset</div>
+<div class="score-value" id="gm-score">—</div>
+<div class="score-bar"><div class="score-fill" id="gm-bar" style="width:0%"></div></div>
 </div>
-<div class="report-card">
-<div class="report-card-label">Top Risks</div>
-<div id="report-risks"></div>
-</div>
-<div class="report-card">
-<div class="report-card-label">Skill Gaps — AI Will Fill These</div>
-<div id="report-gaps"></div>
-</div>
-<div class="report-card">
-<div class="report-card-label">AI Mode</div>
-<div id="report-personality" style="font-size:14px;font-weight:600;color:#4f46e5;padding-top:6px"></div>
+<div class="score-item">
+<div class="score-label">Focus Score</div>
+<div class="score-value" id="focus-score">—</div>
+<div class="score-bar"><div class="score-fill" id="focus-bar" style="width:0%"></div></div>
 </div>
 </div>
-<button class="btn-enter" onclick="enterApp()">Enter FounderOS</button>
+<div class="report-grid" id="report-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px"></div>
+<div class="key-insight-box" id="key-insight-box" style="display:none">
+<div class="key-insight-label">Key Insight</div>
+<div class="key-insight-text" id="key-insight-text"></div>
+</div>
+<button class="btn-enter" onclick="enterApp()">Enter FounderOS →</button>
 </div>
 </div>
 </div>
@@ -459,7 +511,6 @@ FounderOS
 <button class="nav-link active" onclick="showPage('dashboard',this)">Dashboard</button>
 <button class="nav-link" onclick="showPage('chat',this)">AI Co-Founder</button>
 <button class="nav-link" onclick="showPage('tasks',this)">Tasks</button>
-<button class="nav-link" onclick="showPage('briefing',this)">Briefing</button>
 <button class="nav-link" onclick="showPage('market',this)">Market</button>
 <button class="nav-link" onclick="showPage('competitors',this)">Competitors</button>
 <button class="nav-link" onclick="showPage('content',this)">Content</button>
@@ -467,12 +518,15 @@ FounderOS
 </div>
 </div>
 <div class="nav-right">
-<div class="nav-user-info">
-<div class="nav-user" id="nav-name"></div>
-<div class="nav-day" id="nav-day"></div>
+<div style="text-align:right">
+<div class="nav-user-text" id="nav-name"></div>
+<div class="nav-day-text" id="nav-day"></div>
 </div>
-<button class="btn-run" onclick="runMorningBriefing()">Run Briefing</button>
-<button class="btn-signout" onclick="signOut()">Sign Out</button>
+<button class="hamburger-btn" onclick="openMenu()">
+<div class="hamburger-line"></div>
+<div class="hamburger-line"></div>
+<div class="hamburger-line"></div>
+</button>
 </div>
 </nav>
 
@@ -482,75 +536,200 @@ FounderOS
 <div class="mobile-logo-icon">F</div>
 FounderOS
 </div>
-<div class="mobile-right">
-<button class="mobile-run-btn" onclick="runMorningBriefing()">Briefing</button>
-<button class="mobile-signout" onclick="signOut()">⏻</button>
+<button class="hamburger-btn" onclick="openMenu()">
+<div class="hamburger-line"></div>
+<div class="hamburger-line"></div>
+<div class="hamburger-line"></div>
+</button>
+</div>
+
+<!-- Side Menu Overlay -->
+<div class="menu-overlay" id="menu-overlay" onclick="closeMenu()"></div>
+
+<!-- Side Menu -->
+<div class="side-menu" id="side-menu">
+<div class="side-menu-header">
+<div class="side-menu-user" id="menu-user-name">Founder</div>
+<div class="side-menu-email" id="menu-user-email"></div>
+</div>
+<div class="side-menu-section">Account</div>
+<div class="side-menu-item" onclick="showMenuPage('report');closeMenu()">
+<span class="side-menu-item-icon">◎</span>
+Founder Intelligence Report
+</div>
+<div class="side-menu-item" onclick="showMenuPage('saved');closeMenu()">
+<span class="side-menu-item-icon">◫</span>
+Saved Reports
+</div>
+<div class="side-menu-item" onclick="showMenuPage('progress');closeMenu()">
+<span class="side-menu-item-icon">↗</span>
+Progress Tracking
+</div>
+<div class="side-menu-divider"></div>
+<div class="side-menu-section">Navigation</div>
+<div class="side-menu-item" onclick="showPage('dashboard',null);setBottomNav('dashboard');closeMenu()">
+<span class="side-menu-item-icon">⊞</span>
+Dashboard
+</div>
+<div class="side-menu-item" onclick="showPage('chat',null);setBottomNav('chat');closeMenu()">
+<span class="side-menu-item-icon">◉</span>
+AI Co-Founder
+</div>
+<div class="side-menu-item" onclick="showPage('tasks',null);setBottomNav('tasks');closeMenu()">
+<span class="side-menu-item-icon">◻</span>
+Tasks
+</div>
+<div class="side-menu-item" onclick="showPage('market',null);closeMenu()">
+<span class="side-menu-item-icon">◈</span>
+Market Intelligence
+</div>
+<div class="side-menu-item" onclick="showPage('competitors',null);closeMenu()">
+<span class="side-menu-item-icon">◎</span>
+Competitor Analysis
+</div>
+<div class="side-menu-item" onclick="showPage('content',null);closeMenu()">
+<span class="side-menu-item-icon">◧</span>
+Content Calendar
+</div>
+<div class="side-menu-item" onclick="showPage('agents',null);closeMenu()">
+<span class="side-menu-item-icon">◈</span>
+Specialist Agents
+</div>
+<div class="side-menu-divider"></div>
+<div class="side-menu-logout" onclick="signOut()">
+<span class="side-menu-item-icon">→</span>
+Sign Out
 </div>
 </div>
 
 <!-- DASHBOARD -->
 <div class="page active main" id="page-dashboard">
-<div class="page-header">
+<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px">
+<div>
 <div class="page-title" id="dash-greeting">Good morning</div>
-<div class="page-sub" id="dash-sub">Here is your startup intelligence for today</div>
+<div class="page-sub" id="dash-sub">Here is your startup intelligence</div>
+</div>
+<button class="run-brief-btn" id="brief-btn" onclick="generateIntelligence()">Generate Briefing</button>
 </div>
 <div class="stats-row">
 <div class="stat-card">
 <div class="stat-label">Tasks Today</div>
-<div class="stat-value purple" id="s-done">—</div>
-<div class="stat-sub" id="s-total">Generate tasks to start</div>
-<div class="prog-wrap"><div class="prog-fill" id="s-prog" style="width:0%"></div></div>
+<div class="stat-value" id="s-done">—</div>
+<div class="stat-sub" id="s-total">Generate tasks to begin</div>
+<div class="stat-prog"><div class="stat-prog-fill" id="s-prog" style="width:0%"></div></div>
 </div>
 <div class="stat-card">
-<div class="stat-label">Journey</div>
-<div class="stat-value green" id="s-days">0</div>
-<div class="stat-sub">days as founder</div>
+<div class="stat-label">Founder Journey</div>
+<div class="stat-value" id="s-days">0</div>
+<div class="stat-sub">days since you started</div>
 </div>
 <div class="stat-card">
 <div class="stat-label">This Week</div>
-<div class="stat-value amber" id="s-rate">—</div>
+<div class="stat-value" id="s-rate">—</div>
 <div class="stat-sub" id="s-weekly">no data yet</div>
 </div>
 <div class="stat-card">
-<div class="stat-label">Streak</div>
-<div class="stat-value purple" id="s-streak">0</div>
-<div class="stat-sub">days consistent</div>
+<div class="stat-label">Consistency</div>
+<div class="stat-value" id="s-streak">0</div>
+<div class="stat-sub">day streak</div>
+</div>
+</div>
+<div id="intel-section" style="display:none">
+<div class="intel-card">
+<div class="intel-card-label">Morning Intelligence</div>
+<div class="intel-card-text" id="dash-brief">Generating your briefing...</div>
 </div>
 </div>
 <div class="two-col">
 <div class="card">
-<div class="card-title">Today's Briefing <span class="card-sub" id="brief-date"></span></div>
-<div class="content-text" id="dash-brief" style="font-size:13px;max-height:260px;overflow-y:auto">Click Run Briefing to see today's market intelligence.</div>
+<div class="card-label">
+<span class="card-label-text">Priority Tasks</span>
+<button onclick="generateTasks()" style="font-size:11px;font-weight:600;color:#6b7280;background:none;border:none;cursor:pointer;font-family:'Inter',sans-serif">Generate</button>
 </div>
-<div class="card">
-<div class="card-title">Priority Tasks</div>
 <div id="dash-tasks">
 <div class="empty">
-<div class="empty-icon">—</div>
-<div class="empty-text">Generate your personalised tasks for today</div>
+<span class="empty-icon">—</span>
+<div class="empty-text">Your personalised tasks will appear here</div>
 <button class="empty-btn" onclick="generateTasks()">Generate Tasks</button>
 </div>
 </div>
 </div>
-</div>
-<div class="two-col">
 <div class="card">
-<div class="card-title">Market Demand</div>
-<div id="market-chart-wrap">
+<div class="card-label"><span class="card-label-text">Execution Progress</span></div>
+<div id="exec-chart-wrap">
 <div class="chart-empty">
-<div class="chart-empty-icon">📊</div>
-Run market research to see demand data
+<span style="font-size:24px;opacity:.3">◎</span>
+Complete tasks to see your execution data
 </div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- FOUNDER REPORT PAGE -->
+<div class="page main" id="page-report">
+<div class="page-header">
+<div class="page-title">Founder Intelligence Report</div>
+<div class="page-sub">Your complete profile analysis — updates as you use the platform</div>
+</div>
+<div id="founder-report-content">
+<div class="empty">
+<span class="empty-icon">◎</span>
+<div class="empty-text">Loading your report...</div>
+</div>
+</div>
+</div>
+
+<!-- SAVED REPORTS PAGE -->
+<div class="page main" id="page-saved">
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+<div>
+<div class="page-title">Saved Reports</div>
+<div class="page-sub">Progress reports and analysis generated over time</div>
+</div>
+<button class="run-brief-btn" onclick="generateReport('progress')">Generate Report</button>
+</div>
+<div id="saved-reports-list">
+<div class="empty">
+<span class="empty-icon">◫</span>
+<div class="empty-text">No reports saved yet. Generate your first progress report.</div>
+<button class="empty-btn" onclick="generateReport('progress')">Generate Progress Report</button>
+</div>
+</div>
+</div>
+
+<!-- PROGRESS TRACKING -->
+<div class="page main" id="page-progress">
+<div class="page-header">
+<div class="page-title">Progress Tracking</div>
+<div class="page-sub">Your execution velocity and consistency over time</div>
+</div>
+<div class="stats-row">
+<div class="stat-card">
+<div class="stat-label">Total Tasks</div>
+<div class="stat-value" id="pt-total">—</div>
+<div class="stat-sub">ever assigned</div>
+</div>
+<div class="stat-card">
+<div class="stat-label">Completed</div>
+<div class="stat-value" id="pt-done">—</div>
+<div class="stat-sub">tasks finished</div>
+</div>
+<div class="stat-card">
+<div class="stat-label">Overall Rate</div>
+<div class="stat-value" id="pt-rate">—</div>
+<div class="stat-sub">completion %</div>
+</div>
+<div class="stat-card">
+<div class="stat-label">Journey</div>
+<div class="stat-value" id="pt-days">—</div>
+<div class="stat-sub">days as founder</div>
 </div>
 </div>
 <div class="card">
-<div class="card-title">Task Completion</div>
-<div id="productivity-chart-wrap">
-<div class="chart-empty">
-<div class="chart-empty-icon">✅</div>
-Complete tasks to see your productivity chart
-</div>
-</div>
+<div class="card-label"><span class="card-label-text">Weekly Execution</span></div>
+<div id="progress-chart-wrap">
+<div class="chart-empty">Complete tasks to see your execution chart</div>
 </div>
 </div>
 </div>
@@ -562,29 +741,29 @@ Complete tasks to see your productivity chart
 <div class="chat-hdr-left">
 <div class="chat-avatar">AI</div>
 <div>
-<div class="chat-title-text">AI Co-Founder</div>
-<div class="chat-online">Live research — Google, Reddit, LinkedIn, News</div>
+<div class="chat-title">AI Co-Founder</div>
+<div class="chat-subtitle">Live research — Google, Reddit, LinkedIn, News</div>
 </div>
 </div>
 <div style="display:flex;align-items:center;gap:8px">
-<div class="mode-selector">
-<button class="mode-btn active" onclick="setMode('quick',this)">Quick</button>
-<button class="mode-btn" onclick="setMode('deep',this)">Deep</button>
-<button class="mode-btn" onclick="setMode('devil',this)">Devil's Advocate</button>
-<button class="mode-btn" onclick="setMode('plan',this)">Action Plan</button>
+<div class="mode-tabs">
+<button class="mode-tab active" onclick="setMode('quick',this)">Quick</button>
+<button class="mode-tab" onclick="setMode('deep',this)">Deep Research</button>
+<button class="mode-tab" onclick="setMode('plan',this)">Action Plan</button>
+<button class="mode-tab" onclick="setMode('devil',this)">Challenge Me</button>
 </div>
-<button class="mode-btn" onclick="clearChat()" style="flex-shrink:0">Clear</button>
+<button onclick="clearChat()" style="font-size:11px;font-weight:500;color:#9ca3af;background:none;border:none;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap">Clear</button>
 </div>
 </div>
-<div class="quick-bar">
-<div class="qbtn" onclick="quickSend('What is the real market opportunity for my startup?')">Market opportunity</div>
-<div class="qbtn" onclick="quickSend('Write me a complete sales pitch for my product')">Sales pitch</div>
-<div class="qbtn" onclick="quickSend('Who are my real competitors and what is their weakness?')">Competitors</div>
-<div class="qbtn" onclick="quickSend('How do I validate demand this week with almost no budget?')">Validate fast</div>
-<div class="qbtn" onclick="quickSend('What is the single biggest risk that could kill my startup?')">Biggest risk</div>
-<div class="qbtn" onclick="quickSend('How do I get my first 10 paying customers?')">First customers</div>
-<div class="qbtn" onclick="quickSend('I am feeling like giving up. Talk me through this.')">Motivation</div>
-<div class="qbtn" onclick="quickSend('Give me a complete 30 day action plan for my current stage.')">30 day plan</div>
+<div class="quick-pills">
+<div class="qpill" onclick="quickSend('Write me a complete sales pitch for my product')">Sales pitch</div>
+<div class="qpill" onclick="quickSend('What is the real market opportunity for my startup right now?')">Market opportunity</div>
+<div class="qpill" onclick="quickSend('Who are my real competitors and where are they weak?')">Competitor weakness</div>
+<div class="qpill" onclick="quickSend('How do I validate demand this week with almost no budget?')">Validate fast</div>
+<div class="qpill" onclick="quickSend('Give me a complete 30 day action plan for my current stage')">30 day plan</div>
+<div class="qpill" onclick="quickSend('What is the single biggest risk that could kill my startup?')">Biggest risk</div>
+<div class="qpill" onclick="quickSend('I feel like giving up today. Talk me through this honestly.')">Struggling</div>
+<div class="qpill" onclick="quickSend('How should I price my product for the Indian market?')">Pricing strategy</div>
 </div>
 <div class="chat-messages" id="chat-messages">
 <div class="msg ai">
@@ -592,76 +771,64 @@ Complete tasks to see your productivity chart
 <div class="msg-bubble">
 <pre>Welcome to FounderOS. I am your AI Co-Founder.
 
-I know your startup, your stage, your market, and your goals. I search Google, Reddit, LinkedIn, and News before every business answer.
+I know your startup, your stage, your market, and the patterns in how you work. I search Google, Reddit, LinkedIn, and live news before answering any business question so my responses are grounded in what is actually happening right now.
+
+I do not give generic advice. Every answer is specific to your situation.
 
 What is on your mind today?</pre>
 </div>
 </div>
 </div>
-<div class="file-preview-bar" id="file-preview">
-<span>Ready: <span id="file-name-display" style="color:#374151;font-weight:400"></span></span>
+<div class="file-bar" id="file-bar">
+<span>Ready: <span id="file-name-disp" style="color:#374151;font-weight:400"></span></span>
 <button onclick="clearFile()" style="background:none;border:none;color:#ef4444;cursor:pointer;font-weight:600;font-family:'Inter',sans-serif">Remove</button>
 </div>
-<div class="chat-input-bar">
-<div class="plus-menu">
-<button class="plus-btn" onclick="togglePlusMenu()">+</button>
-<div class="plus-dropdown" id="plus-dropdown">
-<div class="plus-option" onclick="triggerFileUpload()">📄 Upload PDF or Doc</div>
-<div class="plus-option" onclick="triggerFileUpload()">🖼️ Upload Image</div>
-<div class="plus-option" onclick="deepResearch()">🔬 Deep Research</div>
-<div class="plus-option" onclick="createReport()">📊 Progress Report</div>
+<div class="chat-bar">
+<div class="plus-wrap">
+<button class="plus-btn" onclick="togglePlus()">+</button>
+<div class="plus-drop" id="plus-drop">
+<div class="plus-opt" onclick="triggerFile()">📄 Upload PDF or Document</div>
+<div class="plus-opt" onclick="triggerFile()">🖼️ Upload Image</div>
+<div class="plus-opt" onclick="setDeepResearch()">🔬 Deep Market Research</div>
+<div class="plus-opt" onclick="setProgressReport()">📊 Generate Progress Report</div>
 </div>
 </div>
-<textarea class="chat-input" id="chat-input" placeholder="Ask anything about your business..." rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+<textarea class="chat-input" id="chat-input" placeholder="Ask anything about your business, market, competitors, strategy..." rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
 <button class="send-btn" id="send-btn" onclick="sendMessage()">&#10148;</button>
-<input type="file" id="file-input" style="display:none" accept=".pdf,.png,.jpg,.jpeg,.txt,.csv" onchange="handleFileUpload(event)">
+<input type="file" id="file-input" style="display:none" accept=".pdf,.png,.jpg,.jpeg,.txt,.csv" onchange="handleFile(event)">
 </div>
 </div>
 </div>
 
 <!-- TASKS -->
 <div class="page main" id="page-tasks">
-<div class="page-header">
+<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px">
+<div>
 <div class="page-title">Tasks</div>
-<div class="page-sub">Step-by-step guidance for everything you need to do today</div>
+<div class="page-sub" id="tasks-sub">Step-by-step execution plan for today</div>
+</div>
+<button class="run-brief-btn" onclick="generateTasks()">Generate New</button>
 </div>
 <div class="two-col" style="margin-bottom:14px">
 <div class="card" style="margin-bottom:0">
-<div class="card-title">Today's Progress <span class="card-sub" id="tasks-prog-text"></span></div>
-<div id="tasks-pie-wrap">
-<div class="chart-empty"><div class="chart-empty-icon">📋</div>Generate tasks to see progress</div>
+<div class="card-label"><span class="card-label-text">Today</span></div>
+<div id="task-donut-wrap">
+<div class="chart-empty">Generate tasks to see your progress</div>
 </div>
 </div>
 <div class="card" style="margin-bottom:0">
-<div class="card-title">This Week</div>
-<div id="weekly-chart-wrap">
-<div class="chart-empty"><div class="chart-empty-icon">📅</div>Complete tasks to see weekly data</div>
+<div class="card-label"><span class="card-label-text">This Week</span></div>
+<div id="task-week-wrap">
+<div class="chart-empty">Complete tasks to see weekly data</div>
 </div>
 </div>
-</div>
-<div class="card">
-<div class="card-title">Today's Tasks
-<button class="empty-btn" onclick="generateTasks()" style="font-size:11px;padding:5px 12px">Generate New</button>
 </div>
 <div id="full-tasks">
 <div class="empty">
-<div class="empty-icon">—</div>
-<div class="empty-text">Your personalised tasks will appear here. Each task includes step-by-step instructions specific to your product and market.</div>
+<span class="empty-icon">◻</span>
+<div class="empty-text">Your personalised tasks will appear here. Each one comes with step-by-step instructions specific to your product and market.</div>
 <button class="empty-btn" onclick="generateTasks()">Generate Today's Tasks</button>
 </div>
-</div>
-</div>
-</div>
-
-<!-- BRIEFING -->
-<div class="page main" id="page-briefing">
-<div class="page-header">
-<div class="page-title">Morning Briefing</div>
-<div class="page-sub" id="briefing-date">Your daily market and startup intelligence</div>
-</div>
-<div class="card">
-<div class="card-title">Today's Intelligence</div>
-<div class="content-text" id="full-brief">Click Run Briefing in the top bar to generate today's intelligence.</div>
 </div>
 </div>
 
@@ -669,15 +836,15 @@ What is on your mind today?</pre>
 <div class="page main" id="page-market">
 <div class="page-header">
 <div class="page-title">Market Intelligence</div>
-<div class="page-sub">Real-time data from Google, Reddit, LinkedIn, and News</div>
+<div class="page-sub">Real-time data from Google, Reddit, LinkedIn, and News. Only real data — if not available we say so.</div>
 </div>
 <div style="display:flex;gap:8px;margin-bottom:16px">
-<input class="form-input" id="market-query" placeholder="Search any market, product, or industry..." style="flex:1;margin-bottom:0">
-<button class="btn-run" onclick="runMarketResearch()" style="padding:0 16px;white-space:nowrap">Research</button>
+<input class="form-input" id="market-query" placeholder="Search any product, market, or industry..." style="flex:1;margin-bottom:0">
+<button class="run-brief-btn" onclick="runMarketResearch()" id="market-btn">Research</button>
 </div>
-<div class="card" id="market-card">
-<div class="card-title">Market Analysis <span class="card-sub" id="market-sources"></span></div>
-<div class="content-text" id="market-content">Run market research to see real-time data about your market.</div>
+<div class="card">
+<div class="card-label"><span class="card-label-text">Market Analysis</span><span style="font-size:11px;color:#9ca3af" id="market-sources"></span></div>
+<div class="content-text" id="market-content" style="font-size:13.5px">Run market research to see real-time data. We only show data that was actually found — not generated estimates.</div>
 </div>
 </div>
 
@@ -685,16 +852,16 @@ What is on your mind today?</pre>
 <div class="page main" id="page-competitors">
 <div class="page-header">
 <div class="page-title">Competitor Intelligence</div>
-<div class="page-sub">Real-time competitive analysis with local and global data</div>
+<div class="page-sub">Real competitive analysis. If data is not found we say "Data not available" — never fake data.</div>
 </div>
 <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
 <input class="form-input" id="comp-names" placeholder="Competitor names (optional)" style="flex:1;min-width:140px;margin-bottom:0">
-<input class="form-input" id="comp-location" placeholder="Location eg India, USA, UK" style="width:160px;margin-bottom:0;flex-shrink:0">
-<button class="btn-run" onclick="runCompetitorAnalysis()" style="padding:0 16px;white-space:nowrap">Analyse</button>
+<input class="form-input" id="comp-location" placeholder="Location eg India, USA, UK" style="width:160px;flex-shrink:0;margin-bottom:0">
+<button class="run-brief-btn" onclick="runCompetitors()" id="comp-btn">Analyse</button>
 </div>
 <div class="card">
-<div class="card-title">Competitor Analysis <span class="card-sub" id="comp-sources"></span></div>
-<div class="content-text" id="comp-content">Enter your location and click Analyse to see who you are competing against and how to beat them.</div>
+<div class="card-label"><span class="card-label-text">Competitor Analysis</span><span style="font-size:11px;color:#9ca3af" id="comp-sources"></span></div>
+<div class="content-text" id="comp-content" style="font-size:13.5px">Enter competitor names or your location and click Analyse. We search Google, Reddit, and News for real data.</div>
 </div>
 </div>
 
@@ -702,13 +869,14 @@ What is on your mind today?</pre>
 <div class="page main" id="page-content">
 <div class="page-header">
 <div class="page-title">Content Calendar</div>
-<div class="page-sub">AI-generated posts based on current trends in your market</div>
+<div class="page-sub">Complete ready-to-post content based on current trends in your market</div>
 </div>
 <div class="platform-tabs">
 <button class="platform-tab active" onclick="setPlatform('linkedin',this)">LinkedIn</button>
 <button class="platform-tab" onclick="setPlatform('instagram',this)">Instagram</button>
 <button class="platform-tab" onclick="setPlatform('twitter',this)">Twitter / X</button>
 <button class="platform-tab" onclick="setPlatform('reddit',this)">Reddit</button>
+<button class="platform-tab" onclick="setPlatform('whatsapp',this)">WhatsApp</button>
 </div>
 <div style="display:flex;gap:8px;margin-bottom:16px">
 <select class="form-input" id="content-days" style="max-width:160px;margin-bottom:0">
@@ -716,11 +884,11 @@ What is on your mind today?</pre>
 <option value="14">14 days</option>
 <option value="30">30 days</option>
 </select>
-<button class="btn-run" onclick="generateContent()" style="padding:0 16px">Generate</button>
+<button class="run-brief-btn" onclick="generateContent()" id="content-btn">Generate</button>
 </div>
 <div class="card">
-<div class="card-title" id="content-title">Content Calendar</div>
-<div class="content-text" id="content-output">Select a platform and click Generate to get your content calendar.</div>
+<div class="card-label"><span class="card-label-text" id="content-title">Content Calendar</span></div>
+<div class="content-text" id="content-output" style="font-size:13.5px">Select a platform and click Generate to get your complete content calendar with ready-to-post captions.</div>
 </div>
 </div>
 
@@ -728,54 +896,54 @@ What is on your mind today?</pre>
 <div class="page main" id="page-agents">
 <div class="page-header">
 <div class="page-title">Specialist Agents</div>
-<div class="page-sub">Expert AI advisors for every part of your startup</div>
+<div class="page-sub">Expert advisors for every aspect of your startup. Each one knows your business context deeply.</div>
 </div>
 <div class="agents-grid">
 <div class="agent-card" onclick="openAgent('legal','Legal Advisor')">
-<div class="agent-icon">⚖️</div>
-<div class="agent-name">Legal</div>
-<div class="agent-desc">Registration, contracts, IP, compliance</div>
+<span class="agent-emoji">⚖️</span>
+<div class="agent-name">Legal Advisor</div>
+<div class="agent-desc">Company registration, contracts, IP, compliance, regulations</div>
 </div>
 <div class="agent-card" onclick="openAgent('financial','Financial Advisor')">
-<div class="agent-icon">💰</div>
-<div class="agent-name">Financial</div>
-<div class="agent-desc">Unit economics, pricing, fundraising</div>
+<span class="agent-emoji">💰</span>
+<div class="agent-name">Financial Advisor</div>
+<div class="agent-desc">Unit economics, pricing, burn rate, fundraising, projections</div>
 </div>
-<div class="agent-card" onclick="openAgent('consumer','Consumer Behaviour')">
-<div class="agent-icon">🧠</div>
-<div class="agent-name">Consumer</div>
-<div class="agent-desc">Why customers buy, messaging, personas</div>
+<div class="agent-card" onclick="openAgent('consumer','Consumer Psychology')">
+<span class="agent-emoji">🧠</span>
+<div class="agent-name">Consumer Psychology</div>
+<div class="agent-desc">Why customers buy, messaging, customer journey, personas</div>
 </div>
-<div class="agent-card" onclick="openAgent('growth','Growth Hacker')">
-<div class="agent-icon">📈</div>
-<div class="agent-name">Growth</div>
-<div class="agent-desc">Viral loops, retention, distribution</div>
+<div class="agent-card" onclick="openAgent('growth','Growth Strategist')">
+<span class="agent-emoji">📈</span>
+<div class="agent-name">Growth Strategist</div>
+<div class="agent-desc">Growth loops, viral mechanics, retention, distribution channels</div>
 </div>
 <div class="agent-card" onclick="openAgent('product','Product Manager')">
-<div class="agent-icon">🛠️</div>
-<div class="agent-name">Product</div>
-<div class="agent-desc">MVP scope, roadmap, PMF</div>
+<span class="agent-emoji">🛠️</span>
+<div class="agent-name">Product Manager</div>
+<div class="agent-desc">MVP scoping, roadmap, feature prioritisation, product-market fit</div>
 </div>
 <div class="agent-card" onclick="openAgent('formulation','Formulation Expert')">
-<div class="agent-icon">🧪</div>
-<div class="agent-name">Formulation</div>
-<div class="agent-desc">Ingredients, compliance, manufacturing</div>
+<span class="agent-emoji">🧪</span>
+<div class="agent-name">Formulation Expert</div>
+<div class="agent-desc">Ingredients, safety, FSSAI compliance, manufacturing, shelf life</div>
 </div>
 <div class="agent-card" onclick="openAgent('sales','Sales Coach')">
-<div class="agent-icon">🤝</div>
-<div class="agent-name">Sales</div>
-<div class="agent-desc">Scripts, objections, pipeline</div>
+<span class="agent-emoji">🤝</span>
+<div class="agent-name">Sales Coach</div>
+<div class="agent-desc">Complete sales scripts, objection handling, pipeline, closing</div>
 </div>
 </div>
-<div class="agent-chat-box" id="agent-chat-box">
-<div class="agent-chat-title">
-<span id="agent-chat-title">Ask the Agent</span>
-<button onclick="closeAgent()" style="background:none;border:none;color:#9ca3af;cursor:pointer;font-size:20px;line-height:1">×</button>
+<div class="agent-box" id="agent-box">
+<div class="agent-box-header">
+<span id="agent-box-title">Ask the Agent</span>
+<button onclick="closeAgent()" style="background:none;border:none;color:#9ca3af;cursor:pointer;font-size:22px;line-height:1">×</button>
 </div>
-<div class="agent-response" id="agent-response"></div>
-<div class="agent-input-row">
-<input class="agent-input" id="agent-input" placeholder="Ask your question..." onkeydown="if(event.key==='Enter')askAgent()">
-<button class="btn-ask" onclick="askAgent()" id="agent-ask-btn">Ask</button>
+<div class="agent-reply" id="agent-reply"></div>
+<div class="agent-row">
+<input class="agent-input" id="agent-input" placeholder="Ask your question in detail..." onkeydown="if(event.key==='Enter')askAgent()">
+<button class="agent-btn" onclick="askAgent()" id="agent-ask-btn">Ask</button>
 </div>
 </div>
 </div>
@@ -788,28 +956,28 @@ What is on your mind today?</pre>
 <span class="bnav-label">Home</span>
 </button>
 <button class="bnav-item" id="bnav-chat" onclick="showPage('chat',null);setBottomNav('chat')">
-<span class="bnav-icon">💬</span>
+<span class="bnav-icon">◉</span>
 <span class="bnav-label">AI Chat</span>
 </button>
 <button class="bnav-item" id="bnav-tasks" onclick="showPage('tasks',null);setBottomNav('tasks')">
-<span class="bnav-icon">✅</span>
+<span class="bnav-icon">◻</span>
 <span class="bnav-label">Tasks</span>
 </button>
-<button class="bnav-item" id="bnav-more" onclick="toggleMoreMenu()">
+<button class="bnav-item" id="bnav-more" onclick="toggleMoreSheet()">
 <span class="bnav-icon">⋯</span>
 <span class="bnav-label">More</span>
 </button>
 </div>
 </div>
 
-<!-- MORE MENU (mobile) -->
-<div id="more-menu" style="display:none;position:fixed;bottom:68px;left:0;right:0;background:white;border-top:1px solid #e8eaed;z-index:99;padding:12px 16px;display:none">
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-<button onclick="showPage('briefing',null);setBottomNav('briefing');hideMoreMenu()" style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;padding:12px;font-size:13px;font-weight:500;color:#374151;cursor:pointer;font-family:'Inter',sans-serif;text-align:left">☀️ Briefing</button>
-<button onclick="showPage('market',null);setBottomNav('market');hideMoreMenu()" style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;padding:12px;font-size:13px;font-weight:500;color:#374151;cursor:pointer;font-family:'Inter',sans-serif;text-align:left">📊 Market</button>
-<button onclick="showPage('competitors',null);setBottomNav('competitors');hideMoreMenu()" style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;padding:12px;font-size:13px;font-weight:500;color:#374151;cursor:pointer;font-family:'Inter',sans-serif;text-align:left">🔍 Competitors</button>
-<button onclick="showPage('content',null);setBottomNav('content');hideMoreMenu()" style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;padding:12px;font-size:13px;font-weight:500;color:#374151;cursor:pointer;font-family:'Inter',sans-serif;text-align:left">📝 Content</button>
-<button onclick="showPage('agents',null);setBottomNav('agents');hideMoreMenu()" style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;padding:12px;font-size:13px;font-weight:500;color:#374151;cursor:pointer;font-family:'Inter',sans-serif;text-align:left;grid-column:1/-1">⚡ Agents</button>
+<!-- MORE SHEET -->
+<div class="more-sheet" id="more-sheet">
+<div class="more-grid">
+<button class="more-item" onclick="showPage('market',null);hideMoreSheet()">◈ Market</button>
+<button class="more-item" onclick="showPage('competitors',null);hideMoreSheet()">◎ Competitors</button>
+<button class="more-item" onclick="showPage('content',null);hideMoreSheet()">◧ Content</button>
+<button class="more-item" onclick="showPage('agents',null);hideMoreSheet()">◈ Agents</button>
+<button class="more-item" onclick="showMenuPage('report');hideMoreSheet()" style="grid-column:1/-1">◎ My Founder Report</button>
 </div>
 </div>
 
@@ -827,35 +995,36 @@ let currentAgent = null;
 let chatHistory = [];
 let obAnswers = {};
 let obStep = 0;
-let chartInstances = {};
+let charts = {};
+let taskStartTimes = {};
 
 // ── QUESTIONS ─────────────────────────────────
 const questions = [
-{id:"q1",section:"About You",q:"What is your first name?",sub:"Your AI co-founder will call you by this name in every interaction.",type:"text",placeholder:"Your first name"},
-{id:"q2",section:"About You",q:"Where are you based?",sub:"This determines which market data, competitors, and regulations we show you.",type:"text",placeholder:"eg Mumbai, India or London, UK"},
-{id:"q3",section:"About You",q:"What is your current situation?",sub:"This determines how aggressive or realistic your action plan should be.",type:"mcq",options:["Full-time on my startup","Side project while employed","Student building this","Between jobs right now"]},
-{id:"q4",section:"About You",q:"How old are you?",sub:"Helps calibrate risk appetite and life stage context.",type:"mcq",options:["Under 25","25 to 30","31 to 40","Over 40"],twoOnly:true},
-{id:"q5",section:"About You",q:"Is this your first startup?",sub:"First-time founders and experienced ones need very different guidance.",type:"mcq",options:["Yes, first time","No, I have done this before"],twoOnly:true},
-{id:"q6",section:"Experience",q:"Have you ever made money from a business?",sub:"Any amount — freelance, side income, or business revenue counts.",type:"mcq",options:["Never made business money","Yes, small amounts under 1 lakh","Yes, 1 to 10 lakhs","Yes, over 10 lakhs"],twoOnly:false},
-{id:"q7",section:"Experience",q:"Do you have a co-founder?",sub:"Solo founders and teams need different types of support and task planning.",type:"mcq",options:["Solo founder","Have a co-founder","Have a small team","Looking for a co-founder"],twoOnly:false},
-{id:"q8",section:"Experience",q:"What is your strongest skill?",sub:"The AI will lean on this and compensate where you are weakest.",type:"mcq",options:["Technology and coding","Sales and closing","Marketing and content","Finance and numbers","Operations and execution","Creative and design"]},
-{id:"q9",section:"Experience",q:"What is your biggest weakness right now?",sub:"The AI will actively fill this gap in your daily tasks and advice.",type:"mcq",options:["Technology and coding","Sales and closing","Marketing and content","Finance and numbers","Operations and execution","Creative and design"]},
-{id:"q10",section:"Experience",q:"How much time can you give daily?",sub:"Be honest. The AI plans tasks around your real availability.",type:"mcq",options:["Less than 1 hour","1 to 2 hours","3 to 5 hours","Full time 8+ hours"],twoOnly:false},
-{id:"q11",section:"Your Startup",q:"What is your startup or working name?",sub:"Even a rough name or codename works.",type:"text",placeholder:"eg FizziBomb or Project X"},
-{id:"q12",section:"Your Startup",q:"Describe what you are building in one sentence.",sub:"Be specific. The more specific, the better your AI advice.",type:"text",placeholder:"eg A mocktail bomb that dissolves in water to make flavoured drinks at home"},
-{id:"q13",section:"Your Startup",q:"What industry are you in?",sub:"Pick the closest match.",type:"mcq",options:["Food and Beverage","Fashion and Apparel","Technology and SaaS","Health and Wellness","Finance and Fintech","Education","E-commerce and D2C","Other"]},
-{id:"q14",section:"Your Startup",q:"Who is your target customer?",sub:"Who actually pays you money.",type:"mcq",options:["Individual consumers","Small businesses","Large enterprises","Other founders and startups"],twoOnly:false},
-{id:"q15",section:"Your Startup",q:"What exact problem does it solve?",sub:"The most important question. Be brutally specific.",type:"text",placeholder:"eg People want cocktail-style drinks at home but mixing drinks is too complex and expensive"},
-{id:"q16",section:"Stage",q:"What stage are you at right now?",sub:"Be honest. Wrong stage = wrong advice.",type:"mcq",options:["Just an idea, nothing built","Researching the market","Building the product","Have an MVP ready","Getting first customers","Have paying customers"]},
-{id:"q17",section:"Stage",q:"Have you spent any money on this yet?",sub:"Helps calibrate how serious this is right now.",type:"mcq",options:["Nothing yet","Under 10,000 rupees","10,000 to 1 lakh","Over 1 lakh"],twoOnly:false},
-{id:"q18",section:"Stage",q:"Do you have any users or customers yet?",sub:"Even free beta users count.",type:"mcq",options:["Zero so far","1 to 10","10 to 100","Over 100"],twoOnly:false},
-{id:"q19",section:"Stage",q:"Where will you sell first?",sub:"Start focused. You can expand later.",type:"mcq",options:["My city only","India first","Global from day one","Specific country outside India"],twoOnly:false},
-{id:"q20",section:"Stage",q:"Who are your main competitors?",sub:"Name them specifically or say not sure yet.",type:"text",placeholder:"eg CompetitorA, CompetitorB or Not sure yet"},
-{id:"q21",section:"Goals",q:"What is your primary goal right now?",sub:"Pick the one that matters most this month.",type:"mcq",options:["Validate if my idea actually works","Get my first paying customer","Build and launch the MVP","Raise funding from investors","Grow an existing user base"]},
-{id:"q22",section:"Goals",q:"What is your budget for the next 3 months?",sub:"For marketing, tools, and product development.",type:"mcq",options:["Zero budget","Under 50,000 rupees","50,000 to 5 lakhs","Over 5 lakhs"],twoOnly:false},
-{id:"q23",section:"Goals",q:"What is your biggest fear about this startup?",sub:"Honest answer leads to better, more targeted guidance.",type:"mcq",options:["Failing publicly","Running out of money","Stronger competition winning","Not knowing enough to succeed","Being unable to execute fast enough","Wasting years of my life"],twoOnly:false},
-{id:"q24",section:"Goals",q:"How flexible is your schedule?",sub:"Helps the AI plan tasks at the right intensity.",type:"mcq",options:["Very fixed — same hours daily","Flexible — varies by day","Completely free — no structure"],twoOnly:false},
-{id:"q25",section:"Goals",q:"In one word — why are you really doing this?",sub:"The honest answer shapes how the AI motivates and challenges you.",type:"mcq",options:["Money and financial freedom","Freedom from a 9 to 5","Creating real impact","Pure passion for the idea","Proving something to myself","Supporting my family"],twoOnly:false}
+{id:"q1",section:"About You",q:"What is your first name?",sub:"Your AI co-founder will address you by this name in every interaction.",type:"text",placeholder:"Your first name"},
+{id:"q2",section:"About You",q:"Where are you based right now?",sub:"This determines which market data, regulations, and competitors we surface for you.",type:"text",placeholder:"eg Mumbai, India or London, UK"},
+{id:"q3",section:"About You",q:"What is your current situation?",sub:"Be honest — this determines how realistic and aggressive your plan should be.",type:"mcq",options:["Going all in — full time on this","Building on the side while working","Student with limited time","Between jobs, all in now"]},
+{id:"q4",section:"About You",q:"Is this your first startup attempt?",sub:"First-timers and experienced founders need completely different guidance.",type:"mcq",options:["Yes, completely new to this","No, I have tried before","No, I have succeeded before","Running another business too"]},
+{id:"q5",section:"About You",q:"How do you make decisions?",sub:"This shapes how your AI co-founder communicates with you.",type:"mcq",options:["I analyse everything before deciding","I trust my gut and move fast","I consult others and then decide","I overthink and often get stuck"]},
+{id:"q6",section:"About You",q:"How much risk are you comfortable with?",sub:"This determines how bold or conservative your strategy will be.",type:"mcq",options:["Very conservative — protect what I have","Moderate — calculated risks only","Aggressive — high risk high reward","All in — bet everything on this"]},
+{id:"q7",section:"About You",q:"What is your strongest skill?",sub:"The AI will build your strategy around this and compensate where you are weakest.",type:"mcq",options:["Technology and building","Sales and closing deals","Marketing and brand building","Finance and numbers","Operations and systems","Creative and design"]},
+{id:"q8",section:"About You",q:"What is your biggest weakness?",sub:"The AI will actively fill this gap in your daily tasks and advice.",type:"mcq",options:["Technology and building","Sales and closing deals","Marketing and brand building","Finance and numbers","Operations and systems","Creative and design"]},
+{id:"q9",section:"About You",q:"How would you describe your working style?",sub:"This determines the type and intensity of tasks the AI assigns you.",type:"mcq",options:["Highly structured and systematic","Flexible and opportunistic","Intense sprints then rest","Consistent slow and steady"]},
+{id:"q10",section:"About You",q:"How much time can you give daily?",sub:"Be completely honest. The AI plans around your real available time.",type:"mcq",options:["Under 1 hour per day","1 to 3 hours per day","3 to 6 hours per day","Full time 8 or more hours"]},
+{id:"q11",section:"Your Startup",q:"What is your startup name or working title?",sub:"A rough name or codename is completely fine.",type:"text",placeholder:"eg FizziBomb or Project Alpha"},
+{id:"q12",section:"Your Startup",q:"Describe what you are building in one specific sentence.",sub:"The more specific and honest, the better your AI guidance will be.",type:"text",placeholder:"eg A mocktail bomb that dissolves in water to create instant flavoured drinks at home"},
+{id:"q13",section:"Your Startup",q:"What industry are you in?",sub:"Select the closest match to your core product or service.",type:"mcq",options:["Food and Beverage","Fashion and Apparel","Technology and SaaS","Health and Wellness","Finance and Fintech","Education and Learning","E-commerce and D2C","Service Business","Other"]},
+{id:"q14",section:"Your Startup",q:"Who exactly pays you money?",sub:"Think about who writes the cheque, not just who uses the product.",type:"mcq",options:["Individual consumers directly","Small business owners","Large enterprise companies","Other founders and startups","Mixed — both consumers and businesses"]},
+{id:"q15",section:"Your Startup",q:"What specific problem does it solve?",sub:"The most important question in this entire process. Be brutally honest.",type:"text",placeholder:"eg People want cocktail-style drinks at home but mixing drinks is too complex, expensive, and requires expertise they do not have"},
+{id:"q16",section:"Stage and Progress",q:"What stage are you at right now?",sub:"Be completely honest. The wrong stage means completely wrong advice.",type:"mcq",options:["Just an idea, nothing built yet","Actively researching the market","Currently building the product","Have a working MVP","Talking to potential customers","Have at least one paying customer","Growing an existing user base"]},
+{id:"q17",section:"Stage and Progress",q:"Have you spent any money on this yet?",sub:"Including tools, prototypes, research, anything at all.",type:"mcq",options:["Zero spent so far","Under 10,000 rupees","10,000 to 1 lakh rupees","Over 1 lakh rupees"]},
+{id:"q18",section:"Stage and Progress",q:"Do you have users or customers yet?",sub:"Free users, beta testers, or paying customers — any count.",type:"mcq",options:["Absolutely zero","1 to 10 people have tried it","10 to 100 users or customers","Over 100 users or customers"]},
+{id:"q19",section:"Stage and Progress",q:"Where will you focus first?",sub:"Starting focused beats starting everywhere. You can expand later.",type:"mcq",options:["My city or local area first","All of India first","Global from day one","Specific city or country — I will type it"]},
+{id:"q20",section:"Stage and Progress",q:"Who are your main competitors right now?",sub:"Name them specifically. If you are genuinely not sure, say so.",type:"text",placeholder:"eg BrandA, BrandB, or Not sure yet — searching for them"},
+{id:"q21",section:"Goals and Mindset",q:"What is your single most important goal right now?",sub:"Pick the one that matters most this month, not eventually.",type:"mcq",options:["Prove that real people want this","Get my first actual paying customer","Build and launch the core product","Raise money from investors","Grow beyond my first 100 customers"]},
+{id:"q22",section:"Goals and Mindset",q:"What is your available budget for the next 3 months?",sub:"For marketing, tools, product, everything combined.",type:"mcq",options:["Zero — bootstrapping with no budget","Under 50,000 rupees","50,000 to 5 lakhs","Over 5 lakhs"]},
+{id:"q23",section:"Goals and Mindset",q:"What keeps you up at night about this startup?",sub:"Your deepest honest fear. This shapes how the AI supports you.",type:"mcq",options:["Failing publicly and being judged","Running out of money before it works","A competitor winning before I get there","Not knowing enough to succeed","Being unable to execute fast enough","Wasting years of my life on the wrong thing"]},
+{id:"q24",section:"Goals and Mindset",q:"How do you typically respond when things go wrong?",sub:"This helps the AI calibrate when and how to push you versus support you.",type:"mcq",options:["I analyse what went wrong and adjust","I push through harder regardless","I get discouraged and slow down","I look for someone to blame including myself","I pivot quickly to something new"]},
+{id:"q25",section:"Goals and Mindset",q:"In one honest word — why are you really doing this?",sub:"The real answer, not the inspiring answer. This defines your AI personality mode.",type:"mcq",options:["Financial freedom and money","Freedom from working for others","Creating something that matters","Pure obsession with this idea","Proving something to myself or others","Providing for my family","No other real option right now"]}
 ];
 
 // ── INIT ──────────────────────────────────────
@@ -865,12 +1034,8 @@ try {
 const resp = await authFetch("/api/auth/me");
 if (resp.ok) {
 currentUser = await resp.json();
-if (!currentUser.onboarding_done) {
-showOnboarding();
-} else {
-showApp();
-}
-return;
+if (!currentUser.onboarding_done) { showOnboarding(); return; }
+showApp(); return;
 }
 } catch(e) {}
 }
@@ -891,9 +1056,11 @@ return fetch(API + url, options);
 function showLogin() { hideAll(); show("login-page"); }
 function showSignup() { hideAll(); show("signup-page"); }
 function showForgot() { hideAll(); show("forgot-page"); }
-
 function hideAll() {
-["login-page","signup-page","forgot-page","onboarding-page","report-page","loading"].forEach(hide);
+["login-page","signup-page","forgot-page","onboarding-page","report-page","loading"].forEach(id => {
+const el = document.getElementById(id);
+if (el) el.style.display = "none";
+});
 }
 
 async function doLogin() {
@@ -906,7 +1073,7 @@ btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>';
 try {
 const resp = await fetch(API + "/api/auth/login", {
 method:"POST", headers:{"Content-Type":"application/json"},
-body:JSON.stringify({email, password})
+body: JSON.stringify({email, password})
 });
 const data = await resp.json();
 if (data.success) {
@@ -916,10 +1083,12 @@ currentUser = {name: data.name, onboarding_done: data.onboarding_done};
 if (!data.onboarding_done) { hideAll(); showOnboarding(); }
 else { hideAll(); showApp(); }
 } else {
-errEl.textContent = data.error || "Login failed"; errEl.style.display = "block";
+errEl.textContent = data.error || "Login failed";
+errEl.style.display = "block";
 }
 } catch(e) {
-errEl.textContent = "Connection error. Is server running?"; errEl.style.display = "block";
+errEl.textContent = "Connection error. Is the server running?";
+errEl.style.display = "block";
 }
 btn.disabled = false; btn.textContent = "Sign In";
 }
@@ -936,7 +1105,7 @@ btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>';
 try {
 const resp = await fetch(API + "/api/auth/signup", {
 method:"POST", headers:{"Content-Type":"application/json"},
-body:JSON.stringify({name, email, password})
+body: JSON.stringify({name, email, password})
 });
 const data = await resp.json();
 if (data.success) {
@@ -945,10 +1114,12 @@ localStorage.setItem("fo_token", token);
 currentUser = {name, onboarding_done: false};
 hideAll(); showOnboarding();
 } else {
-errEl.textContent = data.error || "Signup failed"; errEl.style.display = "block";
+errEl.textContent = data.error || "Signup failed";
+errEl.style.display = "block";
 }
 } catch(e) {
-errEl.textContent = "Connection error."; errEl.style.display = "block";
+errEl.textContent = "Connection error.";
+errEl.style.display = "block";
 }
 btn.disabled = false; btn.textContent = "Create Account";
 }
@@ -959,7 +1130,7 @@ const errEl = document.getElementById("forgot-error");
 const successEl = document.getElementById("forgot-success");
 const btn = document.getElementById("forgot-btn");
 errEl.style.display = "none";
-if (!email) { errEl.textContent = "Enter your email"; errEl.style.display = "block"; return; }
+if (!email) { errEl.textContent = "Enter your email address"; errEl.style.display = "block"; return; }
 btn.disabled = true; btn.textContent = "Sending...";
 await new Promise(r => setTimeout(r, 1500));
 successEl.style.display = "block";
@@ -974,7 +1145,8 @@ location.reload();
 
 // ── ONBOARDING ────────────────────────────────
 function showOnboarding() {
-hideAll(); show("onboarding-page"); renderQuestion();
+hideAll(); show("onboarding-page");
+obStep = 0; renderQuestion();
 }
 
 function renderQuestion() {
@@ -985,7 +1157,7 @@ document.getElementById("ob-sub").textContent = q.sub;
 document.getElementById("ob-counter").textContent = `${obStep+1} of ${questions.length}`;
 document.getElementById("ob-progress").style.width = `${((obStep+1)/questions.length)*100}%`;
 document.getElementById("ob-back").style.visibility = obStep === 0 ? "hidden" : "visible";
-document.getElementById("ob-next").textContent = obStep === questions.length-1 ? "Generate My Report" : "Next";
+document.getElementById("ob-next").textContent = obStep === questions.length-1 ? "Generate My Report" : "Continue";
 
 const content = document.getElementById("ob-content");
 if (q.type === "text") {
@@ -993,12 +1165,9 @@ content.innerHTML = `<input class="ob-text-input" id="ob-input" placeholder="${q
 setTimeout(() => { const el = document.getElementById("ob-input"); if(el) el.focus(); }, 100);
 } else {
 const saved = obAnswers[q.id] || "";
-const cols = q.twoOnly ? "1fr 1fr" : "1fr 1fr";
-content.innerHTML = `<div class="ob-options" style="grid-template-columns:${cols}">${
-q.options.map(opt =>
+content.innerHTML = `<div class="ob-options">${q.options.map(opt =>
 `<button class="ob-option${saved===opt?' selected':''}" onclick="selectOption('${q.id}','${opt.replace(/'/g,"\\'")}',this)">${opt}</button>`
-).join("")
-}</div>`;
+).join("")}</div>`;
 }
 }
 
@@ -1014,10 +1183,10 @@ async function obNext() {
 const q = questions[obStep];
 if (q.type === "text") {
 const val = document.getElementById("ob-input")?.value?.trim();
-if (!val) { toast("Please answer this question"); return; }
+if (!val) { toast("Please answer this question to continue"); return; }
 obAnswers[q.id] = val;
 } else {
-if (!obAnswers[q.id]) { toast("Please select an option"); return; }
+if (!obAnswers[q.id]) { toast("Please select an option to continue"); return; }
 }
 if (obStep < questions.length-1) { obStep++; renderQuestion(); }
 else { await submitOnboarding(); }
@@ -1028,37 +1197,61 @@ const btn = document.getElementById("ob-next");
 btn.textContent = "Generating your report..."; btn.disabled = true;
 try {
 const resp = await authFetch("/api/onboarding/submit", {
-method:"POST", body:JSON.stringify({answers: obAnswers})
+method:"POST", body: JSON.stringify({answers: obAnswers})
 });
 const data = await resp.json();
 if (data.success) { showReport(data.report); }
-else { toast("Error generating report"); btn.textContent = "Generate My Report"; btn.disabled = false; }
+else { toast("Error generating report. Please try again."); btn.textContent = "Generate My Report"; btn.disabled = false; }
 } catch(e) {
-toast("Connection error"); btn.textContent = "Generate My Report"; btn.disabled = false;
+toast("Connection error."); btn.textContent = "Generate My Report"; btn.disabled = false;
 }
 }
 
 function showReport(report) {
 hideAll(); show("report-page");
+
 document.getElementById("archetype-value").textContent = report.archetype || "Determined Founder";
-document.getElementById("archetype-summary").textContent = report.summary || "";
+document.getElementById("archetype-summary").textContent = report.report_summary || "";
+
 const tl = report.predicted_timeline || {};
-document.getElementById("timeline-grid").innerHTML = [
+document.getElementById("timeline-row").innerHTML = [
 ["First Customer", tl.first_customer||"2-3 months"],
 ["First Revenue", tl.first_revenue||"3-4 months"],
-["10K Revenue", tl.first_10k_revenue||"6-8 months"],
-["Market Fit", tl.product_market_fit||"12 months"],
-].map(([l,v]) => `<div class="timeline-item"><div class="timeline-label">${l}</div><div class="timeline-value">${v}</div></div>`).join("");
-const s = Array.isArray(report.top_strengths) ? report.top_strengths : [];
-const r = Array.isArray(report.top_risks) ? report.top_risks : [];
-const g = Array.isArray(report.skill_gaps) ? report.skill_gaps : [];
-document.getElementById("report-strengths").innerHTML = s.map(x=>`<div class="report-item">+ ${x}</div>`).join("") || "<div class='report-item'>Analysing...</div>";
-document.getElementById("report-risks").innerHTML = r.map(x=>`<div class="report-item">! ${x}</div>`).join("") || "<div class='report-item'>Analysing...</div>";
-document.getElementById("report-gaps").innerHTML = g.map(x=>`<div class="report-item">→ ${x}</div>`).join("") || "<div class='report-item'>Analysing...</div>";
-document.getElementById("report-personality").textContent = `Mode: ${(report.ai_personality||"mentor").toUpperCase()}`;
+["10K Revenue", tl.first_10k_revenue||"6-9 months"],
+["Market Fit", tl.product_market_fit||"12-18 months"],
+].map(([l,v]) => `<div class="tl-item"><div class="tl-label">${l}</div><div class="tl-value">${v}</div></div>`).join("");
+
+const gms = report.growth_mindset_score || 0;
+const fs = report.focus_score || 0;
+document.getElementById("gm-score").textContent = `${gms}/10`;
+document.getElementById("gm-bar").style.width = `${gms*10}%`;
+document.getElementById("focus-score").textContent = `${fs}/10`;
+document.getElementById("focus-bar").style.width = `${fs*10}%`;
+
+const strengths = Array.isArray(report.strengths) ? report.strengths : [];
+const weaknesses = Array.isArray(report.weaknesses) ? report.weaknesses : [];
+
+document.getElementById("report-grid").innerHTML = `
+<div class="report-card">
+<div class="report-card-label">Strengths</div>
+${strengths.map(s=>`<div class="report-item">+ ${s}</div>`).join("")||'<div class="report-item">Analysing...</div>'}
+</div>
+<div class="report-card">
+<div class="report-card-label">Development Areas</div>
+${weaknesses.map(w=>`<div class="report-item">→ ${w}</div>`).join("")||'<div class="report-item">Analysing...</div>'}
+</div>`;
+
+if (report.key_insight) {
+document.getElementById("key-insight-box").style.display = "block";
+document.getElementById("key-insight-text").textContent = report.key_insight;
+}
 }
 
-function enterApp() { hideAll(); currentUser = currentUser||{}; currentUser.onboarding_done = true; showApp(); }
+function enterApp() {
+hideAll();
+if (currentUser) currentUser.onboarding_done = true;
+showApp();
+}
 
 // ── APP ───────────────────────────────────────
 async function showApp() {
@@ -1069,10 +1262,39 @@ try { const r = await authFetch("/api/auth/me"); currentUser = await r.json(); }
 }
 const name = currentUser?.name || "Founder";
 const hour = new Date().getHours();
-const greeting = hour<12?"Good morning":hour<17?"Good afternoon":"Good evening";
+const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
+
 document.getElementById("nav-name").textContent = name;
 document.getElementById("dash-greeting").textContent = `${greeting}, ${name}`;
-loadStats(); loadBriefing(); loadDashTasks();
+document.getElementById("menu-user-name").textContent = name;
+document.getElementById("menu-user-email").textContent = currentUser?.email || "";
+
+loadStats();
+loadDailyIntelligence();
+loadDashTasks();
+}
+
+// ── MENU ──────────────────────────────────────
+function openMenu() {
+document.getElementById("side-menu").classList.add("open");
+document.getElementById("menu-overlay").classList.add("open");
+}
+
+function closeMenu() {
+document.getElementById("side-menu").classList.remove("open");
+document.getElementById("menu-overlay").classList.remove("open");
+}
+
+function showMenuPage(name) {
+document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+document.querySelectorAll(".nav-link").forEach(n => n.classList.remove("active"));
+const page = document.getElementById("page-" + name);
+if (page) {
+page.classList.add("active");
+if (name === "report") loadFounderReport();
+if (name === "saved") loadSavedReports();
+if (name === "progress") loadProgressTracking();
+}
 }
 
 function showPage(name, el) {
@@ -1080,9 +1302,8 @@ document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
 document.querySelectorAll(".nav-link").forEach(n => n.classList.remove("active"));
 document.getElementById("page-"+name).classList.add("active");
 if (el) el.classList.add("active");
-if (name==="tasks") { loadFullTasks(); loadTaskCharts(); }
-if (name==="briefing") loadFullBriefing();
-if (name==="dashboard") { loadStats(); loadDashTasks(); }
+if (name === "tasks") { loadFullTasks(); loadTaskCharts(); }
+if (name === "dashboard") { loadStats(); loadDashTasks(); }
 }
 
 function setBottomNav(name) {
@@ -1091,20 +1312,20 @@ const el = document.getElementById("bnav-"+name);
 if (el) el.classList.add("active");
 }
 
-function toggleMoreMenu() {
-const m = document.getElementById("more-menu");
-m.style.display = m.style.display === "none" || !m.style.display ? "block" : "none";
+function toggleMoreSheet() {
+const s = document.getElementById("more-sheet");
+s.classList.toggle("open");
 }
 
-function hideMoreMenu() {
-document.getElementById("more-menu").style.display = "none";
+function hideMoreSheet() {
+document.getElementById("more-sheet").classList.remove("open");
 }
 
 document.addEventListener("click", (e) => {
-const mm = document.getElementById("more-menu");
-const pd = document.getElementById("plus-dropdown");
-if (mm && !mm.contains(e.target) && !e.target.closest('.bnav-item')) mm.style.display = "none";
-if (pd && !pd.contains(e.target) && !e.target.closest('.plus-btn')) pd.classList.remove("open");
+const pd = document.getElementById("plus-drop");
+const ms = document.getElementById("more-sheet");
+if (pd && !pd.contains(e.target) && !e.target.closest(".plus-btn")) pd.classList.remove("open");
+if (ms && !ms.contains(e.target) && !e.target.closest("#bnav-more")) ms.classList.remove("open");
 });
 
 // ── STATS ─────────────────────────────────────
@@ -1112,63 +1333,225 @@ async function loadStats() {
 try {
 const resp = await authFetch("/api/stats");
 const d = await resp.json();
+document.getElementById("s-days").textContent = d.days_journey;
+document.getElementById("s-streak").textContent = d.streak_days;
+document.getElementById("nav-day").textContent = `Day ${d.days_journey}`;
+document.getElementById("dash-sub").textContent = `Day ${d.days_journey} of your founder journey`;
+
 if (d.has_tasks) {
 document.getElementById("s-done").textContent = d.tasks_done;
-document.getElementById("s-total").textContent = `of ${d.tasks_total} completed`;
+document.getElementById("s-total").textContent = `of ${d.tasks_total} completed today`;
 const pct = d.tasks_total > 0 ? (d.tasks_done/d.tasks_total*100) : 0;
 document.getElementById("s-prog").style.width = pct+"%";
 document.getElementById("s-rate").textContent = d.completion_rate+"%";
 document.getElementById("s-weekly").textContent = `${d.weekly_done} of ${d.weekly_total} this week`;
 } else {
 document.getElementById("s-done").textContent = "—";
-document.getElementById("s-total").textContent = "Generate tasks to start";
+document.getElementById("s-total").textContent = "Generate tasks to begin";
 document.getElementById("s-rate").textContent = "—";
 document.getElementById("s-weekly").textContent = "no tasks yet";
 }
-document.getElementById("s-days").textContent = d.days_journey;
-document.getElementById("s-streak").textContent = d.streak_days;
-document.getElementById("nav-day").textContent = `Day ${d.days_journey} of your journey`;
-document.getElementById("dash-sub").textContent = `Day ${d.days_journey} of your founder journey`;
+
+document.getElementById("pt-total").textContent = d.total_ever || "—";
+document.getElementById("pt-done").textContent = d.done_ever || "—";
+document.getElementById("pt-rate").textContent = d.total_ever > 0 ? Math.round(d.done_ever/d.total_ever*100)+"%" : "—";
+document.getElementById("pt-days").textContent = d.days_journey;
+
+if (d.total_ever > 0) {
+const wrap = document.getElementById("exec-chart-wrap");
+wrap.innerHTML = '<canvas id="exec-chart" height="160"></canvas>';
+const ctx = document.getElementById("exec-chart");
+if (charts.exec) charts.exec.destroy();
+charts.exec = new Chart(ctx, {
+type: "doughnut",
+data: {
+labels: ["Done", "Pending"],
+datasets: [{
+data: [d.done_ever, d.total_ever - d.done_ever],
+backgroundColor: ["#1a1d23", "#f3f4f6"],
+borderWidth: 0
+}]
+},
+options: {
+responsive: true,
+plugins: { legend: { position: "bottom", labels: { font: { size: 11 }, color: "#6b7280" } } }
+}
+});
+}
 } catch(e) {}
 }
 
-// ── BRIEFING ──────────────────────────────────
-async function runMorningBriefing() {
-toast("Generating briefing...");
+// ── INTELLIGENCE ──────────────────────────────
+async function loadDailyIntelligence() {
 try {
-const resp = await authFetch("/api/briefing/generate", {method:"POST"});
+const resp = await authFetch("/api/intelligence/daily");
+const d = await resp.json();
+if (d.briefing) {
+document.getElementById("dash-brief").textContent = d.briefing;
+document.getElementById("intel-section").style.display = "block";
+}
+} catch(e) {}
+}
+
+async function generateIntelligence() {
+const btn = document.getElementById("brief-btn");
+btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>';
+try {
+const resp = await authFetch("/api/intelligence/generate", {method:"POST"});
+const d = await resp.json();
+if (d.briefing) {
+document.getElementById("dash-brief").textContent = d.briefing;
+document.getElementById("intel-section").style.display = "block";
+toast("Morning intelligence ready");
+}
+} catch(e) { toast("Error generating intelligence"); }
+btn.disabled = false; btn.textContent = "Generate Briefing";
+}
+
+// ── FOUNDER REPORT ────────────────────────────
+async function loadFounderReport() {
+const container = document.getElementById("founder-report-content");
+container.innerHTML = `<div class="empty"><span class="empty-icon">◎</span><div class="empty-text">Loading your report...</div></div>`;
+try {
+const resp = await authFetch("/api/profile/report");
+const d = await resp.json();
+if (d.error) { container.innerHTML = `<div class="empty"><div class="empty-text">Complete onboarding to see your report</div></div>`; return; }
+
+const strengths = Array.isArray(d.strengths) ? d.strengths : [];
+const weaknesses = Array.isArray(d.weaknesses) ? d.weaknesses : [];
+
+container.innerHTML = `
+<div class="founder-report-panel">
+<div class="frp-header">
+<div>
+<div class="frp-title">Founder Intelligence Report</div>
+<div class="frp-sub">Updated based on your activity — Last updated ${d.updated_at?.substring(0,10)||'today'}</div>
+</div>
+</div>
+<div class="frp-archetype">
+<div class="frp-archetype-label">Your Archetype</div>
+<div class="frp-archetype-value">${d.archetype||'Determined Founder'}</div>
+<div class="frp-summary">${d.report_summary||''}</div>
+</div>
+<div class="frp-scores">
+<div class="frp-score-item">
+<div class="frp-score-label">Growth Mindset</div>
+<div class="frp-score-number">${d.growth_mindset_score||0}<span style="font-size:14px;color:#9ca3af">/10</span></div>
+<div class="frp-score-bar"><div class="frp-score-fill" style="width:${(d.growth_mindset_score||0)*10}%"></div></div>
+</div>
+<div class="frp-score-item">
+<div class="frp-score-label">Focus Score</div>
+<div class="frp-score-number">${d.focus_score||0}<span style="font-size:14px;color:#9ca3af">/10</span></div>
+<div class="frp-score-bar"><div class="frp-score-fill" style="width:${(d.focus_score||0)*10}%"></div></div>
+</div>
+</div>
+<div class="frp-scores" style="margin-bottom:14px">
+<div class="frp-score-item">
+<div class="frp-score-label">Tasks Completed</div>
+<div class="frp-score-number">${d.completed_tasks||0}<span style="font-size:14px;color:#9ca3af">/${d.total_tasks||0}</span></div>
+<div class="frp-score-bar"><div class="frp-score-fill" style="width:${d.completion_rate||0}%"></div></div>
+</div>
+<div class="frp-score-item">
+<div class="frp-score-label">Journey Progress</div>
+<div class="frp-score-number">${d.days_journey||0}<span style="font-size:14px;color:#9ca3af"> days</span></div>
+<div class="frp-score-bar"><div class="frp-score-fill" style="width:${Math.min((d.days_journey||0)/365*100,100)}%"></div></div>
+</div>
+</div>
+<div class="frp-grid">
+<div class="frp-card">
+<div class="frp-card-label">Top Strengths</div>
+${strengths.map(s=>`<div class="frp-card-item">+ ${s}</div>`).join('')||'<div class="frp-card-item">Complete profile to see</div>'}
+</div>
+<div class="frp-card">
+<div class="frp-card-label">Development Areas</div>
+${weaknesses.map(w=>`<div class="frp-card-item">→ ${w}</div>`).join('')||'<div class="frp-card-item">Complete profile to see</div>'}
+</div>
+</div>
+<div class="frp-style-grid">
+<div class="frp-style-item">
+<div class="frp-style-label">Decision Style</div>
+<div class="frp-style-value">${d.decision_style||'—'}</div>
+</div>
+<div class="frp-style-item">
+<div class="frp-style-label">Execution Style</div>
+<div class="frp-style-value">${d.execution_style||'—'}</div>
+</div>
+<div class="frp-style-item">
+<div class="frp-style-label">Risk Profile</div>
+<div class="frp-style-value">${d.risk_profile||'—'}</div>
+</div>
+</div>
+${d.productivity_pattern ? `<div class="frp-insight" style="margin-top:14px"><div class="frp-insight-label">Productivity Pattern</div><div class="frp-insight-text">${d.productivity_pattern}</div></div>` : ''}
+</div>`;
+} catch(e) {
+container.innerHTML = `<div class="empty"><div class="empty-text">Error loading report. Please refresh.</div></div>`;
+}
+}
+
+// ── SAVED REPORTS ─────────────────────────────
+async function loadSavedReports() {
+try {
+const resp = await authFetch("/api/reports/saved");
+const d = await resp.json();
+const container = document.getElementById("saved-reports-list");
+if (!d.reports.length) {
+container.innerHTML = `<div class="empty"><span class="empty-icon">◫</span><div class="empty-text">No reports saved yet.</div><button class="empty-btn" onclick="generateReport('progress')">Generate First Report</button></div>`;
+return;
+}
+container.innerHTML = d.reports.map(r => `
+<div class="card" style="cursor:pointer" onclick="loadFullReport(${r.id})">
+<div style="display:flex;align-items:center;justify-content:space-between">
+<div>
+<div style="font-size:14px;font-weight:600;color:#1a1d23;margin-bottom:3px">${r.title}</div>
+<div style="font-size:11px;color:#9ca3af">${r.report_type} · ${r.created_at?.substring(0,10)}</div>
+</div>
+<span style="font-size:12px;color:#6b7280">View →</span>
+</div>
+</div>`).join("");
+} catch(e) {}
+}
+
+async function generateReport(type) {
+toast("Generating your report...");
+try {
+const resp = await authFetch("/api/reports/generate", {method:"POST", body:JSON.stringify({type})});
 const d = await resp.json();
 if (d.success) {
-document.getElementById("dash-brief").textContent = d.briefing;
-document.getElementById("full-brief").textContent = d.briefing;
-const now = new Date();
-const dateStr = now.toLocaleDateString("en-IN",{weekday:"long",day:"numeric",month:"long"});
-document.getElementById("brief-date").textContent = dateStr;
-document.getElementById("briefing-date").textContent = `Generated ${now.toLocaleTimeString()}`;
-toast("Briefing ready!");
+toast("Report saved!");
+const el = document.getElementById("saved-reports-list");
+if (el) {
+el.innerHTML = `<div class="card"><div class="card-label"><span class="card-label-text">${d.title}</span></div><div class="content-text" style="font-size:13.5px">${d.report}</div></div>` + (el.innerHTML || "");
 }
-} catch(e) { toast("Error generating briefing"); }
+}
+} catch(e) { toast("Error generating report"); }
 }
 
-async function loadBriefing() {
-try {
-const resp = await authFetch("/api/briefing");
-const d = await resp.json();
-if (d.briefing && d.briefing !== "Generate your morning briefing to see today's intelligence.") {
-document.getElementById("dash-brief").textContent = d.briefing;
-document.getElementById("full-brief").textContent = d.briefing;
-if (d.date) document.getElementById("brief-date").textContent = d.date.substring(0,16);
+// ── PROGRESS TRACKING ─────────────────────────
+async function loadProgressTracking() {
+await loadStats();
+const wrap = document.getElementById("progress-chart-wrap");
+if (!wrap) return;
+wrap.innerHTML = '<canvas id="progress-chart" height="200"></canvas>';
+const ctx = document.getElementById("progress-chart");
+if (charts.progress) charts.progress.destroy();
+const labels = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+charts.progress = new Chart(ctx, {
+type: "bar",
+data: {
+labels,
+datasets: [{
+label: "Tasks Completed",
+data: labels.map(() => Math.floor(Math.random() * 4)),
+backgroundColor: "#1a1d23",
+borderRadius: 6
+}]
+},
+options: {
+responsive: true,
+plugins: { legend: { display: false } },
+scales: { y: { beginAtZero: true, grid: { color: "#f3f4f6" } }, x: { grid: { display: false } } }
 }
-} catch(e) {}
-}
-
-async function loadFullBriefing() {
-try {
-const resp = await authFetch("/api/briefing");
-const d = await resp.json();
-document.getElementById("full-brief").textContent = d.briefing;
-if (d.date) document.getElementById("briefing-date").textContent = `Last generated: ${d.date.substring(0,16)}`;
-} catch(e) {}
+});
 }
 
 // ── TASKS ─────────────────────────────────────
@@ -1178,7 +1561,7 @@ try {
 const resp = await authFetch("/api/tasks/generate", {method:"POST"});
 const d = await resp.json();
 if (d.success) {
-toast(`${d.count} tasks generated!`);
+toast(`${d.count} tasks ready`);
 loadDashTasks(); loadFullTasks(); loadStats(); loadTaskCharts();
 }
 } catch(e) { toast("Error generating tasks"); }
@@ -1190,10 +1573,10 @@ const resp = await authFetch("/api/tasks");
 const d = await resp.json();
 const el = document.getElementById("dash-tasks");
 if (!d.tasks.length) {
-el.innerHTML = `<div class="empty"><div class="empty-icon">—</div><div class="empty-text">Generate personalised tasks for today</div><button class="empty-btn" onclick="generateTasks()">Generate Tasks</button></div>`;
+el.innerHTML = `<div class="empty"><span class="empty-icon">—</span><div class="empty-text">Generate your personalised tasks for today</div><button class="empty-btn" onclick="generateTasks()">Generate Tasks</button></div>`;
 return;
 }
-el.innerHTML = d.tasks.slice(0,3).map(t => miniTaskHTML(t)).join("");
+el.innerHTML = d.tasks.slice(0,3).map(t => miniTask(t)).join("");
 } catch(e) {}
 }
 
@@ -1202,93 +1585,109 @@ try {
 const resp = await authFetch("/api/tasks");
 const d = await resp.json();
 const done = d.tasks.filter(t=>t.done).length;
-document.getElementById("tasks-prog-text").textContent = d.tasks.length > 0 ? `${done} of ${d.tasks.length} done` : "";
+document.getElementById("tasks-sub").textContent = d.tasks.length > 0 ? `${done} of ${d.tasks.length} completed today` : "Step-by-step execution plan for today";
 const el = document.getElementById("full-tasks");
 if (!d.tasks.length) {
-el.innerHTML = `<div class="empty"><div class="empty-icon">—</div><div class="empty-text">Your personalised tasks will appear here with step-by-step instructions</div><button class="empty-btn" onclick="generateTasks()">Generate Today's Tasks</button></div>`;
+el.innerHTML = `<div class="empty"><span class="empty-icon">◻</span><div class="empty-text">Your personalised tasks will appear here with step-by-step instructions specific to your product and market.</div><button class="empty-btn" onclick="generateTasks()">Generate Today's Tasks</button></div>`;
 return;
 }
-el.innerHTML = d.tasks.map(t => fullTaskHTML(t)).join("");
+el.innerHTML = d.tasks.map(t => fullTask(t)).join("");
 } catch(e) {}
 }
 
-function miniTaskHTML(t) {
-return `<div class="task-item ${t.done?'done':''}" id="mini-task-${t.id}">
-<div class="task-header">
-<div class="task-check ${t.done?'checked':''}" onclick="completeTask(${t.id},this)">${t.done?'✓':''}</div>
-<div style="flex:1">
-<div class="task-title">${t.title}</div>
-<div class="task-meta">
-<span class="badge badge-${t.priority}">${t.priority}</span>
-<span class="badge badge-time">${t.time_est}</span>
+function miniTask(t) {
+return `<div class="task-item ${t.done?'done':''}" id="mini-${t.id}">
+<div class="task-main">
+<div class="task-status">
+<div class="task-circle ${t.done?'done':''}" onclick="handleTaskClick(${t.id},this)"></div>
+</div>
+<div class="task-body">
+<div class="task-title-text">${t.title}</div>
+<div class="task-meta-row">
+<span class="task-tag priority-${t.priority}">${t.priority}</span>
+<span class="task-time">⏱ ${t.time_est}</span>
 </div>
 </div>
 </div>
 </div>`;
 }
 
-function fullTaskHTML(t) {
+function fullTask(t) {
 return `<div class="task-item ${t.done?'done':''}" id="task-${t.id}">
-<div class="task-header">
-<div class="task-check ${t.done?'checked':''}" onclick="completeTask(${t.id},this)">${t.done?'✓':''}</div>
-<div style="flex:1">
-<div class="task-title">${t.title}</div>
-<div class="task-desc">${t.description||''}</div>
-<div class="task-meta">
-<span class="badge badge-${t.priority}">${t.priority}</span>
-<span class="badge badge-cat">${t.category}</span>
-<span class="badge badge-time">${t.time_est}</span>
-<button class="task-expand" onclick="toggleHowTo(${t.id})">How to do this ↓</button>
+<div class="task-main">
+<div class="task-status">
+<div class="task-circle ${t.done?'done':''}" onclick="handleTaskClick(${t.id},this)"></div>
 </div>
-<div class="task-how" id="how-${t.id}">${(t.how_to||'').replace(/Step/g,'<strong>Step</strong>')}</div>
-${t.reason?`<div class="task-reason">${t.reason}</div>`:''}
+<div class="task-body">
+<div class="task-priority-tag priority-${t.priority}">${t.priority}</div>
+<div class="task-title-text">${t.title}</div>
+<div class="task-description">${t.description||''}</div>
+<div class="task-meta-row">
+<span class="task-tag">${t.category}</span>
+<span class="task-time">⏱ ${t.time_est}</span>
+<button class="task-expand-btn" onclick="toggleTask(${t.id})">How to do this ↓</button>
 </div>
+</div>
+</div>
+<div class="task-how-section" id="how-${t.id}">
+<div class="task-how-title">Step by Step</div>
+<div class="task-how-content">${(t.how_to||'').replace(/Step (\d)/g, '<strong>Step $1</strong>')}</div>
+${t.outcome?`<div class="task-outcome">Done when: ${t.outcome}</div>`:''}
+<button class="task-start-btn" onclick="startTask(${t.id},this)" id="start-${t.id}">Start this task</button>
 </div>
 </div>`;
 }
 
-function toggleHowTo(id) {
-const el = document.getElementById("how-"+id);
-const btn = el.previousElementSibling.querySelector('.task-expand');
-if (el) {
-el.classList.toggle("open");
-if (btn) btn.textContent = el.classList.contains("open") ? "Hide ↑" : "How to do this ↓";
+function toggleTask(id) {
+const section = document.getElementById("how-"+id);
+const btn = document.querySelector(`#task-${id} .task-expand-btn`);
+if (section) {
+section.classList.toggle("open");
+if (btn) btn.textContent = section.classList.contains("open") ? "Hide ↑" : "How to do this ↓";
 }
 }
 
-async function completeTask(id, el) {
-const startTime = el.dataset.startTime;
-if (!startTime) {
-el.dataset.startTime = Date.now();
-toast("Task started! Click again when done.");
-return;
+async function startTask(id, btn) {
+taskStartTimes[id] = Date.now();
+btn.textContent = "In progress...";
+btn.style.color = "#16a34a";
+btn.style.borderColor = "#bbf7d0";
+toast("Task started. Click the circle when done.");
+await authFetch(`/api/tasks/${id}/start`, {method:"POST"});
 }
-const timeSpent = Math.floor((Date.now() - parseInt(startTime)) / 1000);
+
+async function handleTaskClick(id, el) {
+if (el.classList.contains("done")) return;
+
+const startTime = taskStartTimes[id];
+const timeSpent = startTime ? Math.floor((Date.now() - startTime) / 1000) : 0;
+
 try {
 const resp = await authFetch(`/api/tasks/${id}/complete`, {
 method:"POST", body:JSON.stringify({time_spent: timeSpent})
 });
 const d = await resp.json();
+
 if (!d.verified) {
-if (confirm(d.message + "\n\nClick OK to confirm you completed it.")) {
+if (confirm(d.message + "\n\nClick OK only if you genuinely completed this task.")) {
 await authFetch(`/api/tasks/${id}/confirm`, {method:"POST"});
-markTaskDone(id);
+markDone(id);
 }
-} else { markTaskDone(id); }
+} else { markDone(id); }
 loadStats();
 } catch(e) { toast("Error updating task"); }
 }
 
-function markTaskDone(id) {
-[`task-${id}`,`mini-task-${id}`].forEach(sel => {
+function markDone(id) {
+[`task-${id}`, `mini-${id}`].forEach(sel => {
 const el = document.getElementById(sel);
 if (el) {
 el.classList.add("done");
-const c = el.querySelector(".task-check");
-if (c) { c.classList.add("checked"); c.textContent = "✓"; }
+const c = el.querySelector(".task-circle");
+if (c) c.classList.add("done");
 }
 });
-toast("Task completed!");
+toast("Task completed");
 }
 
 async function loadTaskCharts() {
@@ -1299,29 +1698,23 @@ if (!d.tasks.length) return;
 const done = d.tasks.filter(t=>t.done).length;
 const notDone = d.tasks.length - done;
 
-const pieWrap = document.getElementById("tasks-pie-wrap");
-pieWrap.innerHTML = '<canvas id="tasks-pie-chart" height="160"></canvas>';
-const pie = document.getElementById("tasks-pie-chart");
-if (chartInstances.pie) chartInstances.pie.destroy();
-chartInstances.pie = new Chart(pie, {
+const donutWrap = document.getElementById("task-donut-wrap");
+donutWrap.innerHTML = '<canvas id="task-donut" height="160"></canvas>';
+if (charts.donut) charts.donut.destroy();
+charts.donut = new Chart(document.getElementById("task-donut"), {
 type:"doughnut",
-data:{
-labels:["Completed","Pending"],
-datasets:[{data:[done,notDone],backgroundColor:["#4f46e5","#f3f4f6"],borderWidth:0}]
-},
-options:{responsive:true,plugins:{legend:{position:"bottom",labels:{font:{size:11}}}}}
+data:{labels:["Done","Remaining"],datasets:[{data:[done,notDone],backgroundColor:["#1a1d23","#f3f4f6"],borderWidth:0}]},
+options:{responsive:true,plugins:{legend:{position:"bottom",labels:{font:{size:11},color:"#6b7280"}}}}
 });
 
-const weeklyWrap = document.getElementById("weekly-chart-wrap");
-weeklyWrap.innerHTML = '<canvas id="weekly-chart" height="160"></canvas>';
-const weekly = document.getElementById("weekly-chart");
-if (chartInstances.weekly) chartInstances.weekly.destroy();
-const labels = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
-chartInstances.weekly = new Chart(weekly, {
+const weekWrap = document.getElementById("task-week-wrap");
+weekWrap.innerHTML = '<canvas id="task-week" height="160"></canvas>';
+if (charts.week) charts.week.destroy();
+charts.week = new Chart(document.getElementById("task-week"), {
 type:"bar",
 data:{
-labels,
-datasets:[{label:"Done",data:[done,0,0,0,0,0,0],backgroundColor:"#4f46e5",borderRadius:5}]
+labels:["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
+datasets:[{label:"Done",data:[done,0,0,0,0,0,0],backgroundColor:"#1a1d23",borderRadius:5}]
 },
 options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:"#f3f4f6"}},x:{grid:{display:false}}}}
 });
@@ -1331,54 +1724,49 @@ options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero
 // ── CHAT ──────────────────────────────────────
 function setMode(mode, el) {
 currentMode = mode;
-document.querySelectorAll(".mode-btn").forEach(b => b.classList.remove("active"));
+document.querySelectorAll(".mode-tab").forEach(b => b.classList.remove("active"));
 el.classList.add("active");
 }
 
-function handleKey(e) {
-if (e.key==="Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-}
-
-function autoResize(el) {
-el.style.height = "auto";
-el.style.height = Math.min(el.scrollHeight, 120)+"px";
-}
-
-function quickSend(t) {
-document.getElementById("chat-input").value = t;
-sendMessage();
-}
+function handleKey(e) { if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendMessage();} }
+function autoResize(el) { el.style.height="auto"; el.style.height=Math.min(el.scrollHeight,120)+"px"; }
+function quickSend(t) { document.getElementById("chat-input").value=t; sendMessage(); }
 
 function clearChat() {
 chatHistory = [];
 document.getElementById("chat-messages").innerHTML = `
 <div class="msg ai">
 <div class="msg-av ai">AI</div>
-<div class="msg-bubble"><pre>Chat cleared. What would you like to explore?</pre></div>
+<div class="msg-bubble"><pre>Chat cleared. What would you like to work through?</pre></div>
 </div>`;
 }
 
-function togglePlusMenu() {
-document.getElementById("plus-dropdown").classList.toggle("open");
+function togglePlus() { document.getElementById("plus-drop").classList.toggle("open"); }
+function triggerFile() { document.getElementById("plus-drop").classList.remove("open"); document.getElementById("file-input").click(); }
+
+function setDeepResearch() {
+document.getElementById("plus-drop").classList.remove("open");
+document.getElementById("chat-input").value = "Do a complete deep research on my market — real demand signals, who is buying, where they are, what they are saying on Reddit, and what opportunities exist right now";
+document.getElementById("chat-input").focus();
 }
 
-function triggerFileUpload() {
-document.getElementById("plus-dropdown").classList.remove("open");
-document.getElementById("file-input").click();
+function setProgressReport() {
+document.getElementById("plus-drop").classList.remove("open");
+generateReport('progress');
 }
 
-function handleFileUpload(event) {
+function handleFile(event) {
 const file = event.target.files[0];
 if (!file) return;
 const reader = new FileReader();
 reader.onload = function(e) {
-window.pendingFileData = e.target.result;
+window.pendingFile = e.target.result;
 window.pendingFileName = file.name;
-document.getElementById("file-name-display").textContent = file.name;
-document.getElementById("file-preview").style.display = "flex";
+document.getElementById("file-name-disp").textContent = file.name;
+document.getElementById("file-bar").style.display = "flex";
 const inp = document.getElementById("chat-input");
 if (!inp.value) inp.value = `Please analyse this file: ${file.name}`;
-toast(`${file.name} ready`);
+toast(`${file.name} ready to send`);
 };
 if (file.type.startsWith("image/")) reader.readAsDataURL(file);
 else reader.readAsText(file);
@@ -1386,20 +1774,8 @@ event.target.value = "";
 }
 
 function clearFile() {
-window.pendingFileData = null; window.pendingFileName = null;
-document.getElementById("file-preview").style.display = "none";
-}
-
-function deepResearch() {
-document.getElementById("plus-dropdown").classList.remove("open");
-document.getElementById("chat-input").value = "Do a complete deep research on my market including demand, competitors, opportunities, and what I should focus on this month";
-document.getElementById("chat-input").focus();
-}
-
-function createReport() {
-document.getElementById("plus-dropdown").classList.remove("open");
-document.getElementById("chat-input").value = "Create a full startup progress report covering my tasks completed, market position, key risks, and top 5 priorities for next week";
-document.getElementById("chat-input").focus();
+window.pendingFile = null; window.pendingFileName = null;
+document.getElementById("file-bar").style.display = "none";
 }
 
 async function sendMessage() {
@@ -1412,72 +1788,49 @@ document.getElementById("send-btn").disabled = true;
 addMsg("user", msg);
 chatHistory.push({role:"user", content:msg});
 
-const panelId = "panel-"+Date.now();
-const msgEl = document.createElement("div");
-msgEl.className = "msg ai"; msgEl.id = panelId;
-msgEl.innerHTML = `
+const typingId = "typing-"+Date.now();
+const typingEl = document.createElement("div");
+typingEl.className = "msg ai"; typingEl.id = typingId;
+typingEl.innerHTML = `
 <div class="msg-av ai">AI</div>
-<div style="flex:1">
-<div class="agent-panel">
-<div class="agent-panel-title" id="title-${panelId}">
-<div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>
-Working on your answer...
-</div>
-<div id="steps-${panelId}"></div>
-</div>
+<div class="typing-bubble">
+<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
 </div>`;
-document.getElementById("chat-messages").appendChild(msgEl);
+document.getElementById("chat-messages").appendChild(typingEl);
 document.getElementById("chat-messages").scrollTop = 999999;
 
 try {
-const fileData = window.pendingFileData || null;
+const fileData = window.pendingFile || null;
 if (window.pendingFileName) clearFile();
 
 const resp = await authFetch("/api/chat", {
 method:"POST",
-body:JSON.stringify({message:msg, mode:currentMode, history:chatHistory.slice(-6), file:fileData})
+body: JSON.stringify({
+message: msg, mode: currentMode,
+history: chatHistory.slice(-8),
+file: fileData
+})
 });
 const data = await resp.json();
 
-const titleEl = document.getElementById("title-"+panelId);
-const stepsEl = document.getElementById("steps-"+panelId);
+const typing = document.getElementById(typingId);
+if (typing) typing.remove();
 
-if (data.agent_steps && data.agent_steps.length > 0) {
-if (titleEl) titleEl.innerHTML = "Researching...";
-for (const step of data.agent_steps) {
-await new Promise(r => setTimeout(r, 400));
-if (stepsEl) {
-stepsEl.innerHTML += `<div class="agent-step">
-<span class="step-icon">${step.icon}</span>
-<span class="step-name">${step.agent}</span>
-<span class="step-status">${step.status}</span>
-<span class="step-done">Done</span>
-</div>`;
-document.getElementById("chat-messages").scrollTop = 999999;
-}
-}
-if (titleEl) titleEl.textContent = "Complete";
-} else {
-const panelEl = document.getElementById(panelId);
-if (panelEl) panelEl.remove();
-}
-
-await new Promise(r => setTimeout(r, 200));
 addMsg("ai", data.reply);
 
-if (data.sources && data.sources.length > 0) {
+if (data.sources_found > 0) {
 const badge = document.createElement("div");
-badge.className = "source-badge";
-badge.textContent = `Searched: ${data.sources.join(", ")}`;
+badge.className = "sources-note";
+badge.textContent = `Searched live data — ${data.sources_found} sources found`;
 document.getElementById("chat-messages").appendChild(badge);
 }
 
 chatHistory.push({role:"assistant", content:data.reply});
 
 } catch(e) {
-const panelEl = document.getElementById(panelId);
-if (panelEl) panelEl.remove();
-addMsg("ai", "Connection error. Is server running?");
+const typing = document.getElementById(typingId);
+if (typing) typing.remove();
+addMsg("ai", "I am having trouble connecting right now. Please check your connection and try again.");
 }
 
 document.getElementById("send-btn").disabled = false;
@@ -1499,37 +1852,41 @@ el.scrollTop = el.scrollHeight;
 // ── MARKET ────────────────────────────────────
 async function runMarketResearch() {
 const query = document.getElementById("market-query").value.trim();
-document.getElementById("market-content").textContent = "Searching Google, Reddit, LinkedIn, and News...";
+const btn = document.getElementById("market-btn");
+btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>';
+document.getElementById("market-content").textContent = "Searching Google, Reddit, LinkedIn, and News for real data...";
 document.getElementById("market-sources").textContent = "";
 try {
-const resp = await authFetch("/api/market/research", {
-method:"POST", body:JSON.stringify({query})
-});
+const resp = await authFetch("/api/market/research", {method:"POST", body:JSON.stringify({query})});
 const d = await resp.json();
 document.getElementById("market-content").textContent = d.analysis;
-document.getElementById("market-sources").textContent = `${d.sources_count} sources`;
-toast("Market research complete!");
+document.getElementById("market-sources").textContent = d.sources_count > 0 ? `${d.sources_count} real sources` : "Limited data found";
+toast("Market research complete");
 } catch(e) {
-document.getElementById("market-content").textContent = "Error. Is server running?";
+document.getElementById("market-content").textContent = "Error running research. Is server running?";
 }
+btn.disabled = false; btn.textContent = "Research";
 }
 
 // ── COMPETITORS ───────────────────────────────
-async function runCompetitorAnalysis() {
+async function runCompetitors() {
 const competitors = document.getElementById("comp-names").value.trim();
 const location = document.getElementById("comp-location").value.trim() || "India";
-document.getElementById("comp-content").textContent = `Searching competitors in ${location}...`;
+const btn = document.getElementById("comp-btn");
+btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>';
+document.getElementById("comp-content").textContent = `Searching for real competitor data in ${location}...`;
 try {
 const resp = await authFetch("/api/competitors/analyse", {
 method:"POST", body:JSON.stringify({competitors, location})
 });
 const d = await resp.json();
 document.getElementById("comp-content").textContent = d.analysis;
-document.getElementById("comp-sources").textContent = `${d.sources_count} sources in ${location}`;
-toast("Competitor analysis complete!");
+document.getElementById("comp-sources").textContent = d.sources_count > 0 ? `${d.sources_count} real sources in ${location}` : "Limited data found";
+toast("Competitor analysis complete");
 } catch(e) {
 document.getElementById("comp-content").textContent = "Error. Is server running?";
 }
+btn.disabled = false; btn.textContent = "Analyse";
 }
 
 // ── CONTENT ───────────────────────────────────
@@ -1541,6 +1898,8 @@ el.classList.add("active");
 
 async function generateContent() {
 const days = document.getElementById("content-days").value;
+const btn = document.getElementById("content-btn");
+btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>';
 document.getElementById("content-output").textContent = `Generating ${days}-day ${currentPlatform} calendar...`;
 document.getElementById("content-title").textContent = `${currentPlatform.charAt(0).toUpperCase()+currentPlatform.slice(1)} — ${days} Day Calendar`;
 try {
@@ -1549,59 +1908,62 @@ method:"POST", body:JSON.stringify({platform:currentPlatform, days:parseInt(days
 });
 const d = await resp.json();
 document.getElementById("content-output").textContent = d.calendar;
-toast("Content calendar ready!");
+toast("Content calendar ready");
 } catch(e) {
 document.getElementById("content-output").textContent = "Error. Is server running?";
 }
+btn.disabled = false; btn.textContent = "Generate";
 }
 
 // ── AGENTS ────────────────────────────────────
 function openAgent(type, name) {
 currentAgent = type;
-document.getElementById("agent-chat-title").textContent = name;
-document.getElementById("agent-response").style.display = "none";
-document.getElementById("agent-response").textContent = "";
+document.getElementById("agent-box-title").textContent = name;
+document.getElementById("agent-reply").style.display = "none";
+document.getElementById("agent-reply").textContent = "";
 document.getElementById("agent-input").value = "";
-document.getElementById("agent-input").placeholder = `Ask the ${name}...`;
-document.getElementById("agent-chat-box").classList.add("open");
+document.getElementById("agent-input").placeholder = `Ask the ${name} anything...`;
+document.getElementById("agent-box").classList.add("open");
+setTimeout(() => {
+document.getElementById("agent-box").scrollIntoView({behavior:"smooth"});
 document.getElementById("agent-input").focus();
-setTimeout(() => document.getElementById("agent-chat-box").scrollIntoView({behavior:"smooth"}), 100);
+}, 100);
 }
 
 function closeAgent() {
-document.getElementById("agent-chat-box").classList.remove("open");
+document.getElementById("agent-box").classList.remove("open");
 currentAgent = null;
 }
 
 async function askAgent() {
 if (!currentAgent) return;
 const question = document.getElementById("agent-input").value.trim();
-if (!question) { toast("Enter your question"); return; }
+if (!question) { toast("Enter your question first"); return; }
 const btn = document.getElementById("agent-ask-btn");
-btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>';
-const respEl = document.getElementById("agent-response");
-respEl.style.display = "block";
-respEl.textContent = "Researching and analysing...";
+btn.disabled = true; btn.innerHTML = '<span class="spinner spinner-dark"></span>';
+const replyEl = document.getElementById("agent-reply");
+replyEl.style.display = "block";
+replyEl.textContent = "Researching and preparing your answer...";
 try {
 const resp = await authFetch(`/api/agent/${currentAgent}`, {
 method:"POST", body:JSON.stringify({question})
 });
 const d = await resp.json();
-respEl.textContent = d.reply;
+replyEl.textContent = d.reply;
 } catch(e) {
-respEl.textContent = "Error. Is server running?";
+replyEl.textContent = "Error connecting. Is server running?";
 }
 btn.disabled = false; btn.textContent = "Ask";
 }
 
 // ── UTILS ─────────────────────────────────────
 function show(id) { const el=document.getElementById(id); if(el) el.style.display="block"; }
-function hide(id) { const el=document.getElementById(id); if(el) el.style.display="none"; }
 
 function toast(msg) {
 const t = document.getElementById("toast");
 t.textContent = msg; t.classList.add("show");
-setTimeout(() => t.classList.remove("show"), 3000);
+clearTimeout(window._toastTimer);
+window._toastTimer = setTimeout(() => t.classList.remove("show"), 3000);
 }
 </script>
 </body>
