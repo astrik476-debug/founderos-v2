@@ -63,11 +63,11 @@ def ask_groq(prompt, system="", max_tokens=1500, deep=False):
 
 
 def get_db():
-    conn = sqlite3.connect(DB)
+    conn = sqlite3.connect(DB, timeout=30, check_same_thread=False)
     conn.row_factory = sqlite3.Row
+    conn.execute("PRAGMA journal_mode=WAL")
+    conn.execute("PRAGMA synchronous=NORMAL")
     return conn
-
-
 def setup_db():
     conn = get_db()
     conn.executescript("""
