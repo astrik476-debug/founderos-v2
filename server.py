@@ -28,7 +28,11 @@ password_reset_tokens = {}
 
 
 def get_db():
-    conn = psycopg2.connect(DATABASE_URL)
+    conn = psycopg2.connect(
+        DATABASE_URL,
+        sslmode='require',
+        connect_timeout=10
+    )
     return conn
 
 
