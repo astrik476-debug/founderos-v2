@@ -1,26 +1,230 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-import sqlite3, threading, requests, json, re, os
+import threading, requests, json, re, os
 from datetime import datetime, timedelta
 from google import genai
 from google.genai import types
 from groq import Groq
 import jwt
 import bcrypt
+import psycopg2
+import psycopg2.extras
+import secrets
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "founderos-secret-2024")
 CORS(app, supports_credentials=True)
 
-DB = "founderos.db"
-
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 SERPER_API_KEY = os.environ.get("SERPER_API_KEY", "")
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
+DATABASE_URL = os.environ.get("DATABASE_URL", "")
 JWT_SECRET = "founderos-jwt-secret-2024"
 
 client_gemini = genai.Client(api_key=GEMINI_API_KEY)
 client_groq = Groq(api_key=GROQ_API_KEY)
+
+password_reset_tokens = {}
+
+
+def get_db():
+    conn = psycopg2.connect(DATABASE_URL)
+    return conn
+
+
+def q(conn, sql, params=()):
+    sql = sql.replace("?", "%s")
+    sql = sql.replace("INTEGER PRIMARY KEY AUTOINCREMENT", "SERIAL PRIMARY KEY")
+    sql = sql.replace("TEXT DEFAULT (datetime('now'))", "TIMESTAMP DEFAULT NOW()")
+    sql = sql.replace("TEXT DEFAULT (date('now'))", "DATE DEFAULT CURRENT_DATE")
+    sql = sql.replace("datetime('now')", "NOW()")
+    sql = sql.replace("date('now')", "CURRENT_DATE")
+    sql = sql.replace("date('now','-1 day')", "CURRENT_DATE - INTERVAL '1 day'")
+    sql = sql.replace("date('now','-7 days')", "CURRENT_DATE - INTERVAL '7 days'")
+    sql = sql.replace("date('now','-30 days')", "CURRENT_DATE - INTERVAL '30 days'")
+    sql = sql.replace("date=date('now')", "date=CURRENT_DATE")
+    sql = sql.replace("date=date('now','-1 day')", "date=CURRENT_DATE - INTERVAL '1 day'")
+    sql = sql.replace("date>=date('now','-7 days')", "date>=CURRENT_DATE - INTERVAL '7 days'")
+    sql = sql.replace("date>=date('now','-30 days')", "date>=CURRENT_DATE - INTERVAL '30 days'")
+    sql = sql.replace("date<date('now')", "date<CURRENT_DATE")
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    cur.execute(sql, params if params else None)
+    conn.commit()
+    return cur
+
+
+def setup_db():
+    try:
+        conn = get_db()
+        cur = conn.cursor()
+        tables = [
+            """CREATE TABLE IF NOT EXISTS users (
+                id SERIAL PRIMARY KEY,
+                email TEXT UNIQUE NOT NULL,
+                password TEXT NOT NULL,
+                name TEXT,
+                created_at TIMESTAMP DEFAULT NOW(),
+                onboarding_done INTEGER DEFAULT 0,
+                journey_start DATE DEFAULT CURRENT_DATE
+            )""",
+            """CREATE TABLE IF NOT EXISTS founder_profiles (
+                id SERIAL PRIMARY KEY,
+                user_id INTEGER UNIQUE,
+                answers TEXT,
+                personality_type TEXT,
+                strengths TEXT,
+                weaknesses TEXT,
+                risk_profile TEXT,
+                execution_style TEXT,
+                decision_style TEXT,
+                growth_mindset_score INTEGER DEFAULT 0,
+                focus_score INTEGER DEFAULT 0,
+                productivity_pattern TEXT,
+                archetype TEXT,
+                ai_personality TEXT,
+                startup_name TEXT,
+                product TEXT,
+                industry TEXT,
+                stage TEXT,
+                market TEXT,
+                goal TEXT,
+                location TEXT,
+                timeline TEXT,
+                report_summary TEXT,
+                updated_at TIMESTAMP DEFAULT NOW()
+            )""",
+            """CREATE TABLE IF NOT EXISTS tasks (
+                id SERIAL PRIMARY KEY,
+                user_id INTEGER,
+                title TEXT,
+                description TEXT,
+                how_to TEXT,
+                category TEXT,
+                priority TEXT,
+                time_est TEXT,
+                reason TEXT,
+                outcome TEXT,
+                done INTEGER DEFAULT 0,
+                started_at TIMESTAMP,
+                completed_at TIMESTAMP,
+                time_taken INTEGER DEFAULT 0,
+                verified INTEGER DEFAULT 0,
+                date DATE DEFAULT CURRENT_DATE
+            )""",
+            """CREATE TABLE IF NOT EXISTS behaviour_log (
+                id SERIAL PRIMARY KEY,
+                user_id INTEGER,
+                date DATE DEFAULT CURRENT_DATE,
+                tasks_assigned INTEGER DEFAULT 0,
+                tasks_completed INTEGER DEFAULT 0,
+                tasks_avoided TEXT,
+                session_count INTEGER DEFAULT 0,
+                ai_interactions INTEGER DEFAULT 0,
+                patterns TEXT,
+                insight TEXT
+            )""",
+            """CREATE TABLE IF NOT EXISTS chat_history (
+                id SERIAL PRIMARY KEY,
+                user_id INTEGER,
+                role TEXT,
+                content TEXT,
+                timestamp TIMESTAMP DEFAULT NOW()
+            )""",
+            """CREATE TABLE IF NOT EXISTS daily_intelligence (
+                id SERIAL PRIMARY KEY,
+                user_id INTEGER,
+                date DATE DEFAULT CURRENT_DATE,
+                market_data TEXT,
+                competitor_data TEXT,
+                briefing TEXT,
+                opportunities TEXT,
+                generated_at TIMESTAMP DEFAULT NOW()
+            )""",
+            """CREATE TABLE IF NOT EXISTS saved_reports (
+                id SERIAL PRIMARY KEY,
+                user_id INTEGER,
+                title TEXT,
+                content TEXT,
+                report_type TEXT,
+                created_at TIMESTAMP DEFAULT NOW()
+            )""",
+            """CREATE TABLE IF NOT EXISTS content_library (
+                id SERIAL PRIMARY KEY,
+                user_id INTEGER,
+                platform TEXT,
+                content TEXT,
+                status TEXT DEFAULT 'draft',
+                created_at TIMESTAMP DEFAULT NOW()
+            )""",
+            """CREATE TABLE IF NOT EXISTS market_data (
+                id SERIAL PRIMARY KEY,
+                user_id INTEGER,
+                query TEXT,
+                data TEXT,
+                sources TEXT,
+                saved_at TIMESTAMP DEFAULT NOW()
+            )""",
+            """CREATE TABLE IF NOT EXISTS competitor_data (
+                id SERIAL PRIMARY KEY,
+                user_id INTEGER,
+                data TEXT,
+                saved_at TIMESTAMP DEFAULT NOW()
+            )"""
+        ]
+        for table in tables:
+            cur.execute(table)
+        conn.commit()
+        cur.close()
+        conn.close()
+        print("Database setup complete")
+    except Exception as e:
+        print(f"Database setup error: {e}")
+
+
+def create_token(user_id):
+    payload = {
+        "user_id": user_id,
+        "exp": datetime.utcnow() + timedelta(days=30)
+    }
+    return jwt.encode(payload, JWT_SECRET, algorithm="HS256")
+
+
+def verify_token(token):
+    try:
+        payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
+        return payload["user_id"]
+    except:
+        return None
+
+
+def get_current_user():
+    auth = request.headers.get("Authorization", "")
+    if auth.startswith("Bearer "):
+        token = auth[7:]
+        user_id = verify_token(token)
+        if user_id:
+            try:
+                conn = get_db()
+                cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+                cur.execute("SELECT * FROM users WHERE id=%s", (user_id,))
+                user = cur.fetchone()
+                cur.close()
+                conn.close()
+                return dict(user) if user else None
+            except:
+                return None
+    return None
+
+
+def require_auth(f):
+    from functools import wraps
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        user = get_current_user()
+        if not user:
+            return jsonify({"error": "Unauthorized"}), 401
+        return f(user, *args, **kwargs)
+    return decorated
 
 
 def ask_gemini(prompt, system="", max_tokens=2000):
@@ -62,167 +266,6 @@ def ask_groq(prompt, system="", max_tokens=1500, deep=False):
         return "I am having trouble connecting right now. Please try again in a moment."
 
 
-def get_db():
-    conn = sqlite3.connect(DB, timeout=30, check_same_thread=False)
-    conn.row_factory = sqlite3.Row
-    conn.execute("PRAGMA journal_mode=WAL")
-    conn.execute("PRAGMA synchronous=NORMAL")
-    return conn
-def setup_db():
-    conn = get_db()
-    conn.executescript("""
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            email TEXT UNIQUE NOT NULL,
-            password TEXT NOT NULL,
-            name TEXT,
-            created_at TEXT DEFAULT (datetime('now')),
-            onboarding_done INTEGER DEFAULT 0,
-            journey_start TEXT DEFAULT (date('now'))
-        );
-
-        CREATE TABLE IF NOT EXISTS founder_profiles (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER UNIQUE,
-            answers TEXT,
-            personality_type TEXT,
-            strengths TEXT,
-            weaknesses TEXT,
-            risk_profile TEXT,
-            execution_style TEXT,
-            decision_style TEXT,
-            growth_mindset_score INTEGER DEFAULT 0,
-            focus_score INTEGER DEFAULT 0,
-            productivity_pattern TEXT,
-            archetype TEXT,
-            ai_personality TEXT,
-            startup_name TEXT,
-            product TEXT,
-            industry TEXT,
-            stage TEXT,
-            market TEXT,
-            goal TEXT,
-            location TEXT,
-            timeline TEXT,
-            report_summary TEXT,
-            updated_at TEXT DEFAULT (datetime('now'))
-        );
-
-        CREATE TABLE IF NOT EXISTS tasks (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER,
-            title TEXT,
-            description TEXT,
-            how_to TEXT,
-            category TEXT,
-            priority TEXT,
-            time_est TEXT,
-            reason TEXT,
-            outcome TEXT,
-            done INTEGER DEFAULT 0,
-            started_at TEXT,
-            completed_at TEXT,
-            time_taken INTEGER DEFAULT 0,
-            verified INTEGER DEFAULT 0,
-            date TEXT DEFAULT (date('now'))
-        );
-
-        CREATE TABLE IF NOT EXISTS behaviour_log (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER,
-            date TEXT DEFAULT (date('now')),
-            tasks_assigned INTEGER DEFAULT 0,
-            tasks_completed INTEGER DEFAULT 0,
-            tasks_avoided TEXT,
-            session_count INTEGER DEFAULT 0,
-            ai_interactions INTEGER DEFAULT 0,
-            patterns TEXT,
-            insight TEXT
-        );
-
-        CREATE TABLE IF NOT EXISTS chat_history (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER,
-            role TEXT,
-            content TEXT,
-            timestamp TEXT DEFAULT (datetime('now'))
-        );
-
-        CREATE TABLE IF NOT EXISTS daily_intelligence (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER,
-            date TEXT DEFAULT (date('now')),
-            market_data TEXT,
-            competitor_data TEXT,
-            briefing TEXT,
-            opportunities TEXT,
-            generated_at TEXT DEFAULT (datetime('now'))
-        );
-
-        CREATE TABLE IF NOT EXISTS saved_reports (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER,
-            title TEXT,
-            content TEXT,
-            report_type TEXT,
-            created_at TEXT DEFAULT (datetime('now'))
-        );
-
-        CREATE TABLE IF NOT EXISTS content_library (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER,
-            platform TEXT,
-            content TEXT,
-            status TEXT DEFAULT 'draft',
-            created_at TEXT DEFAULT (datetime('now'))
-        );
-    """)
-    conn.commit()
-    conn.close()
-
-
-def create_token(user_id):
-    payload = {
-        "user_id": user_id,
-        "exp": datetime.utcnow() + timedelta(days=30)
-    }
-    return jwt.encode(payload, JWT_SECRET, algorithm="HS256")
-
-
-def verify_token(token):
-    try:
-        payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
-        return payload["user_id"]
-    except:
-        return None
-
-
-def get_current_user():
-    auth = request.headers.get("Authorization", "")
-    if auth.startswith("Bearer "):
-        token = auth[7:]
-        user_id = verify_token(token)
-        if user_id:
-            conn = get_db()
-            user = conn.execute(
-                "SELECT * FROM users WHERE id=?", (user_id,)
-            ).fetchone()
-            conn.close()
-            return dict(user) if user else None
-    return None
-
-
-def require_auth(f):
-    from functools import wraps
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        user = get_current_user()
-        if not user:
-            return jsonify({"error": "Unauthorized"}), 401
-        return f(user, *args, **kwargs)
-    return decorated
-
-
 def serper_search(query, search_type="search", num=5):
     try:
         headers = {
@@ -242,8 +285,7 @@ def serper_search(query, search_type="search", num=5):
                     "title": item.get("title", ""),
                     "snippet": item.get("snippet", ""),
                     "link": item.get("link", ""),
-                    "source": item.get("source", ""),
-                    "date": item.get("date", "")
+                    "source": item.get("source", "")
                 })
             return results
         else:
@@ -285,8 +327,7 @@ def reddit_search(query, limit=5):
                 "title": p.get("title", ""),
                 "text": p.get("selftext", "")[:400],
                 "subreddit": p.get("subreddit", ""),
-                "score": p.get("score", 0),
-                "url": f"https://reddit.com{p.get('permalink', '')}"
+                "score": p.get("score", 0)
             })
         return results
     except Exception as e:
@@ -329,22 +370,33 @@ def format_search_results(results_dict):
 
 
 def get_profile(user_id):
-    conn = get_db()
-    profile = conn.execute(
-        "SELECT * FROM founder_profiles WHERE user_id=?", (user_id,)
-    ).fetchone()
-    conn.close()
-    return dict(profile) if profile else {}
+    try:
+        conn = get_db()
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cur.execute("SELECT * FROM founder_profiles WHERE user_id=%s", (user_id,))
+        profile = cur.fetchone()
+        cur.close()
+        conn.close()
+        return dict(profile) if profile else {}
+    except Exception as e:
+        print(f"Profile error: {e}")
+        return {}
 
 
 def get_behaviour(user_id):
-    conn = get_db()
-    logs = conn.execute(
-        "SELECT * FROM behaviour_log WHERE user_id=? ORDER BY date DESC LIMIT 7",
-        (user_id,)
-    ).fetchall()
-    conn.close()
-    return [dict(l) for l in logs]
+    try:
+        conn = get_db()
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cur.execute(
+            "SELECT * FROM behaviour_log WHERE user_id=%s ORDER BY date DESC LIMIT 7",
+            (user_id,)
+        )
+        logs = cur.fetchall()
+        cur.close()
+        conn.close()
+        return [dict(l) for l in logs]
+    except:
+        return []
 
 
 def build_deep_context(user, profile):
@@ -353,17 +405,23 @@ def build_deep_context(user, profile):
 
     days = 0
     try:
-        start = datetime.strptime(
-            user.get("journey_start", str(datetime.now().date())), "%Y-%m-%d"
-        )
-        days = (datetime.now() - start).days
+        start = user.get("journey_start")
+        if start:
+            if isinstance(start, str):
+                start = datetime.strptime(start, "%Y-%m-%d")
+            elif hasattr(start, 'year'):
+                start = datetime(start.year, start.month, start.day)
+            days = (datetime.now() - start).days
     except:
         pass
 
     behaviour = get_behaviour(user["id"])
     avg_completion = 0
     if behaviour:
-        completions = [b["tasks_completed"] / max(b["tasks_assigned"], 1) * 100 for b in behaviour if b["tasks_assigned"] > 0]
+        completions = [
+            b["tasks_completed"] / max(b["tasks_assigned"], 1) * 100
+            for b in behaviour if b.get("tasks_assigned", 0) > 0
+        ]
         if completions:
             avg_completion = sum(completions) / len(completions)
 
@@ -397,10 +455,9 @@ Strengths: {profile.get('strengths', 'Not analyzed')}
 Weaknesses: {profile.get('weaknesses', 'Not analyzed')}
 Productivity Pattern: {profile.get('productivity_pattern', 'Not analyzed')}
 
-Behaviour Data (Last 7 days):
-- Average Task Completion Rate: {avg_completion:.0f}%
-- AI Interaction Sessions: {sum(b.get('ai_interactions', 0) for b in behaviour)}
-- Consistency Pattern: {'Strong' if avg_completion > 70 else 'Building' if avg_completion > 40 else 'Needs work'}
+Behaviour (Last 7 days):
+- Average Task Completion: {avg_completion:.0f}%
+- Consistency: {'Strong' if avg_completion > 70 else 'Building' if avg_completion > 40 else 'Needs work'}
 
 AI Personality Mode: {profile.get('ai_personality', 'mentor')}
 """
@@ -419,22 +476,25 @@ def signup():
     hashed = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
     try:
         conn = get_db()
-        conn.execute(
-            "INSERT INTO users (email, password, name) VALUES (?,?,?)",
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cur.execute(
+            "INSERT INTO users (email, password, name) VALUES (%s,%s,%s) RETURNING *",
             (email, hashed, name)
         )
+        user = cur.fetchone()
         conn.commit()
-        user = conn.execute(
-            "SELECT * FROM users WHERE email=?", (email,)
-        ).fetchone()
+        cur.close()
         conn.close()
         token = create_token(user["id"])
         return jsonify({
             "success": True, "token": token,
             "name": name, "onboarding_done": False
         })
-    except sqlite3.IntegrityError:
+    except psycopg2.IntegrityError:
         return jsonify({"error": "Email already registered"}), 400
+    except Exception as e:
+        print(f"Signup error: {e}")
+        return jsonify({"error": "Server error"}), 500
 
 
 @app.route("/api/auth/login", methods=["POST"])
@@ -442,21 +502,26 @@ def login():
     data = request.json
     email = data.get("email", "").strip().lower()
     password = data.get("password", "")
-    conn = get_db()
-    user = conn.execute(
-        "SELECT * FROM users WHERE email=?", (email,)
-    ).fetchone()
-    conn.close()
-    if not user or not bcrypt.checkpw(
-        password.encode(), user["password"].encode()
-    ):
-        return jsonify({"error": "Invalid email or password"}), 401
-    token = create_token(user["id"])
-    return jsonify({
-        "success": True, "token": token,
-        "name": user["name"],
-        "onboarding_done": bool(user["onboarding_done"])
-    })
+    try:
+        conn = get_db()
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cur.execute("SELECT * FROM users WHERE email=%s", (email,))
+        user = cur.fetchone()
+        cur.close()
+        conn.close()
+        if not user or not bcrypt.checkpw(
+            password.encode(), user["password"].encode()
+        ):
+            return jsonify({"error": "Invalid email or password"}), 401
+        token = create_token(user["id"])
+        return jsonify({
+            "success": True, "token": token,
+            "name": user["name"],
+            "onboarding_done": bool(user["onboarding_done"])
+        })
+    except Exception as e:
+        print(f"Login error: {e}")
+        return jsonify({"error": "Server error"}), 500
 
 
 @app.route("/api/auth/me")
@@ -466,8 +531,70 @@ def get_me(user):
         "id": user["id"], "name": user["name"],
         "email": user["email"],
         "onboarding_done": bool(user["onboarding_done"]),
-        "journey_start": user.get("journey_start")
+        "journey_start": str(user.get("journey_start", ""))
     })
+
+
+@app.route("/api/auth/forgot-password", methods=["POST"])
+def forgot_password():
+    data = request.json
+    email = data.get("email", "").strip().lower()
+    if not email:
+        return jsonify({"error": "Email required"}), 400
+    try:
+        conn = get_db()
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cur.execute("SELECT * FROM users WHERE email=%s", (email,))
+        user = cur.fetchone()
+        cur.close()
+        conn.close()
+        if not user:
+            return jsonify({"success": True})
+        reset_token = secrets.token_urlsafe(32)
+        password_reset_tokens[reset_token] = {
+            "email": email,
+            "name": user["name"],
+            "expires": (datetime.utcnow() + timedelta(hours=1)).isoformat()
+        }
+        reset_link = f"{request.host_url}?reset={reset_token}"
+        print(f"Reset link for {email}: {reset_link}")
+        return jsonify({"success": True, "message": "Reset instructions sent"})
+    except Exception as e:
+        print(f"Forgot password error: {e}")
+        return jsonify({"success": True})
+
+
+@app.route("/api/auth/reset-password", methods=["POST"])
+def reset_password():
+    data = request.json
+    token = data.get("token", "")
+    new_password = data.get("password", "")
+    if not token or not new_password or len(new_password) < 6:
+        return jsonify({"error": "Valid token and password required"}), 400
+    token_data = password_reset_tokens.get(token)
+    if not token_data:
+        return jsonify({"error": "Invalid or expired reset link"}), 400
+    try:
+        expires = datetime.fromisoformat(token_data["expires"])
+        if datetime.utcnow() > expires:
+            del password_reset_tokens[token]
+            return jsonify({"error": "Reset link has expired"}), 400
+    except:
+        return jsonify({"error": "Invalid token"}), 400
+    email = token_data["email"]
+    hashed = bcrypt.hashpw(new_password.encode(), bcrypt.gensalt()).decode()
+    try:
+        conn = get_db()
+        cur = conn.cursor()
+        cur.execute("UPDATE users SET password=%s WHERE email=%s", (hashed, email))
+        conn.commit()
+        cur.close()
+        conn.close()
+        del password_reset_tokens[token]
+        return jsonify({"success": True, "message": "Password updated successfully"})
+    except Exception as e:
+        print(f"Reset password error: {e}")
+        return jsonify({"error": "Server error"}), 500
 
 
 @app.route("/api/onboarding/submit", methods=["POST"])
@@ -477,38 +604,35 @@ def submit_onboarding(user):
     answers = data.get("answers", {})
 
     prompt = f"""
-You are analyzing a founder's complete onboarding profile to generate their Founder Intelligence Report.
+Analyze this founder profile from their onboarding answers and generate a Founder Intelligence Report.
 
-Founder Answers:
+Answers:
 {json.dumps(answers, indent=2)}
 
-Generate a comprehensive Founder Intelligence Report in this EXACT JSON format. Be specific and insightful, not generic:
-
+Return ONLY valid JSON in this exact format. No markdown. No extra text:
 {{
-  "archetype": "Specific 3-5 word founder archetype based on their answers",
-  "personality_type": "Detailed personality description in 2 sentences",
-  "decision_style": "How they make decisions - analytical/intuitive/consultative/decisive",
-  "execution_style": "How they execute - systematic/agile/opportunistic/methodical",
-  "risk_profile": "Risk tolerance level and behavior - conservative/moderate/aggressive/calculated",
+  "archetype": "Specific 3-5 word founder archetype",
+  "personality_type": "Detailed personality in 2 sentences",
+  "decision_style": "analytical or intuitive or consultative or decisive",
+  "execution_style": "systematic or agile or opportunistic or methodical",
+  "risk_profile": "conservative or moderate or aggressive or calculated",
   "growth_mindset_score": 7,
   "focus_score": 6,
-  "productivity_pattern": "When and how they are most productive based on their answers",
+  "productivity_pattern": "When and how they work best based on answers",
   "strengths": ["strength 1", "strength 2", "strength 3"],
   "weaknesses": ["weakness 1", "weakness 2", "weakness 3"],
   "ai_personality": "one of: tough-love, encouraging, analytical, challenger, mentor",
-  "report_summary": "A powerful 4-5 sentence summary of this founder that reads like a real human assessment. Reference their specific situation.",
+  "report_summary": "4-5 sentence honest assessment of this specific founder",
   "predicted_timeline": {{
     "first_customer": "realistic timeframe",
     "first_revenue": "realistic timeframe",
     "first_10k_revenue": "realistic timeframe",
     "product_market_fit": "realistic timeframe"
   }},
-  "key_insight": "The single most important thing this founder needs to understand about themselves right now",
-  "biggest_risk": "The most likely way this founder will self-sabotage",
-  "superpower": "The one thing about this founder that could make them unstoppable"
+  "key_insight": "Single most important thing this founder needs to understand about themselves",
+  "biggest_risk": "Most likely way this founder will self-sabotage",
+  "superpower": "The one thing that could make this founder unstoppable"
 }}
-
-Return ONLY valid JSON. No markdown. No extra text.
 """
 
     report_text = ask_gemini(prompt, max_tokens=1500)
@@ -527,7 +651,7 @@ Return ONLY valid JSON. No markdown. No extra text.
     except:
         report = {
             "archetype": "Determined First-Time Builder",
-            "personality_type": "A focused individual who is serious about building something meaningful.",
+            "personality_type": "A focused individual serious about building something meaningful.",
             "decision_style": "analytical",
             "execution_style": "systematic",
             "risk_profile": "moderate",
@@ -537,7 +661,7 @@ Return ONLY valid JSON. No markdown. No extra text.
             "strengths": ["Strong vision", "Determination", "Domain knowledge"],
             "weaknesses": ["Sales experience", "Marketing", "Financial planning"],
             "ai_personality": "mentor",
-            "report_summary": "You are at the beginning of your founder journey with a clear vision of what you want to build. Your determination is your biggest asset right now.",
+            "report_summary": "You are at the beginning of your founder journey with a clear vision.",
             "predicted_timeline": {
                 "first_customer": "2-3 months",
                 "first_revenue": "3-4 months",
@@ -557,70 +681,72 @@ Return ONLY valid JSON. No markdown. No extra text.
         "market": answers.get("q19", ""),
         "goal": answers.get("q21", ""),
         "location": answers.get("q2", "India"),
-        "timeline": answers.get("q22_timeline", ""),
+        "timeline": answers.get("q22", ""),
     }
-
-    conn = get_db()
-    existing = conn.execute(
-        "SELECT id FROM founder_profiles WHERE user_id=?", (user["id"],)
-    ).fetchone()
 
     strengths_json = json.dumps(report.get("strengths", []))
     weaknesses_json = json.dumps(report.get("weaknesses", []))
 
-    if existing:
-        conn.execute("""
-            UPDATE founder_profiles SET
-            answers=?, personality_type=?, strengths=?, weaknesses=?,
-            risk_profile=?, execution_style=?, decision_style=?,
-            growth_mindset_score=?, focus_score=?, productivity_pattern=?,
-            archetype=?, ai_personality=?, startup_name=?, product=?,
-            industry=?, stage=?, market=?, goal=?, location=?, timeline=?,
-            report_summary=?, updated_at=datetime('now')
-            WHERE user_id=?
-        """, (
-            json.dumps(answers), report.get("personality_type", ""),
-            strengths_json, weaknesses_json,
-            report.get("risk_profile", ""), report.get("execution_style", ""),
-            report.get("decision_style", ""), report.get("growth_mindset_score", 5),
-            report.get("focus_score", 5), report.get("productivity_pattern", ""),
-            report.get("archetype", ""), report.get("ai_personality", "mentor"),
-            profile_data["startup_name"], profile_data["product"],
-            profile_data["industry"], profile_data["stage"],
-            profile_data["market"], profile_data["goal"],
-            profile_data["location"], profile_data["timeline"],
-            report.get("report_summary", ""), user["id"]
-        ))
-    else:
-        conn.execute("""
-            INSERT INTO founder_profiles
-            (user_id, answers, personality_type, strengths, weaknesses,
-            risk_profile, execution_style, decision_style, growth_mindset_score,
-            focus_score, productivity_pattern, archetype, ai_personality,
-            startup_name, product, industry, stage, market, goal,
-            location, timeline, report_summary)
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
-        """, (
-            user["id"], json.dumps(answers), report.get("personality_type", ""),
-            strengths_json, weaknesses_json,
-            report.get("risk_profile", ""), report.get("execution_style", ""),
-            report.get("decision_style", ""), report.get("growth_mindset_score", 5),
-            report.get("focus_score", 5), report.get("productivity_pattern", ""),
-            report.get("archetype", ""), report.get("ai_personality", "mentor"),
-            profile_data["startup_name"], profile_data["product"],
-            profile_data["industry"], profile_data["stage"],
-            profile_data["market"], profile_data["goal"],
-            profile_data["location"], profile_data["timeline"],
-            report.get("report_summary", "")
-        ))
+    try:
+        conn = get_db()
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cur.execute("SELECT id FROM founder_profiles WHERE user_id=%s", (user["id"],))
+        existing = cur.fetchone()
 
-    conn.execute(
-        "UPDATE users SET onboarding_done=1 WHERE id=?", (user["id"],)
-    )
-    conn.commit()
-    conn.close()
+        if existing:
+            cur.execute("""
+                UPDATE founder_profiles SET
+                answers=%s, personality_type=%s, strengths=%s, weaknesses=%s,
+                risk_profile=%s, execution_style=%s, decision_style=%s,
+                growth_mindset_score=%s, focus_score=%s, productivity_pattern=%s,
+                archetype=%s, ai_personality=%s, startup_name=%s, product=%s,
+                industry=%s, stage=%s, market=%s, goal=%s, location=%s, timeline=%s,
+                report_summary=%s, updated_at=NOW()
+                WHERE user_id=%s
+            """, (
+                json.dumps(answers), report.get("personality_type", ""),
+                strengths_json, weaknesses_json,
+                report.get("risk_profile", ""), report.get("execution_style", ""),
+                report.get("decision_style", ""), report.get("growth_mindset_score", 5),
+                report.get("focus_score", 5), report.get("productivity_pattern", ""),
+                report.get("archetype", ""), report.get("ai_personality", "mentor"),
+                profile_data["startup_name"], profile_data["product"],
+                profile_data["industry"], profile_data["stage"],
+                profile_data["market"], profile_data["goal"],
+                profile_data["location"], profile_data["timeline"],
+                report.get("report_summary", ""), user["id"]
+            ))
+        else:
+            cur.execute("""
+                INSERT INTO founder_profiles
+                (user_id, answers, personality_type, strengths, weaknesses,
+                risk_profile, execution_style, decision_style, growth_mindset_score,
+                focus_score, productivity_pattern, archetype, ai_personality,
+                startup_name, product, industry, stage, market, goal,
+                location, timeline, report_summary)
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+            """, (
+                user["id"], json.dumps(answers), report.get("personality_type", ""),
+                strengths_json, weaknesses_json,
+                report.get("risk_profile", ""), report.get("execution_style", ""),
+                report.get("decision_style", ""), report.get("growth_mindset_score", 5),
+                report.get("focus_score", 5), report.get("productivity_pattern", ""),
+                report.get("archetype", ""), report.get("ai_personality", "mentor"),
+                profile_data["startup_name"], profile_data["product"],
+                profile_data["industry"], profile_data["stage"],
+                profile_data["market"], profile_data["goal"],
+                profile_data["location"], profile_data["timeline"],
+                report.get("report_summary", "")
+            ))
 
-    return jsonify({"success": True, "report": report})
+        cur.execute("UPDATE users SET onboarding_done=1 WHERE id=%s", (user["id"],))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return jsonify({"success": True, "report": report})
+    except Exception as e:
+        print(f"Onboarding error: {e}")
+        return jsonify({"error": "Server error saving profile"}), 500
 
 
 @app.route("/api/profile/report")
@@ -630,25 +756,30 @@ def get_founder_report(user):
     if not profile:
         return jsonify({"error": "Profile not found"}), 404
 
-    conn = get_db()
     days = 0
     try:
-        start = datetime.strptime(
-            user.get("journey_start", str(datetime.now().date())), "%Y-%m-%d"
-        )
-        days = (datetime.now() - start).days
+        start = user.get("journey_start")
+        if start:
+            if isinstance(start, str):
+                start = datetime.strptime(start, "%Y-%m-%d")
+            elif hasattr(start, 'year'):
+                start = datetime(start.year, start.month, start.day)
+            days = (datetime.now() - start).days
     except:
         pass
 
-    total_tasks = conn.execute(
-        "SELECT COUNT(*) FROM tasks WHERE user_id=?", (user["id"],)
-    ).fetchone()[0]
-    completed_tasks = conn.execute(
-        "SELECT COUNT(*) FROM tasks WHERE user_id=? AND done=1", (user["id"],)
-    ).fetchone()[0]
-    conn.close()
-
-    completion_rate = round(completed_tasks / max(total_tasks, 1) * 100)
+    try:
+        conn = get_db()
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cur.execute("SELECT COUNT(*) as cnt FROM tasks WHERE user_id=%s", (user["id"],))
+        total_tasks = cur.fetchone()["cnt"]
+        cur.execute("SELECT COUNT(*) as cnt FROM tasks WHERE user_id=%s AND done=1", (user["id"],))
+        done_tasks = cur.fetchone()["cnt"]
+        cur.close()
+        conn.close()
+    except:
+        total_tasks = 0
+        done_tasks = 0
 
     strengths = profile.get("strengths", "[]")
     weaknesses = profile.get("weaknesses", "[]")
@@ -673,11 +804,11 @@ def get_founder_report(user):
         "report_summary": profile.get("report_summary", ""),
         "days_journey": days,
         "total_tasks": total_tasks,
-        "completed_tasks": completed_tasks,
-        "completion_rate": completion_rate,
+        "completed_tasks": done_tasks,
+        "completion_rate": round(done_tasks / max(total_tasks, 1) * 100),
         "startup_name": profile.get("startup_name", ""),
         "stage": profile.get("stage", ""),
-        "updated_at": profile.get("updated_at", "")
+        "updated_at": str(profile.get("updated_at", ""))
     })
 
 
@@ -691,23 +822,23 @@ def chat(user):
     context = build_deep_context(user, profile)
     message_lower = message.lower().strip()
 
-    conn = get_db()
-    history = conn.execute(
-        "SELECT role, content FROM chat_history WHERE user_id=? ORDER BY id DESC LIMIT 12",
-        (user["id"],)
-    ).fetchall()
-    conn.execute(
-        "UPDATE behaviour_log SET ai_interactions = ai_interactions + 1 WHERE user_id=? AND date=date('now')",
-        (user["id"],)
-    )
-    conn.commit()
-    conn.close()
-    history = list(reversed([dict(h) for h in history]))
+    try:
+        conn = get_db()
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cur.execute(
+            "SELECT role, content FROM chat_history WHERE user_id=%s ORDER BY id DESC LIMIT 12",
+            (user["id"],)
+        )
+        history = list(reversed([dict(h) for h in cur.fetchall()]))
+        cur.close()
+        conn.close()
+    except:
+        history = []
 
     is_greeting = len(message.split()) <= 4 and any(
         message_lower.startswith(p) for p in [
             "hey", "hi", "hello", "good morning", "good evening",
-            "thanks", "thank you", "ok", "okay", "sup", "how are"
+            "thanks", "thank you", "ok", "okay", "sup"
         ]
     )
 
@@ -717,52 +848,42 @@ def chat(user):
     if not is_greeting and len(message) > 15:
         industry = profile.get("industry", "")
         location = profile.get("location", "India")
-
         search_queries = {
             "google": (f"{message} {industry} {location} 2025", "search"),
-            "news": (f"{message} {industry} latest news 2025", "news"),
-            "reddit": (f"{message} {industry} founder experience", "reddit_native"),
+            "news": (f"{message} {industry} latest 2025", "news"),
+            "reddit": (f"{message} {industry} founder", "reddit_native"),
         }
-
         all_results = multi_search(search_queries)
         web_context, web_total = format_search_results(all_results)
 
     personality = profile.get("ai_personality", "mentor")
-    personality_instructions = {
-        "tough-love": "Be direct, demanding, and challenging. Call out avoidance and weak thinking immediately. You believe in this founder but refuse to let them make excuses.",
-        "encouraging": "Be warm, energetic, and celebrate every step forward. You genuinely believe in this founder and your enthusiasm is contagious. Still honest but always constructive.",
-        "analytical": "Lead with data, frameworks, and logical structure. Give numbered steps and measurable outcomes. You think in systems and help the founder see the full picture.",
-        "challenger": "Question everything. Push back on assumptions. Force the founder to think three levels deeper. Play devil's advocate when needed.",
-        "mentor": "Be wise, patient, and thoughtful. Share perspective from experience. Guide through questions as much as answers. Help the founder develop their own thinking."
+    personality_map = {
+        "tough-love": "Be direct and challenging. Push back on weak thinking. No excuses.",
+        "encouraging": "Be warm and supportive. Celebrate every step. Still honest.",
+        "analytical": "Lead with data. Use numbers and frameworks. Be structured.",
+        "challenger": "Question every assumption. Force deeper thinking.",
+        "mentor": "Be wise and balanced. Guide through questions as much as answers."
     }
 
-    system = f"""You are the AI Co-Founder of FounderOS. You are not a chatbot. You are not ChatGPT. You are a deeply intelligent execution partner who has been working alongside this founder since they joined the platform.
+    system = f"""You are the AI Co-Founder of FounderOS. You are not a chatbot. You are a deeply intelligent execution partner who has been working alongside this founder since day one.
 
 {context}
 
-Your communication style:
-- You speak like a real co-founder who knows this person deeply. You use their name occasionally.
-- You never use basic bullet points for your main responses. You write in natural, flowing paragraphs that feel human and intelligent.
-- You give reasoning behind everything. Not just what to do but why, based on their specific situation.
-- You reference their actual startup, product, and market in every substantive response.
-- You remember what has been discussed and build on it.
-- You are direct without being robotic. Warm without being generic.
-- For greetings you respond conversationally in 2-3 sentences, ask one sharp question.
-- For business questions you give a thorough response that feels like sitting with an expert who knows your business.
-- You never start a response with "Certainly", "Great question", "Absolutely", or any filler.
-- When you see avoidance patterns in their behaviour data you address them with care but honesty.
+Communication rules:
+- Speak like a real co-founder who knows this person deeply. Use their name occasionally.
+- Never use basic bullet points as your main response format. Write in natural flowing paragraphs.
+- Give reasoning behind everything — not just what to do but why, based on their specific situation.
+- Always reference their actual startup name, product, and market.
+- Never start with Certainly, Great question, Absolutely, or any filler.
+- For greetings respond in 2-3 conversational sentences and ask one sharp question.
+- For business questions give thorough specific responses grounded in their context and live research data.
+- If they mention quitting — acknowledge the feeling honestly, then pull specific data about their progress and give one concrete small action.
+- For sales pitches — write the complete pitch, not advice about pitches.
+- If research data is not available say so clearly rather than inventing data.
+- Keep responses under 450 words unless writing a full document.
 
 Personality mode: {personality}
-{personality_instructions.get(personality, '')}
-
-Critical rules:
-- If they mention wanting to quit, you do not agree. You pull specific data about their progress and market, acknowledge the feeling as real, then give one concrete small action.
-- For any industry, any product, any market — give specific intelligent answers using the research data provided.
-- For sales pitches — write the complete pitch, not advice about pitches.
-- For formulas or recipes — give real ingredients and proportions with safety and regulatory notes.
-- For competitor questions — name real companies in their specific location first.
-- If research data is not available for a specific claim, say so clearly rather than inventing data.
-- Keep responses under 450 words unless writing a full document or plan."""
+{personality_map.get(personality, '')}"""
 
     history_text = "\n".join([
         f"{h['role'].upper()}: {h['content']}" for h in history[-8:]
@@ -770,10 +891,13 @@ Critical rules:
 
     days = 0
     try:
-        start = datetime.strptime(
-            user.get("journey_start", str(datetime.now().date())), "%Y-%m-%d"
-        )
-        days = (datetime.now() - start).days
+        start = user.get("journey_start")
+        if start:
+            if isinstance(start, str):
+                start = datetime.strptime(start, "%Y-%m-%d")
+            elif hasattr(start, 'year'):
+                start = datetime(start.year, start.month, start.day)
+            days = (datetime.now() - start).days
     except:
         pass
 
@@ -784,45 +908,48 @@ Conversation so far:
 
 {user.get('name', 'Founder')} just said: {message}
 
-Respond warmly and naturally. You know them well. Mention Day {days} of their journey if it feels natural.
-Reference what they are building — {profile.get('startup_name', '')} — or what stage they are at.
-End with one genuinely curious question about what they are working on or struggling with right now.
-Keep it under 80 words. Human. Warm. No lists.
+Respond warmly and naturally. You know them well.
+Mention Day {days} of their journey if it feels natural.
+Reference their startup {profile.get('startup_name', '')} or stage {profile.get('stage', '')}.
+Ask one genuinely curious question about what they are working on right now.
+Under 80 words. Human. Warm. No lists.
 """
         reply = ask_groq(full_prompt, system=system, max_tokens=180)
     else:
-        data_note = f"\n\nLive research data ({web_total} sources found):\n{web_context}" if web_context else "\n\nNote: Real-time search data not available for this query. Responding from training knowledge."
-
+        data_note = f"\n\nLive research data ({web_total} sources):\n{web_context}" if web_context else "\n\nNote: Real-time search data limited for this query."
         full_prompt = f"""
 Previous conversation:
 {history_text}
-
 {data_note}
 
-{user.get('name', 'Founder')}'s question: {message}
+{user.get('name', 'Founder')} asks: {message}
 
-Respond as their deeply knowledgeable co-founder. Be specific to their actual situation.
-Product: {profile.get('product', '')} | Market: {profile.get('location', 'India')} | Stage: {profile.get('stage', '')}
+Respond as their co-founder. Specific to their product {profile.get('product', '')} in {profile.get('location', 'India')}.
 Mode: {mode}
 """
         use_deep = mode in ["deep", "plan"]
         reply = ask_groq(
             full_prompt, system=system,
-            max_tokens=1000 if mode in ["deep", "plan"] else 600,
+            max_tokens=1000 if use_deep else 600,
             deep=use_deep
         )
 
-    conn = get_db()
-    conn.execute(
-        "INSERT INTO chat_history (user_id, role, content) VALUES (?,?,?)",
-        (user["id"], "user", message)
-    )
-    conn.execute(
-        "INSERT INTO chat_history (user_id, role, content) VALUES (?,?,?)",
-        (user["id"], "assistant", reply)
-    )
-    conn.commit()
-    conn.close()
+    try:
+        conn = get_db()
+        cur = conn.cursor()
+        cur.execute(
+            "INSERT INTO chat_history (user_id, role, content) VALUES (%s,%s,%s)",
+            (user["id"], "user", message)
+        )
+        cur.execute(
+            "INSERT INTO chat_history (user_id, role, content) VALUES (%s,%s,%s)",
+            (user["id"], "assistant", reply)
+        )
+        conn.commit()
+        cur.close()
+        conn.close()
+    except Exception as e:
+        print(f"Chat history error: {e}")
 
     return jsonify({
         "reply": reply,
@@ -838,23 +965,33 @@ def generate_tasks(user):
     context = build_deep_context(user, profile)
     location = profile.get("location", "India")
 
-    conn = get_db()
-    completed_yesterday = conn.execute(
-        "SELECT COUNT(*) FROM tasks WHERE user_id=? AND done=1 AND date=date('now','-1 day')",
-        (user["id"],)
-    ).fetchone()[0]
-    total_yesterday = conn.execute(
-        "SELECT COUNT(*) FROM tasks WHERE user_id=? AND date=date('now','-1 day')",
-        (user["id"],)
-    ).fetchone()[0]
-    avoided = conn.execute(
-        "SELECT title FROM tasks WHERE user_id=? AND done=0 AND date<date('now') LIMIT 5",
-        (user["id"],)
-    ).fetchall()
-    avoided_titles = [a["title"] for a in avoided]
-    conn.close()
+    try:
+        conn = get_db()
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cur.execute(
+            "SELECT COUNT(*) as cnt FROM tasks WHERE user_id=%s AND done=1 AND date=CURRENT_DATE - INTERVAL '1 day'",
+            (user["id"],)
+        )
+        completed_yesterday = cur.fetchone()["cnt"]
+        cur.execute(
+            "SELECT COUNT(*) as cnt FROM tasks WHERE user_id=%s AND date=CURRENT_DATE - INTERVAL '1 day'",
+            (user["id"],)
+        )
+        total_yesterday = cur.fetchone()["cnt"]
+        cur.execute(
+            "SELECT title FROM tasks WHERE user_id=%s AND done=0 AND date<CURRENT_DATE LIMIT 5",
+            (user["id"],)
+        )
+        avoided = [a["title"] for a in cur.fetchall()]
+        cur.close()
+        conn.close()
+    except Exception as e:
+        print(f"Task gen query error: {e}")
+        completed_yesterday = 0
+        total_yesterday = 0
+        avoided = []
 
-    avoidance_note = f"Tasks the founder has been avoiding: {', '.join(avoided_titles)}" if avoided_titles else ""
+    avoidance_note = f"Tasks the founder has been avoiding: {', '.join(avoided)}" if avoided else ""
 
     prompt = f"""
 {context}
@@ -862,33 +999,32 @@ def generate_tasks(user):
 Yesterday: completed {completed_yesterday} of {total_yesterday} tasks.
 {avoidance_note}
 
-Generate exactly 5 highly specific tasks for today. These must be completely tailored to:
-- Their product: {profile.get('product', '')}
-- Their industry: {profile.get('industry', '')}
-- Their stage: {profile.get('stage', '')}
-- Their location: {location}
-- Their weaknesses: {profile.get('weaknesses', '[]')}
-- Their goal: {profile.get('goal', '')}
+Generate exactly 5 highly specific tasks for today completely tailored to:
+- Product: {profile.get('product', '')}
+- Industry: {profile.get('industry', '')}
+- Stage: {profile.get('stage', '')}
+- Location: {location}
+- Weaknesses: {profile.get('weaknesses', '[]')}
+- Goal: {profile.get('goal', '')}
 
-Return ONLY a valid JSON array:
+Return ONLY a valid JSON array. No markdown. No other text:
 [
   {{
-    "title": "Specific task title that mentions their product or market",
+    "title": "Specific task title mentioning their product or market",
     "description": "2 sentences explaining exactly what to do and why it matters for their specific startup right now.",
-    "how_to": "Step 1: Specific action with exact tool or platform name. Step 2: Specific action. Step 3: Specific action. Step 4: How to measure if this worked.",
+    "how_to": "Step 1: Specific action with exact tool or platform. Step 2: Specific action. Step 3: Specific action. Step 4: How to measure success.",
     "category": "one of: revenue, validation, marketing, product, operations, research",
     "priority": "one of: critical, high, medium",
     "time_est": "realistic time estimate",
-    "outcome": "Exactly what success looks like when this task is done well"
+    "outcome": "Exactly what success looks like when done well"
   }}
 ]
 
 Rules:
-- First 2 tasks must directly relate to revenue or customer validation
-- At least one task must address an avoided task or weakness
+- First 2 tasks must relate to revenue or customer validation
+- At least one task must address an avoided pattern or weakness
 - Every how_to must have 4 specific steps with real platform names
-- Never generate generic tasks. Every task must be undeniably about their specific startup.
-- Return ONLY the JSON array. No other text.
+- Never generate generic tasks — every task must be about their specific startup
 """
 
     tasks_text = ask_groq(prompt, max_tokens=2000)
@@ -904,79 +1040,80 @@ Rules:
         tasks = json.loads(clean)
     except:
         tasks = [{
-            "title": f"Talk to 3 potential customers about {profile.get('product', 'your product')} today",
-            "description": f"Contact 3 real people who could be your first customers for {profile.get('product', 'your product')} in {location}. Have a real conversation, not a sales pitch.",
-            "how_to": "Step 1: Open LinkedIn and search for people matching your target customer profile in your city. Step 2: Send a connection request with a personal note explaining you are building something and want their perspective. Step 3: When they accept, ask one specific question about the problem your product solves. Step 4: Take notes on exactly what words they use to describe the problem.",
+            "title": f"Talk to 3 potential customers about {profile.get('product', 'your product')}",
+            "description": f"Contact 3 real people who could be your first customers in {location}. Have a conversation, not a sales pitch.",
+            "how_to": "Step 1: Open LinkedIn and search for people matching your target customer in your city. Step 2: Send a connection request with a personal note. Step 3: When they accept ask one specific question about the problem your product solves. Step 4: Note exactly what words they use to describe the problem.",
             "category": "validation",
             "priority": "critical",
             "time_est": "2 hours",
-            "outcome": "3 real conversations with potential customers and notes on whether the problem is real for them"
+            "outcome": "3 real conversations with notes on whether the problem is real for them"
         }]
 
-    conn = get_db()
-    conn.execute(
-        "DELETE FROM tasks WHERE user_id=? AND date=date('now') AND done=0",
-        (user["id"],)
-    )
-    for task in tasks:
-        conn.execute(
-            "INSERT INTO tasks (user_id, title, description, how_to, category, priority, time_est, outcome) VALUES (?,?,?,?,?,?,?,?)",
-            (
-                user["id"], task.get("title"), task.get("description"),
-                task.get("how_to"), task.get("category"), task.get("priority"),
-                task.get("time_est"), task.get("outcome", "")
-            )
-        )
-
-    conn.execute("""
-        INSERT INTO behaviour_log (user_id, tasks_assigned, tasks_avoided)
-        VALUES (?, ?, ?)
-        ON CONFLICT(user_id) DO UPDATE SET
-        tasks_assigned = ?,
-        tasks_avoided = ?
-        WHERE date = date('now')
-    """, (user["id"], len(tasks), json.dumps(avoided_titles),
-          len(tasks), json.dumps(avoided_titles)))
-
     try:
-        conn.execute("""
-            INSERT INTO behaviour_log (user_id, date, tasks_assigned, tasks_avoided)
-            SELECT ?, date('now'), ?, ?
-            WHERE NOT EXISTS (SELECT 1 FROM behaviour_log WHERE user_id=? AND date=date('now'))
-        """, (user["id"], len(tasks), json.dumps(avoided_titles), user["id"]))
-    except:
-        pass
-
-    conn.commit()
-    conn.close()
-
-    return jsonify({"success": True, "count": len(tasks)})
+        conn = get_db()
+        cur = conn.cursor()
+        cur.execute(
+            "DELETE FROM tasks WHERE user_id=%s AND date=CURRENT_DATE AND done=0",
+            (user["id"],)
+        )
+        for task in tasks:
+            cur.execute(
+                "INSERT INTO tasks (user_id, title, description, how_to, category, priority, time_est, outcome) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
+                (
+                    user["id"], task.get("title"), task.get("description"),
+                    task.get("how_to"), task.get("category"), task.get("priority"),
+                    task.get("time_est"), task.get("outcome", "")
+                )
+            )
+        cur.execute(
+            "INSERT INTO behaviour_log (user_id, date, tasks_assigned, tasks_avoided) VALUES (%s, CURRENT_DATE, %s, %s) ON CONFLICT DO NOTHING",
+            (user["id"], len(tasks), json.dumps(avoided))
+        )
+        conn.commit()
+        cur.close()
+        conn.close()
+        return jsonify({"success": True, "count": len(tasks)})
+    except Exception as e:
+        print(f"Task insert error: {e}")
+        return jsonify({"error": "Error saving tasks"}), 500
 
 
 @app.route("/api/tasks")
 @require_auth
 def get_tasks(user):
-    conn = get_db()
-    rows = conn.execute(
-        """SELECT * FROM tasks WHERE user_id=? AND date=date('now')
-        ORDER BY CASE priority WHEN 'critical' THEN 1 WHEN 'high' THEN 2 ELSE 3 END""",
-        (user["id"],)
-    ).fetchall()
-    conn.close()
-    return jsonify({"tasks": [dict(r) for r in rows]})
+    try:
+        conn = get_db()
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cur.execute(
+            """SELECT * FROM tasks WHERE user_id=%s AND date=CURRENT_DATE
+            ORDER BY CASE priority WHEN 'critical' THEN 1 WHEN 'high' THEN 2 ELSE 3 END""",
+            (user["id"],)
+        )
+        rows = cur.fetchall()
+        cur.close()
+        conn.close()
+        return jsonify({"tasks": [dict(r) for r in rows]})
+    except Exception as e:
+        print(f"Get tasks error: {e}")
+        return jsonify({"tasks": []})
 
 
 @app.route("/api/tasks/<int:task_id>/start", methods=["POST"])
 @require_auth
 def start_task(user, task_id):
-    conn = get_db()
-    conn.execute(
-        "UPDATE tasks SET started_at=datetime('now') WHERE id=? AND user_id=?",
-        (task_id, user["id"])
-    )
-    conn.commit()
-    conn.close()
-    return jsonify({"success": True})
+    try:
+        conn = get_db()
+        cur = conn.cursor()
+        cur.execute(
+            "UPDATE tasks SET started_at=NOW() WHERE id=%s AND user_id=%s",
+            (task_id, user["id"])
+        )
+        conn.commit()
+        cur.close()
+        conn.close()
+        return jsonify({"success": True})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 @app.route("/api/tasks/<int:task_id>/complete", methods=["POST"])
@@ -984,72 +1121,77 @@ def start_task(user, task_id):
 def complete_task(user, task_id):
     data = request.json or {}
     time_spent = data.get("time_spent", 0)
-    conn = get_db()
-    task = conn.execute(
-        "SELECT * FROM tasks WHERE id=? AND user_id=?", (task_id, user["id"])
-    ).fetchone()
-    if not task:
+    try:
+        conn = get_db()
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cur.execute(
+            "SELECT * FROM tasks WHERE id=%s AND user_id=%s", (task_id, user["id"])
+        )
+        task = cur.fetchone()
+        if not task:
+            cur.close()
+            conn.close()
+            return jsonify({"error": "Task not found"}), 404
+        if time_spent < 30 and task["priority"] in ["critical", "high"]:
+            cur.close()
+            conn.close()
+            return jsonify({
+                "verified": False,
+                "message": f"This is a {task['priority']} priority task. Have you actually completed it?"
+            })
+        cur.execute(
+            "UPDATE tasks SET done=1, verified=1, completed_at=NOW(), time_taken=%s WHERE id=%s AND user_id=%s",
+            (time_spent, task_id, user["id"])
+        )
+        cur.execute(
+            "UPDATE behaviour_log SET tasks_completed=tasks_completed+1 WHERE user_id=%s AND date=CURRENT_DATE",
+            (user["id"],)
+        )
+        conn.commit()
+        cur.close()
         conn.close()
-        return jsonify({"error": "Task not found"}), 404
-
-    if time_spent < 30 and task["priority"] in ["critical", "high"]:
-        conn.close()
-        return jsonify({
-            "verified": False,
-            "message": f"This is a {task['priority']} priority task. Have you actually completed it? Take a moment to confirm."
-        })
-
-    conn.execute(
-        "UPDATE tasks SET done=1, verified=1, completed_at=datetime('now'), time_taken=? WHERE id=? AND user_id=?",
-        (time_spent, task_id, user["id"])
-    )
-    conn.execute("""
-        UPDATE behaviour_log SET tasks_completed = tasks_completed + 1
-        WHERE user_id=? AND date=date('now')
-    """, (user["id"],))
-    conn.commit()
-    conn.close()
-    return jsonify({"success": True, "verified": True})
+        return jsonify({"success": True, "verified": True})
+    except Exception as e:
+        print(f"Complete task error: {e}")
+        return jsonify({"error": "Server error"}), 500
 
 
 @app.route("/api/tasks/<int:task_id>/confirm", methods=["POST"])
 @require_auth
 def confirm_task(user, task_id):
-    conn = get_db()
-    conn.execute(
-        "UPDATE tasks SET done=1, verified=1, completed_at=datetime('now') WHERE id=? AND user_id=?",
-        (task_id, user["id"])
-    )
-    conn.commit()
-    conn.close()
-    return jsonify({"success": True})
+    try:
+        conn = get_db()
+        cur = conn.cursor()
+        cur.execute(
+            "UPDATE tasks SET done=1, verified=1, completed_at=NOW() WHERE id=%s AND user_id=%s",
+            (task_id, user["id"])
+        )
+        conn.commit()
+        cur.close()
+        conn.close()
+        return jsonify({"success": True})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 @app.route("/api/intelligence/daily")
 @require_auth
 def get_daily_intelligence(user):
-    profile = get_profile(user["id"])
-    conn = get_db()
-    intel = conn.execute(
-        "SELECT * FROM daily_intelligence WHERE user_id=? AND date=date('now') ORDER BY id DESC LIMIT 1",
-        (user["id"],)
-    ).fetchone()
-    conn.close()
-
-    if intel:
-        return jsonify({
-            "briefing": intel["briefing"],
-            "market_data": intel["market_data"],
-            "opportunities": intel["opportunities"],
-            "generated_at": intel["generated_at"],
-            "fresh": True
-        })
-
-    return jsonify({
-        "briefing": None,
-        "fresh": False,
-        "message": "Click Generate Intelligence to see today's market data"
-    })
+    try:
+        conn = get_db()
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cur.execute(
+            "SELECT * FROM daily_intelligence WHERE user_id=%s AND date=CURRENT_DATE ORDER BY id DESC LIMIT 1",
+            (user["id"],)
+        )
+        intel = cur.fetchone()
+        cur.close()
+        conn.close()
+        if intel:
+            return jsonify({"briefing": intel["briefing"], "fresh": True})
+        return jsonify({"briefing": None, "fresh": False})
+    except Exception as e:
+        return jsonify({"briefing": None, "fresh": False})
 
 
 @app.route("/api/intelligence/generate", methods=["POST"])
@@ -1062,32 +1204,39 @@ def generate_intelligence(user):
 
     search_queries = {
         "market_news": (f"{industry} {product} market news {location} 2025", "news"),
-        "trends": (f"{industry} {location} trends opportunity 2025", "search"),
+        "trends": (f"{industry} {location} trends 2025", "search"),
         "reddit": (f"{product} {industry} discussion reddit", "reddit_native"),
-        "competitor_news": (f"{industry} startup {location} news funding 2025", "news"),
+        "competitor_news": (f"{industry} startup {location} news 2025", "news"),
     }
-
     all_results = multi_search(search_queries)
     web_data, total = format_search_results(all_results)
 
-    conn = get_db()
     days_journey = 0
     try:
-        start = datetime.strptime(
-            user.get("journey_start", str(datetime.now().date())), "%Y-%m-%d"
-        )
-        days_journey = (datetime.now() - start).days
+        start = user.get("journey_start")
+        if start:
+            if isinstance(start, str):
+                start = datetime.strptime(start, "%Y-%m-%d")
+            elif hasattr(start, 'year'):
+                start = datetime(start.year, start.month, start.day)
+            days_journey = (datetime.now() - start).days
     except:
         pass
 
-    tasks_done_week = conn.execute(
-        "SELECT COUNT(*) FROM tasks WHERE user_id=? AND done=1 AND date>=date('now','-7 days')",
-        (user["id"],)
-    ).fetchone()[0]
-    conn.close()
+    try:
+        conn = get_db()
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cur.execute(
+            "SELECT COUNT(*) as cnt FROM tasks WHERE user_id=%s AND done=1 AND date>=CURRENT_DATE - INTERVAL '7 days'",
+            (user["id"],)
+        )
+        tasks_done_week = cur.fetchone()["cnt"]
+        cur.close()
+        conn.close()
+    except:
+        tasks_done_week = 0
 
     now = datetime.now()
-
     prompt = f"""
 Generate a morning intelligence briefing for this founder.
 
@@ -1100,30 +1249,26 @@ Tasks completed this week: {tasks_done_week}
 Live market data ({total} sources):
 {web_data if web_data else 'Limited data available today'}
 
-Write a morning briefing that feels like a real co-founder wrote it after working all night. It should have these sections but written as flowing paragraphs, not labels and bullet points:
-
-Start with a personalised good morning that references where they are in their journey and what they are building.
-
-Then share 2-3 specific things that happened in their market or industry overnight, based only on the real data above. If no relevant data was found, say so honestly.
-
-Then share what the market feels like today for their specific product — is momentum building, flat, or there are new signals they should know about.
-
-Then give them one clear priority for today with reasoning.
-
-Then close with one observation about what their behaviour data suggests about where they are mentally this week.
-
-Write it like a human. No section headers. No bullet points. Natural paragraphs. Maximum 350 words.
+Write a morning briefing as flowing paragraphs. No section headers. No bullet points.
+Feel like a real co-founder who worked all night and is now briefing them.
+Cover: personalised good morning referencing their journey, what happened in their market overnight based only on real data found, today's market pulse for their product, one clear priority for today, one observation about their execution pattern this week.
+Maximum 300 words. Human. Specific. No waffle.
 """
 
-    briefing = ask_groq(prompt, max_tokens=600)
+    briefing = ask_groq(prompt, max_tokens=500)
 
-    conn = get_db()
-    conn.execute(
-        "INSERT INTO daily_intelligence (user_id, briefing, market_data, opportunities) VALUES (?,?,?,?)",
-        (user["id"], briefing, web_data, "")
-    )
-    conn.commit()
-    conn.close()
+    try:
+        conn = get_db()
+        cur = conn.cursor()
+        cur.execute(
+            "INSERT INTO daily_intelligence (user_id, briefing, market_data) VALUES (%s,%s,%s)",
+            (user["id"], briefing, web_data)
+        )
+        conn.commit()
+        cur.close()
+        conn.close()
+    except Exception as e:
+        print(f"Intelligence save error: {e}")
 
     return jsonify({"briefing": briefing, "sources": total, "success": True})
 
@@ -1141,10 +1286,10 @@ def market_research(user):
 
     search_queries = {
         "demand": (f"{query} market demand {location} 2025", "search"),
-        "size": (f"{query} market size revenue statistics", "search"),
+        "size": (f"{query} market size statistics", "search"),
         "reddit": (f"{query} consumer discussion reddit", "reddit_native"),
         "news": (f"{query} industry news 2025", "news"),
-        "platforms": (f"{query} social media audience platform {location}", "search"),
+        "platforms": (f"{query} social media platform {location}", "search"),
         "global": (f"{query} global market 2025", "search"),
     }
 
@@ -1159,36 +1304,17 @@ def market_research(user):
         })
 
     prompt = f"""
-You are a market analyst. Generate a market intelligence report based ONLY on the data below.
-Do not invent statistics. If specific data is not in the research, say "Data not available" for that point.
+Market intelligence report based ONLY on the data below. Never invent statistics.
 
-Founder Context:
 {build_deep_context(user, profile)}
 
 Research Data ({total} real sources):
 {web_data}
 
-Write a market analysis that covers:
-- Current demand signals for their specific product in {location} based on the data found
-- Where demand is coming from geographically and demographically based on research
-- What people are actually saying about this type of product based on Reddit and news data
-- Market size estimates — only cite if found in research data, otherwise say estimate unavailable
-- 3 real opportunities visible in the data
-- 2 honest threats or challenges visible in the data
-
-Write in flowing paragraphs. Reference the actual sources found. Be honest about what data was and was not available.
-Maximum 400 words.
+Write analysis covering demand signals, geographic distribution, what people are saying on Reddit and news, market size if found in data otherwise say estimate unavailable, 3 real opportunities, 2 real threats. Reference actual sources found. Be honest about what data was and was not available. Write in flowing paragraphs. Maximum 400 words.
 """
 
     analysis = ask_groq(prompt, max_tokens=800)
-
-    conn = get_db()
-    conn.execute(
-        "INSERT INTO market_data (user_id, query, data, sources) VALUES (?,?,?,?)",
-        (user["id"], query, analysis, json.dumps(list(search_queries.keys())))
-    ) if False else None
-    conn.close()
-
     return jsonify({
         "analysis": analysis,
         "sources_count": total,
@@ -1209,9 +1335,9 @@ def competitor_analysis(user):
     search_queries = {
         "local": (f"top {industry} {product} companies {location} 2025", "search"),
         "global": (f"top {industry} {product} companies global 2025", "search"),
-        "specific": (f"{competitor_names} company overview funding", "search") if competitor_names else (f"{industry} startups {location} 2025", "search"),
+        "specific": (f"{competitor_names} company overview", "search") if competitor_names else (f"{industry} startups {location} 2025", "search"),
         "reddit": (f"{product} {industry} alternative comparison reddit", "reddit_native"),
-        "news": (f"{competitor_names or industry} startup news funding 2025", "news"),
+        "news": (f"{competitor_names or industry} startup news 2025", "news"),
         "reviews": (f"{competitor_names or product} {location} reviews problems", "search"),
     }
 
@@ -1220,43 +1346,24 @@ def competitor_analysis(user):
 
     if total == 0:
         return jsonify({
-            "analysis": "Data not available. The search did not return competitor information for this query. Try entering specific competitor names for better results.",
+            "analysis": "Data not available. The search did not return competitor information. Try entering specific competitor names.",
             "sources_count": 0,
             "success": True
         })
 
     prompt = f"""
-You are a competitive intelligence analyst. Generate a competitor report based ONLY on the research data below.
-Never invent company details, founder names, or revenue figures. If information is not in the data, say clearly "Information not available."
+Competitor intelligence report based ONLY on research data below. Never invent company details or revenue figures.
 
-Founder Context:
 {build_deep_context(user, profile)}
 
-Location Focus: {location}
+Location: {location}
 Research Data ({total} sources):
 {web_data}
 
-Write a competitor analysis covering:
-
-LOCAL COMPETITORS IN {location.upper()}:
-Based only on search results, name real companies found. For each one found: what they do, their apparent pricing if available, their visible strengths, complaints found about them. If founder information is not publicly available, state: "Founder information not available on public platforms."
-
-GLOBAL COMPETITORS:
-Name global players found in the research. Same format.
-
-WHERE COMPETITORS ARE WEAK:
-Based on reviews and Reddit data only, what real complaints do customers have.
-
-YOUR POSITIONING OPPORTUNITY:
-Based on the gaps found in research, where this founder could position.
-
-If any company's information was not found in the research, clearly say "Detailed information not available for [company name]."
-
-Write in clear paragraphs. Maximum 500 words. Honesty over sounding impressive.
+Cover: local competitors in {location} with what they do and visible weaknesses, global players, gaps in the market based on real complaints found, positioning opportunity, 30-day strategy to win. If founder information is not in the data say "Founder information not available on public platforms." Write in clear paragraphs. Maximum 500 words.
 """
 
     analysis = ask_groq(prompt, max_tokens=1000)
-
     return jsonify({
         "analysis": analysis,
         "sources_count": total,
@@ -1283,31 +1390,33 @@ def generate_content(user):
     prompt = f"""
 {build_deep_context(user, profile)}
 
-Current trends on {platform} in {location}:
-{trends if trends else 'Limited trend data available'}
+Trends on {platform} in {location}:
+{trends if trends else 'Limited trend data'}
 
-Generate a {days}-day content calendar for {platform}.
+Generate a {days}-day content calendar for {platform} targeting {location}.
 
-For each day write:
-Day [number] — [best posting time for {location} timezone]
+For each day:
+Day [number] — [best posting time for {location}]
 Type: [content type]
-Caption: [Complete ready-to-post caption. Real words. Not a template. Written for {profile.get('product', '')} specifically.]
-Hashtags: [5 relevant hashtags for {location} and industry]
-Hook: [Opening line designed to stop the scroll]
-
-Make every post specific to {profile.get('product', '')} targeting {location}.
-Mix: 4 value posts for every 1 promotional post.
+Caption: [Complete ready-to-post caption for {profile.get('product', '')}. Real words. Not a template.]
+Hashtags: [5 relevant hashtags]
+Hook: [Opening line to stop the scroll]
 """
 
     calendar = ask_groq(prompt, max_tokens=2500)
 
-    conn = get_db()
-    conn.execute(
-        "INSERT INTO content_library (user_id, platform, content) VALUES (?,?,?)",
-        (user["id"], platform, calendar)
-    )
-    conn.commit()
-    conn.close()
+    try:
+        conn = get_db()
+        cur = conn.cursor()
+        cur.execute(
+            "INSERT INTO content_library (user_id, platform, content) VALUES (%s,%s,%s)",
+            (user["id"], platform, calendar)
+        )
+        conn.commit()
+        cur.close()
+        conn.close()
+    except:
+        pass
 
     return jsonify({"calendar": calendar, "platform": platform, "success": True})
 
@@ -1319,55 +1428,60 @@ def generate_report(user):
     data = request.json
     report_type = data.get("type", "progress")
 
-    conn = get_db()
-    total_tasks = conn.execute(
-        "SELECT COUNT(*) FROM tasks WHERE user_id=?", (user["id"],)
-    ).fetchone()[0]
-    done_tasks = conn.execute(
-        "SELECT COUNT(*) FROM tasks WHERE user_id=? AND done=1", (user["id"],)
-    ).fetchone()[0]
+    try:
+        conn = get_db()
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cur.execute("SELECT COUNT(*) as cnt FROM tasks WHERE user_id=%s", (user["id"],))
+        total_tasks = cur.fetchone()["cnt"]
+        cur.execute("SELECT COUNT(*) as cnt FROM tasks WHERE user_id=%s AND done=1", (user["id"],))
+        done_tasks = cur.fetchone()["cnt"]
+        cur.close()
+        conn.close()
+    except:
+        total_tasks = 0
+        done_tasks = 0
+
     days = 0
     try:
-        start = datetime.strptime(
-            user.get("journey_start", str(datetime.now().date())), "%Y-%m-%d"
-        )
-        days = (datetime.now() - start).days
+        start = user.get("journey_start")
+        if start:
+            if isinstance(start, str):
+                start = datetime.strptime(start, "%Y-%m-%d")
+            elif hasattr(start, 'year'):
+                start = datetime(start.year, start.month, start.day)
+            days = (datetime.now() - start).days
     except:
         pass
-    conn.close()
 
     prompt = f"""
 Generate a {report_type} report for this founder.
 
 {build_deep_context(user, profile)}
 
-Progress Data:
+Data:
 - Days on journey: {days}
 - Total tasks assigned: {total_tasks}
-- Tasks completed: {done_tasks}
+- Completed: {done_tasks}
 - Completion rate: {round(done_tasks/max(total_tasks,1)*100)}%
 
-Write a comprehensive {report_type} report that:
-- Summarises where the founder is right now honestly
-- What they have accomplished
-- What the data says about their execution velocity
-- What needs to change
-- Their top 3 priorities for the next 30 days
-
-Write as a real co-founder would write a progress memo. Professional, honest, specific.
-Maximum 600 words.
+Write an honest {report_type} report covering where the founder is right now, what they have accomplished, what the execution data says, what needs to change, and top 3 priorities for next 30 days. Write as a real co-founder would. Professional, honest, specific. Maximum 600 words.
 """
 
     report_content = ask_groq(prompt, max_tokens=800)
-
-    conn = get_db()
     title = f"{report_type.title()} Report — {datetime.now().strftime('%B %d, %Y')}"
-    conn.execute(
-        "INSERT INTO saved_reports (user_id, title, content, report_type) VALUES (?,?,?,?)",
-        (user["id"], title, report_content, report_type)
-    )
-    conn.commit()
-    conn.close()
+
+    try:
+        conn = get_db()
+        cur = conn.cursor()
+        cur.execute(
+            "INSERT INTO saved_reports (user_id, title, content, report_type) VALUES (%s,%s,%s,%s)",
+            (user["id"], title, report_content, report_type)
+        )
+        conn.commit()
+        cur.close()
+        conn.close()
+    except Exception as e:
+        print(f"Report save error: {e}")
 
     return jsonify({"report": report_content, "title": title, "success": True})
 
@@ -1375,13 +1489,19 @@ Maximum 600 words.
 @app.route("/api/reports/saved")
 @require_auth
 def get_saved_reports(user):
-    conn = get_db()
-    reports = conn.execute(
-        "SELECT id, title, report_type, created_at FROM saved_reports WHERE user_id=? ORDER BY id DESC LIMIT 10",
-        (user["id"],)
-    ).fetchall()
-    conn.close()
-    return jsonify({"reports": [dict(r) for r in reports]})
+    try:
+        conn = get_db()
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cur.execute(
+            "SELECT id, title, report_type, created_at FROM saved_reports WHERE user_id=%s ORDER BY id DESC LIMIT 10",
+            (user["id"],)
+        )
+        reports = cur.fetchall()
+        cur.close()
+        conn.close()
+        return jsonify({"reports": [dict(r) for r in reports]})
+    except Exception as e:
+        return jsonify({"reports": []})
 
 
 @app.route("/api/agent/<agent_type>", methods=["POST"])
@@ -1394,17 +1514,16 @@ def specialist_agent(user, agent_type):
     location = profile.get("location", "India")
 
     agent_systems = {
-        "legal": f"You are a senior startup lawyer with deep expertise in {location} law including Companies Act, GST, FSSAI, SEBI, Startup India scheme, and international expansion. You give specific actionable guidance with real form names, fees in local currency, and realistic timelines. You always note when a matter requires consulting a licensed lawyer.",
-        "financial": f"You are a CFO who has worked with 100 early-stage startups in {location}. You build real financial models with actual numbers. You name specific platforms like Razorpay, Stripe, QuickBooks, Tally. You calculate unit economics, burn rates, and runway with precision.",
-        "consumer": f"You are a consumer psychology expert who has studied buying behaviour in {location} specifically. You understand cultural nuances, price sensitivity, and decision triggers specific to this market. You give specific messaging frameworks and real examples.",
-        "growth": f"You are a growth strategist who has built 0-to-1 growth for 20 startups in {location}. You give specific growth experiments with expected outcomes. You name real communities, platforms, and tactics that work in this specific market.",
-        "product": f"You are a senior product manager who has shipped products used by millions. You give specific frameworks, prioritisation methods, and technical guidance. You help founders make build vs buy decisions with clear reasoning.",
-        "formulation": f"You are a certified product formulation chemist specialising in food, beverage, cosmetics, and consumer goods for the {location} market. You give actual ingredient names, proportions, FSSAI regulations, approved supplier categories, and manufacturing process guidance. You never give unverified safety claims.",
-        "sales": f"You are a sales director who has personally closed enterprise and consumer deals in {location}. You write actual scripts word for word. You give specific objection responses. You name real platforms like LinkedIn Sales Navigator, IndiaMART, Justdial, Meesho depending on the product type.",
+        "legal": f"You are a senior startup lawyer specialising in {location} law including Companies Act, GST, FSSAI, SEBI, Startup India. Give specific guidance with real form names, fees, and timelines. Note when a matter requires a licensed lawyer.",
+        "financial": f"You are a CFO for early-stage startups in {location}. Build real models with actual numbers. Name specific platforms. Calculate unit economics precisely.",
+        "consumer": f"You are a consumer psychology expert who has studied {location} buying behaviour. Give specific messaging frameworks and real examples from this market.",
+        "growth": f"You are a growth strategist who has built 0-to-1 for 20 startups in {location}. Give specific experiments with expected outcomes and real community names.",
+        "product": f"You are a senior product manager. Give specific frameworks, prioritisation methods, and build vs buy decisions with clear reasoning.",
+        "formulation": f"You are a certified formulation chemist for food, beverage, and cosmetics for the {location} market. Give actual ingredient names, proportions, FSSAI regulations, and manufacturing guidance. Never give unverified safety claims.",
+        "sales": f"You are a sales director who has closed deals in {location}. Write actual scripts word for word. Give specific objection responses. Name real platforms relevant to this market.",
     }
 
     system = agent_systems.get(agent_type, agent_systems["legal"])
-
     search_results = serper_search(
         f"{question} {profile.get('industry', '')} {location}", num=6
     )
@@ -1415,15 +1534,15 @@ def specialist_agent(user, agent_type):
     prompt = f"""
 {context}
 
-Live research data:
-{search_context if search_context else 'Limited search data available for this query.'}
+Live research:
+{search_context if search_context else 'Limited search data for this query.'}
 
-Founder's question: {question}
+Question: {question}
 
-Answer as the world-class specialist you are. Be completely specific to their product and market.
-If asked for a complete document like a sales pitch, contract, or plan — write the entire thing, not advice about it.
-If specific data was not found in search results, say so clearly rather than inventing it.
-Write in natural paragraphs. Give your reasoning. Maximum 500 words unless writing a full document.
+Answer as the specialist you are. Be specific to their product and market.
+If asked for a complete document — write the entire thing, not advice about it.
+If data was not found in search say so clearly.
+Write in natural paragraphs. Give reasoning. Maximum 500 words unless writing a full document.
 """
 
     reply = ask_groq(prompt, system=system, max_tokens=800)
@@ -1433,42 +1552,43 @@ Write in natural paragraphs. Give your reasoning. Maximum 500 words unless writi
 @app.route("/api/stats")
 @require_auth
 def get_stats(user):
-    conn = get_db()
-    total = conn.execute(
-        "SELECT COUNT(*) FROM tasks WHERE user_id=? AND date=date('now')",
-        (user["id"],)
-    ).fetchone()[0]
-    done = conn.execute(
-        "SELECT COUNT(*) FROM tasks WHERE user_id=? AND date=date('now') AND done=1",
-        (user["id"],)
-    ).fetchone()[0]
-    streak = conn.execute(
-        """SELECT COUNT(DISTINCT date) FROM tasks
-        WHERE user_id=? AND done=1 AND date >= date('now', '-30 days')""",
-        (user["id"],)
-    ).fetchone()[0]
-    weekly_done = conn.execute(
-        "SELECT COUNT(*) FROM tasks WHERE user_id=? AND done=1 AND date>=date('now','-7 days')",
-        (user["id"],)
-    ).fetchone()[0]
-    weekly_total = conn.execute(
-        "SELECT COUNT(*) FROM tasks WHERE user_id=? AND date>=date('now','-7 days')",
-        (user["id"],)
-    ).fetchone()[0]
-    total_ever = conn.execute(
-        "SELECT COUNT(*) FROM tasks WHERE user_id=?", (user["id"],)
-    ).fetchone()[0]
-    done_ever = conn.execute(
-        "SELECT COUNT(*) FROM tasks WHERE user_id=? AND done=1", (user["id"],)
-    ).fetchone()[0]
-    conn.close()
+    try:
+        conn = get_db()
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cur.execute("SELECT COUNT(*) as cnt FROM tasks WHERE user_id=%s AND date=CURRENT_DATE", (user["id"],))
+        total = cur.fetchone()["cnt"]
+        cur.execute("SELECT COUNT(*) as cnt FROM tasks WHERE user_id=%s AND date=CURRENT_DATE AND done=1", (user["id"],))
+        done = cur.fetchone()["cnt"]
+        cur.execute("SELECT COUNT(DISTINCT date) as cnt FROM tasks WHERE user_id=%s AND done=1 AND date>=CURRENT_DATE - INTERVAL '30 days'", (user["id"],))
+        streak = cur.fetchone()["cnt"]
+        cur.execute("SELECT COUNT(*) as cnt FROM tasks WHERE user_id=%s AND done=1 AND date>=CURRENT_DATE - INTERVAL '7 days'", (user["id"],))
+        weekly_done = cur.fetchone()["cnt"]
+        cur.execute("SELECT COUNT(*) as cnt FROM tasks WHERE user_id=%s AND date>=CURRENT_DATE - INTERVAL '7 days'", (user["id"],))
+        weekly_total = cur.fetchone()["cnt"]
+        cur.execute("SELECT COUNT(*) as cnt FROM tasks WHERE user_id=%s", (user["id"],))
+        total_ever = cur.fetchone()["cnt"]
+        cur.execute("SELECT COUNT(*) as cnt FROM tasks WHERE user_id=%s AND done=1", (user["id"],))
+        done_ever = cur.fetchone()["cnt"]
+        cur.close()
+        conn.close()
+    except Exception as e:
+        print(f"Stats error: {e}")
+        return jsonify({
+            "tasks_total": 0, "tasks_done": 0, "streak_days": 0,
+            "days_journey": 0, "weekly_done": 0, "weekly_total": 0,
+            "total_ever": 0, "done_ever": 0, "completion_rate": 0,
+            "has_tasks": False
+        })
 
     days_journey = 0
     try:
-        start = datetime.strptime(
-            user.get("journey_start", str(datetime.now().date())), "%Y-%m-%d"
-        )
-        days_journey = (datetime.now() - start).days
+        start = user.get("journey_start")
+        if start:
+            if isinstance(start, str):
+                start = datetime.strptime(start, "%Y-%m-%d")
+            elif hasattr(start, 'year'):
+                start = datetime(start.year, start.month, start.day)
+            days_journey = (datetime.now() - start).days
     except:
         pass
 
@@ -1491,12 +1611,16 @@ def get_all_users():
     secret = request.args.get("key", "")
     if secret != "founderos-admin-2024":
         return jsonify({"error": "unauthorized"}), 401
-    conn = get_db()
-    users = conn.execute(
-        "SELECT name, email, created_at FROM users ORDER BY created_at DESC"
-    ).fetchall()
-    conn.close()
-    return jsonify({"users": [dict(u) for u in users], "total": len(users)})
+    try:
+        conn = get_db()
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cur.execute("SELECT name, email, created_at FROM users ORDER BY created_at DESC")
+        users = cur.fetchall()
+        cur.close()
+        conn.close()
+        return jsonify({"users": [dict(u) for u in users], "total": len(users)})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 @app.route("/api/status")
@@ -1504,7 +1628,8 @@ def api_status():
     return jsonify({
         "status": "running",
         "time": datetime.now().strftime("%I:%M %p"),
-        "version": "3.0"
+        "version": "3.0",
+        "db": "postgresql"
     })
 
 
