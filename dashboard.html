@@ -1195,25 +1195,25 @@ showApp();
 
 // ── APP ───────────────────────────────────────
 async function showApp() {
-hideAll();
-document.getElementById("app").style.display = "block";
-if (!currentUser) {
-try { const r = await authFetch("/api/auth/me"); currentUser = await r.json(); } catch(e) {}
+  hideAll();
+  document.getElementById("app").style.display = "block";
+  if (!currentUser) {
+    try {
+      const r = await authFetch("/api/auth/me");
+      if (r.ok) currentUser = await r.json();
+    } catch(e) { console.log("me error", e); }
+  }
+  const name = currentUser?.name || "Founder";
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
+  document.getElementById("nav-name").textContent = name;
+  document.getElementById("dash-greeting").textContent = `${greeting}, ${name}`;
+  document.getElementById("menu-user-name").textContent = name;
+  document.getElementById("menu-user-email").textContent = currentUser?.email || "";
+  try { await loadStats(); } catch(e) { console.log("stats error", e); }
+  try { await loadDailyIntelligence(); } catch(e) { console.log("intel error", e); }
+  try { await loadDashTasks(); } catch(e) { console.log("tasks error", e); }
 }
-const name = currentUser?.name || "Founder";
-const hour = new Date().getHours();
-const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
-
-document.getElementById("nav-name").textContent = name;
-document.getElementById("dash-greeting").textContent = `${greeting}, ${name}`;
-document.getElementById("menu-user-name").textContent = name;
-document.getElementById("menu-user-email").textContent = currentUser?.email || "";
-
-loadStats();
-loadDailyIntelligence();
-loadDashTasks();
-}
-
 // ── MENU ──────────────────────────────────────
 function openMenu() {
 document.getElementById("side-menu").classList.add("open");
@@ -1270,67 +1270,92 @@ if (ms && !ms.contains(e.target) && !e.target.closest("#bnav-more")) ms.classLis
 
 // ── STATS ─────────────────────────────────────
 async function loadStats() {
-try {
-const resp = await authFetch("/api/stats");
-const d = await resp.json();
-document.getElementById("s-days").textContent = d.days_journey;
-document.getElementById("s-streak").textContent = d.streak_days;
-document.getElementById("nav-day").textContent = `Day ${d.days_journey}`;
-document.getElementById("dash-sub").textContent = `Day ${d.days_journey} of your founder journey`;
-
-if (d.has_tasks) {
-document.getElementById("s-done").textContent = d.tasks_done;
-document.getElementById("s-total").textContent = `of ${d.tasks_total} completed today`;
-const pct = d.tasks_total > 0 ? (d.tasks_done/d.tasks_total*100) : 0;
-document.getElementById("s-prog").style.width = pct+"%";
-document.getElementById("s-rate").textContent = d.completion_rate+"%";
-document.getElementById("s-weekly").textContent = `${d.weekly_done} of ${d.weekly_total} this week`;
-} else {
-document.getElementById("s-done").textContent = "—";
-document.getElementById("s-total").textContent = "Generate tasks to begin";
-document.getElementById("s-rate").textContent = "—";
-document.getElementById("s-weekly").textContent = "no tasks yet";
+  try {
+    const resp = await authFetch("/api/stats");
+    if (!resp.ok) return;
+    const d = await resp.json();
+    document.getElementById("s-days").textContent = d.days_journey || 0;
+    document.getElementById("s-streak").textContent = d.streak_days || 0;
+    if (document.getElementById("nav-day")) document.getElementById("nav-day").textContent = `Day ${d.days_journey || 0}`;
+    if (document.getElementById("dash-sub")) document.getElementById("dash-sub").textContent = `Day ${d.days_journey || 0} of your founder journey`;
+    if (d.has_tasks) {
+      document.getElementById("s-done").textContent = d.tasks_done || 0;
+      document.getElementById("s-total").textContent = `of ${d.tasks_total} completed today`;
+      const pct = d.tasks_total > 0 ? (d.tasks_done / d.tasks_total * 100) : 0;
+      document.getElementById("s-prog").style.width = pct + "%";
+      document.getElementById("s-rate").textContent = (d.completion_rate || 0) + "%";
+      document.getElementById("s-weekly").textContent = `${d.weekly_done} of ${d.weekly_total} this week`;
+    } else {
+      document.getElementById("s-done").textContent = "0";
+      document.getElementById("s-total").textContent = "Generate tasks to begin";
+      document.getElementById("s-rate").textContent = "0%";
+      document.getElementById("s-weekly").textContent = "no tasks yet";
+    }
+    if (document.getElementById("pt-total")) document.getElementById("pt-total").textContent = d.total_ever || 0;
+    if (document.getElementById("pt-done")) document.getElementById("pt-done").textContent = d.done_ever || 0;
+    if (document.getElementById("pt-rate")) document.getElementById("pt-rate").textContent = (d.total_ever > 0 ? Math.round(d.done_ever / d.total_ever * 100) : 0) + "%";
+    if (document.getElementById("pt-days")) document.getElementById("pt-days").textContent = d.days_journey || 0;
+  } catch(e) {
+    console.log("loadStats error", e);
+    document.getElementById("s-done").textContent = "0";
+    document.getElementById("s-total").textContent = "Generate tasks to begin";
+    document.getElementById("s-rate").textContent = "0%";
+    document.getElementById("s-weekly").textContent = "no data yet";
+    document.getElementById("s-days").textContent = "0";
+    document.getElementById("s-streak").textContent = "0";
+  }
 }
-
-document.getElementById("pt-total").textContent = d.total_ever || "—";
-document.getElementById("pt-done").textContent = d.done_ever || "—";
-document.getElementById("pt-rate").textContent = d.total_ever > 0 ? Math.round(d.done_ever/d.total_ever*100)+"%" : "—";
-document.getElementById("pt-days").textContent = d.days_journey;
-
-if (d.total_ever > 0) {
-const wrap = document.getElementById("exec-chart-wrap");
-wrap.innerHTML = '<canvas id="exec-chart" height="160"></canvas>';
-const ctx = document.getElementById("exec-chart");
-if (charts.exec) charts.exec.destroy();
-charts.exec = new Chart(ctx, {
-type: "doughnut",
-data: {
-labels: ["Done", "Pending"],
-datasets: [{
-data: [d.done_ever, d.total_ever - d.done_ever],
-backgroundColor: ["#1a1d23", "#f3f4f6"],
-borderWidth: 0
-}]
-},
-options: {
-responsive: true,
-plugins: { legend: { position: "bottom", labels: { font: { size: 11 }, color: "#6b7280" } } }
-}
-});
-}
-} catch(e) {}
-}
-
 // ── INTELLIGENCE ──────────────────────────────
-async function loadDailyIntelligence() {
-try {
-const resp = await authFetch("/api/intelligence/daily");
-const d = await resp.json();
-if (d.briefing) {
-document.getElementById("dash-brief").textContent = d.briefing;
-document.getElementById("intel-section").style.display = "block";
+async function loadDashTasks() {
+  const el = document.getElementById("dash-tasks");
+  if (!el) return;
+  try {
+    const resp = await authFetch("/api/tasks");
+    if (!resp.ok) {
+      el.innerHTML = `<div class="empty"><span class="empty-icon">—</span><div class="empty-text">Generate your personalised tasks for today</div><button class="empty-btn" onclick="generateTasks()">Generate Tasks</button></div>`;
+      return;
+    }
+    const d = await resp.json();
+    if (!d.tasks || !d.tasks.length) {
+      el.innerHTML = `<div class="empty"><span class="empty-icon">—</span><div class="empty-text">Generate your personalised tasks for today</div><button class="empty-btn" onclick="generateTasks()">Generate Tasks</button></div>`;
+      return;
+    }
+    el.innerHTML = d.tasks.slice(0,3).map(t => miniTask(t)).join("");
+  } catch(e) {
+    console.log("loadDashTasks error", e);
+    el.innerHTML = `<div class="empty"><span class="empty-icon">—</span><div class="empty-text">Generate your personalised tasks for today</div><button class="empty-btn" onclick="generateTasks()">Generate Tasks</button></div>`;
+  }
 }
-} catch(e) {}
+
+async function loadDailyIntelligence() {
+  try {
+    const resp = await authFetch("/api/intelligence/daily");
+    if (!resp.ok) return;
+    const d = await resp.json();
+    if (d.briefing) {
+      const el = document.getElementById("dash-brief");
+      const section = document.getElementById("intel-section");
+      if (el) el.textContent = d.briefing;
+      if (section) section.style.display = "block";
+    }
+  } catch(e) {
+    console.log("intel error", e);
+  }
+}
+async function loadDailyIntelligence() {
+  try {
+    const resp = await authFetch("/api/intelligence/daily");
+    if (!resp.ok) return;
+    const d = await resp.json();
+    if (d.briefing) {
+      const el = document.getElementById("dash-brief");
+      const section = document.getElementById("intel-section");
+      if (el) el.textContent = d.briefing;
+      if (section) section.style.display = "block";
+    }
+  } catch(e) {
+    console.log("intel error", e);
+  }
 }
 
 async function generateIntelligence() {
