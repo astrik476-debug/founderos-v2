@@ -381,7 +381,11 @@ body{font-family:'Inter',sans-serif;background:#f7f8fc;color:#1a1d23;min-height:
 </div>
 <div class="form-group">
 <label class="form-label">Password</label>
-<input class="form-input" id="login-password" type="password" placeholder="Your password" onkeydown="if(event.key==='Enter')doLogin()" autocomplete="current-password">
+<div style="position:relative">
+<input class="form-input" id="login-password" type="password" placeholder="Your password" style="padding-right:42px"
+onkeydown="if(event.key==='Enter')doLogin()" autocomplete="current-password">
+<button onclick="togglePw('login-password',this)" type="button" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#9ca3af;font-size:16px;padding:0">👁</button>
+</div>
 </div>
 <div class="forgot-link"><a onclick="showForgot()">Forgot password?</a></div>
 <button class="btn-primary" onclick="doLogin()" id="login-btn">Sign In</button>
@@ -411,7 +415,10 @@ body{font-family:'Inter',sans-serif;background:#f7f8fc;color:#1a1d23;min-height:
 </div>
 <div class="form-group">
 <label class="form-label">Password</label>
-<input class="form-input" id="signup-password" type="password" placeholder="Minimum 6 characters" onkeydown="if(event.key==='Enter')doSignup()" autocomplete="new-password">
+<div style="position:relative">
+<input class="form-input" id="signup-password" type="password" placeholder="Minimum 6 characters" style="padding-right:42px" onkeydown="if(event.key==='Enter')doSignup()" autocomplete="new-password">
+<button onclick="togglePw('signup-password',this)" type="button" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#9ca3af;font-size:16px;padding:0">👁</button>
+</div>
 </div>
 <button class="btn-primary" onclick="doSignup()" id="signup-btn">Create Account</button>
 <div class="auth-switch">Already have an account? <a onclick="showLogin()">Sign in</a></div>
@@ -514,7 +521,6 @@ FounderOS
 <button class="nav-link" onclick="showPage('market',this)">Market</button>
 <button class="nav-link" onclick="showPage('competitors',this)">Competitors</button>
 <button class="nav-link" onclick="showPage('content',this)">Content</button>
-<button class="nav-link" onclick="showPage('agents',this)">Agents</button>
 </div>
 </div>
 <div class="nav-right">
@@ -591,16 +597,7 @@ Competitor Analysis
 <span class="side-menu-item-icon">◧</span>
 Content Calendar
 </div>
-<div class="side-menu-item" onclick="showPage('agents',null);closeMenu()">
 <span class="side-menu-item-icon">◈</span>
-Specialist Agents
-</div>
-<div class="side-menu-divider"></div>
-<div class="side-menu-logout" onclick="signOut()">
-<span class="side-menu-item-icon">→</span>
-Sign Out
-</div>
-</div>
 
 <!-- DASHBOARD -->
 <div class="page active main" id="page-dashboard">
@@ -892,62 +889,6 @@ What is on your mind today?</pre>
 </div>
 </div>
 
-<!-- AGENTS -->
-<div class="page main" id="page-agents">
-<div class="page-header">
-<div class="page-title">Specialist Agents</div>
-<div class="page-sub">Expert advisors for every aspect of your startup. Each one knows your business context deeply.</div>
-</div>
-<div class="agents-grid">
-<div class="agent-card" onclick="openAgent('legal','Legal Advisor')">
-<span class="agent-emoji">⚖️</span>
-<div class="agent-name">Legal Advisor</div>
-<div class="agent-desc">Company registration, contracts, IP, compliance, regulations</div>
-</div>
-<div class="agent-card" onclick="openAgent('financial','Financial Advisor')">
-<span class="agent-emoji">💰</span>
-<div class="agent-name">Financial Advisor</div>
-<div class="agent-desc">Unit economics, pricing, burn rate, fundraising, projections</div>
-</div>
-<div class="agent-card" onclick="openAgent('consumer','Consumer Psychology')">
-<span class="agent-emoji">🧠</span>
-<div class="agent-name">Consumer Psychology</div>
-<div class="agent-desc">Why customers buy, messaging, customer journey, personas</div>
-</div>
-<div class="agent-card" onclick="openAgent('growth','Growth Strategist')">
-<span class="agent-emoji">📈</span>
-<div class="agent-name">Growth Strategist</div>
-<div class="agent-desc">Growth loops, viral mechanics, retention, distribution channels</div>
-</div>
-<div class="agent-card" onclick="openAgent('product','Product Manager')">
-<span class="agent-emoji">🛠️</span>
-<div class="agent-name">Product Manager</div>
-<div class="agent-desc">MVP scoping, roadmap, feature prioritisation, product-market fit</div>
-</div>
-<div class="agent-card" onclick="openAgent('formulation','Formulation Expert')">
-<span class="agent-emoji">🧪</span>
-<div class="agent-name">Formulation Expert</div>
-<div class="agent-desc">Ingredients, safety, FSSAI compliance, manufacturing, shelf life</div>
-</div>
-<div class="agent-card" onclick="openAgent('sales','Sales Coach')">
-<span class="agent-emoji">🤝</span>
-<div class="agent-name">Sales Coach</div>
-<div class="agent-desc">Complete sales scripts, objection handling, pipeline, closing</div>
-</div>
-</div>
-<div class="agent-box" id="agent-box">
-<div class="agent-box-header">
-<span id="agent-box-title">Ask the Agent</span>
-<button onclick="closeAgent()" style="background:none;border:none;color:#9ca3af;cursor:pointer;font-size:22px;line-height:1">×</button>
-</div>
-<div class="agent-reply" id="agent-reply"></div>
-<div class="agent-row">
-<input class="agent-input" id="agent-input" placeholder="Ask your question in detail..." onkeydown="if(event.key==='Enter')askAgent()">
-<button class="agent-btn" onclick="askAgent()" id="agent-ask-btn">Ask</button>
-</div>
-</div>
-</div>
-
 <!-- BOTTOM NAV (mobile) -->
 <div class="bottom-nav">
 <div class="bottom-nav-inner">
@@ -976,7 +917,6 @@ What is on your mind today?</pre>
 <button class="more-item" onclick="showPage('market',null);hideMoreSheet()">◈ Market</button>
 <button class="more-item" onclick="showPage('competitors',null);hideMoreSheet()">◎ Competitors</button>
 <button class="more-item" onclick="showPage('content',null);hideMoreSheet()">◧ Content</button>
-<button class="more-item" onclick="showPage('agents',null);hideMoreSheet()">◈ Agents</button>
 <button class="more-item" onclick="showMenuPage('report');hideMoreSheet()" style="grid-column:1/-1">◎ My Founder Report</button>
 </div>
 </div>
@@ -1957,6 +1897,16 @@ btn.disabled = false; btn.textContent = "Ask";
 }
 
 // ── UTILS ─────────────────────────────────────
+function togglePw(id, btn) {
+  const input = document.getElementById(id);
+  if (input.type === "password") {
+    input.type = "text";
+    btn.textContent = "🙈";
+  } else {
+    input.type = "password";
+    btn.textContent = "👁";
+  }
+}
 function show(id) { const el=document.getElementById(id); if(el) el.style.display="block"; }
 
 function toast(msg) {
