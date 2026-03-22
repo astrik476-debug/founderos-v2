@@ -1,0 +1,1808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>FounderOS</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#f5f4f0;
+  --white:#ffffff;
+  --black:#0f0f0f;
+  --ink:#1c1c1e;
+  --ink2:#48484a;
+  --ink3:#8e8e93;
+  --ink4:#c7c7cc;
+  --border:#e5e5ea;
+  --border2:#d1d1d6;
+  --accent:#1c1c1e;
+  --accent2:#f5f4f0;
+  --green:#34c759;
+  --red:#ff3b30;
+  --amber:#ff9500;
+  --blue:#007aff;
+  --radius:14px;
+  --radius-sm:9px;
+  --shadow:0 1px 3px rgba(0,0,0,.08),0 4px 12px rgba(0,0,0,.05);
+  --shadow-lg:0 8px 32px rgba(0,0,0,.12);
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+/* ── AUTH ─────────────────────────────────── */
+.auth-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:var(--bg)}
+.auth-card{background:var(--white);border-radius:24px;padding:40px 36px;width:100%;max-width:400px;box-shadow:var(--shadow-lg)}
+.auth-brand{display:flex;align-items:center;gap:10px;margin-bottom:32px;justify-content:center}
+.auth-brand-icon{width:40px;height:40px;background:var(--black);border-radius:11px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:18px;letter-spacing:-1px}
+.auth-brand-name{font-size:20px;font-weight:700;letter-spacing:-0.5px;color:var(--ink)}
+.auth-title{font-size:24px;font-weight:700;letter-spacing:-0.5px;color:var(--ink);margin-bottom:6px;text-align:center}
+.auth-sub{font-size:14px;color:var(--ink3);text-align:center;margin-bottom:28px;line-height:1.5}
+.form-grp{margin-bottom:14px}
+.form-lbl{font-size:11px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:var(--ink3);margin-bottom:6px;display:block}
+.form-inp{width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;color:var(--ink);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .15s;-webkit-appearance:none;appearance:none}
+.form-inp:focus{border-color:var(--black);background:var(--white)}
+.pw-wrap{position:relative}
+.pw-wrap .form-inp{padding-right:44px}
+.pw-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--ink3);font-size:16px;padding:4px;line-height:1}
+.btn-main{width:100%;padding:13px;background:var(--black);color:#fff;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity .15s;margin-top:6px;letter-spacing:-.2px}
+.btn-main:hover{opacity:.85}
+.btn-main:disabled{opacity:.4;cursor:not-allowed}
+.auth-foot{text-align:center;margin-top:20px;font-size:13px;color:var(--ink3)}
+.auth-foot a{color:var(--ink);font-weight:600;cursor:pointer;text-decoration:underline}
+.auth-err{background:#fff2f0;border:1px solid #ffccc7;color:#cf1322;padding:10px 14px;border-radius:var(--radius-sm);font-size:13px;margin-bottom:14px;display:none}
+.auth-ok{background:#f6ffed;border:1px solid #b7eb8f;color:#389e0d;padding:10px 14px;border-radius:var(--radius-sm);font-size:13px;margin-bottom:14px;display:none}
+.forgot-row{text-align:right;margin-bottom:14px;margin-top:-8px}
+.forgot-row a{font-size:12px;color:var(--ink3);cursor:pointer;text-decoration:underline}
+
+/* ── ONBOARDING ───────────────────────────── */
+.ob-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:var(--bg)}
+.ob-card{background:var(--white);border-radius:24px;padding:40px 36px;width:100%;max-width:560px;box-shadow:var(--shadow-lg)}
+.ob-progress{background:var(--border);border-radius:999px;height:3px;margin-bottom:32px;overflow:hidden}
+.ob-progress-fill{height:100%;background:var(--black);border-radius:999px;transition:width .4s ease}
+.ob-section{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--ink3);margin-bottom:8px}
+.ob-q{font-size:22px;font-weight:700;letter-spacing:-.5px;color:var(--ink);margin-bottom:6px;line-height:1.3}
+.ob-hint{font-size:13px;color:var(--ink3);margin-bottom:24px;line-height:1.6}
+.ob-opts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:28px}
+.ob-opt{padding:13px 15px;border:1.5px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:13px;font-weight:500;color:var(--ink2);transition:all .15s;text-align:left;background:var(--white);font-family:'DM Sans',sans-serif;line-height:1.4}
+.ob-opt:hover{border-color:var(--black);background:var(--bg)}
+.ob-opt.sel{border-color:var(--black);background:var(--black);color:#fff;font-weight:600}
+.ob-text{width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;color:var(--ink);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .15s;margin-bottom:28px;-webkit-appearance:none}
+.ob-text:focus{border-color:var(--black);background:var(--white)}
+.ob-nav{display:flex;justify-content:space-between;align-items:center}
+.ob-back{background:none;border:1.5px solid var(--border);color:var(--ink3);padding:10px 18px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s}
+.ob-back:hover{border-color:var(--ink3);color:var(--ink)}
+.ob-next{background:var(--black);color:#fff;border:none;padding:10px 24px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity .15s}
+.ob-next:disabled{opacity:.4}
+.ob-counter{font-size:12px;color:var(--ink3);font-variant-numeric:tabular-nums}
+
+/* ── REPORT PAGE ──────────────────────────── */
+.rp-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:var(--bg)}
+.rp-card{background:var(--white);border-radius:24px;padding:40px 36px;width:100%;max-width:600px;box-shadow:var(--shadow-lg)}
+.rp-title{font-size:26px;font-weight:700;letter-spacing:-.6px;color:var(--ink);margin-bottom:4px}
+.rp-sub{font-size:13px;color:var(--ink3);margin-bottom:28px}
+.rp-hero{background:var(--black);color:#fff;border-radius:var(--radius);padding:24px;margin-bottom:20px}
+.rp-hero-lbl{font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;opacity:.5;margin-bottom:6px}
+.rp-hero-val{font-size:22px;font-weight:700;letter-spacing:-.4px;margin-bottom:10px}
+.rp-hero-sum{font-size:13px;opacity:.8;line-height:1.7}
+.rp-tl{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+.rp-tl-item{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;text-align:center}
+.rp-tl-lbl{font-size:9px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px}
+.rp-tl-val{font-size:12px;font-weight:700;color:var(--ink)}
+.rp-scores{display:flex;gap:12px;margin-bottom:20px}
+.rp-score{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;text-align:center}
+.rp-score-lbl{font-size:10px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px}
+.rp-score-val{font-size:26px;font-weight:700;color:var(--ink);line-height:1}
+.rp-score-bar{background:var(--border);border-radius:999px;height:3px;margin-top:8px;overflow:hidden}
+.rp-score-fill{height:100%;background:var(--black);border-radius:999px}
+.rp-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+.rp-box{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px}
+.rp-box-lbl{font-size:10px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px}
+.rp-box-item{font-size:13px;color:var(--ink2);padding:4px 0;border-bottom:1px solid var(--border);line-height:1.4}
+.rp-box-item:last-child{border-bottom:none}
+.rp-insight{background:#fffbe6;border:1px solid #ffe58f;border-radius:var(--radius-sm);padding:14px;margin-bottom:20px}
+.rp-insight-lbl{font-size:10px;font-weight:600;color:#d48806;text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px}
+.rp-insight-txt{font-size:13px;color:var(--ink2);line-height:1.6}
+.btn-enter{width:100%;padding:14px;background:var(--black);color:#fff;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;letter-spacing:-.2px;transition:opacity .15s}
+.btn-enter:hover{opacity:.85}
+
+/* ── APP SHELL ────────────────────────────── */
+.app{display:none;min-height:100vh}
+
+/* ── TOP NAV ──────────────────────────────── */
+.topnav{position:fixed;top:0;left:0;right:0;height:56px;background:rgba(245,244,240,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:100}
+.nav-brand{display:flex;align-items:center;gap:9px;font-size:15px;font-weight:700;letter-spacing:-.4px;color:var(--ink)}
+.nav-brand-icon{width:28px;height:28px;background:var(--black);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px;flex-shrink:0}
+.nav-links{display:flex;gap:2px}
+.nav-btn{padding:6px 11px;border-radius:var(--radius-sm);cursor:pointer;font-size:12px;font-weight:500;color:var(--ink3);transition:all .15s;border:none;background:none;font-family:'DM Sans',sans-serif;white-space:nowrap;letter-spacing:-.1px}
+.nav-btn:hover{background:var(--border);color:var(--ink)}
+.nav-btn.on{background:var(--white);color:var(--ink);font-weight:600;box-shadow:var(--shadow)}
+.nav-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.nav-info{text-align:right}
+.nav-name{font-size:12px;font-weight:600;color:var(--ink2)}
+.nav-day{font-size:11px;color:var(--ink3)}
+.nav-menu-btn{width:34px;height:34px;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-sm);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;transition:all .15s}
+.nav-menu-btn:hover{border-color:var(--ink3)}
+.nav-menu-line{width:14px;height:1.5px;background:var(--ink2);border-radius:999px}
+
+/* ── MOBILE TOP BAR ───────────────────────── */
+.mob-top{display:none;position:fixed;top:0;left:0;right:0;height:52px;background:rgba(245,244,240,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);align-items:center;justify-content:space-between;padding:0 16px;z-index:100}
+.mob-brand{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;letter-spacing:-.4px;color:var(--ink)}
+.mob-brand-icon{width:26px;height:26px;background:var(--black);border-radius:7px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:12px}
+
+/* ── SIDE MENU ────────────────────────────── */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:200;backdrop-filter:blur(2px)}
+.overlay.on{display:block}
+.sidemenu{position:fixed;top:0;right:-300px;width:280px;height:100vh;background:var(--white);z-index:201;transition:right .28s ease;overflow-y:auto;box-shadow:var(--shadow-lg)}
+.sidemenu.on{right:0}
+.sm-head{padding:20px 20px 16px;border-bottom:1px solid var(--border)}
+.sm-user{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:2px;letter-spacing:-.3px}
+.sm-email{font-size:12px;color:var(--ink3)}
+.sm-section{padding:14px 16px 4px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--ink4)}
+.sm-item{display:flex;align-items:center;gap:12px;padding:10px 14px;cursor:pointer;font-size:13px;font-weight:500;color:var(--ink2);border-radius:var(--radius-sm);margin:2px 8px;transition:background .12s}
+.sm-item:hover{background:var(--bg);color:var(--ink)}
+.sm-item-icon{font-size:15px;width:20px;flex-shrink:0;text-align:center}
+.sm-div{height:1px;background:var(--border);margin:8px 16px}
+.sm-logout{display:flex;align-items:center;gap:12px;padding:10px 14px;cursor:pointer;font-size:13px;font-weight:500;color:var(--red);border-radius:var(--radius-sm);margin:2px 8px;transition:background .12s}
+.sm-logout:hover{background:#fff2f0}
+
+/* ── BOTTOM NAV MOBILE ────────────────────── */
+.botnav{display:none;position:fixed;bottom:0;left:0;right:0;background:rgba(245,244,240,.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--border);z-index:100;padding:8px 0 max(10px,env(safe-area-inset-bottom))}
+.botnav-inner{display:flex;justify-content:space-around;align-items:center}
+.bnav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 10px;border:none;background:none;font-family:'DM Sans',sans-serif;cursor:pointer;border-radius:10px;min-width:52px}
+.bnav-ico{font-size:20px;line-height:1;transition:transform .15s}
+.bnav-lbl{font-size:9px;font-weight:600;color:var(--ink3);letter-spacing:.2px}
+.bnav-btn.on .bnav-ico{transform:scale(1.15)}
+.bnav-btn.on .bnav-lbl{color:var(--ink)}
+
+/* ── MORE SHEET ───────────────────────────── */
+.more-sheet{display:none;position:fixed;bottom:60px;left:12px;right:12px;background:var(--white);border:1px solid var(--border);border-radius:20px;z-index:99;padding:16px;box-shadow:var(--shadow-lg)}
+.more-sheet.on{display:block}
+.more-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.more-item{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 12px;font-size:13px;font-weight:500;color:var(--ink2);cursor:pointer;font-family:'DM Sans',sans-serif;text-align:left;transition:background .12s;border:none}
+.more-item:hover,.more-item:active{background:var(--border)}
+
+/* ── MAIN LAYOUT ──────────────────────────── */
+.main{margin-top:56px;padding:20px;max-width:1180px;margin-left:auto;margin-right:auto;width:100%}
+.main.fw{padding:0;max-width:100%;margin-top:56px}
+.page{display:none;width:100%}
+.page.on{display:block}
+.pg-head{margin-bottom:22px}
+.pg-title{font-size:22px;font-weight:700;letter-spacing:-.5px;color:var(--ink)}
+.pg-sub{font-size:13px;color:var(--ink3);margin-top:3px;line-height:1.5}
+
+/* ── CARDS ────────────────────────────────── */
+.card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:14px;box-shadow:var(--shadow)}
+.card-lbl{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--ink3);margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;width:100%}
+.content-txt{font-size:14px;line-height:1.9;color:var(--ink2);white-space:pre-wrap}
+
+/* ── STATS ────────────────────────────────── */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;width:100%}
+.stat{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+.stat-lbl{font-size:10px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:var(--ink3);margin-bottom:8px}
+.stat-val{font-size:28px;font-weight:700;color:var(--ink);line-height:1;letter-spacing:-.6px}
+.stat-sub{font-size:11px;color:var(--ink3);margin-top:5px}
+.stat-bar{background:var(--border);border-radius:999px;height:2px;margin-top:10px;overflow:hidden}
+.stat-fill{height:100%;background:var(--black);border-radius:999px;transition:width 1s ease}
+
+/* ── INTEL CARD ───────────────────────────── */
+.intel-card{background:var(--black);color:#fff;border-radius:var(--radius);padding:22px;margin-bottom:16px}
+.intel-lbl{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;opacity:.4;margin-bottom:10px}
+.intel-txt{font-size:13.5px;line-height:1.85;opacity:.85;max-height:200px;overflow-y:auto}
+.intel-txt::-webkit-scrollbar{width:3px}
+.intel-txt::-webkit-scrollbar-thumb{background:rgba(255,255,255,.2);border-radius:2px}
+.intel-footer{display:flex;align-items:center;justify-content:space-between;margin-top:14px}
+.intel-date{font-size:11px;opacity:.4}
+
+/* ── TASKS ────────────────────────────────── */
+.task-item{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:10px;overflow:hidden;transition:box-shadow .2s;box-shadow:var(--shadow)}
+.task-item:hover{box-shadow:var(--shadow-lg)}
+.task-item.done{opacity:.4}
+.task-body{display:flex;align-items:flex-start;gap:14px;padding:16px}
+.task-check-wrap{flex-shrink:0;margin-top:2px}
+.task-circle{width:22px;height:22px;border:2px solid var(--border2);border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;min-width:22px;flex-shrink:0}
+.task-circle:hover{border-color:var(--black)}
+.task-circle.done{background:var(--black);border-color:var(--black)}
+.task-circle.done::after{content:'';width:5px;height:9px;border:2px solid #fff;border-top:none;border-left:none;transform:rotate(45deg);display:block;margin-top:-2px}
+.task-content{flex:1;min-width:0}
+.task-priority{display:inline-block;font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:2px 8px;border-radius:999px;margin-bottom:6px}
+.priority-critical{background:#fff0f0;color:var(--red)}
+.priority-high{background:#fff7e6;color:var(--amber)}
+.priority-medium{background:#f6ffed;color:#389e0d}
+.task-title{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:4px;line-height:1.4}
+.task-item.done .task-title{text-decoration:line-through;color:var(--ink3)}
+.task-desc{font-size:12.5px;color:var(--ink3);line-height:1.6;margin-bottom:8px}
+.task-meta{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.task-tag{font-size:10px;font-weight:500;padding:2px 8px;border-radius:999px;background:var(--bg);color:var(--ink3);border:1px solid var(--border)}
+.task-time{font-size:10px;color:var(--ink3);display:flex;align-items:center;gap:3px}
+.task-expand{font-size:11px;font-weight:600;color:var(--ink3);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;padding:0;margin-left:auto;transition:color .15s}
+.task-expand:hover{color:var(--ink)}
+.task-how{padding:0 16px 16px 52px;display:none}
+.task-how.on{display:block}
+.task-how-lbl{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--ink3);margin-bottom:8px;margin-top:4px}
+.task-how-body{font-size:13px;color:var(--ink2);line-height:1.8;background:var(--bg);border-radius:var(--radius-sm);padding:12px;border-left:3px solid var(--black)}
+.task-outcome{font-size:12px;color:var(--ink3);font-style:italic;margin-top:8px;padding:8px 12px;background:var(--bg);border-radius:var(--radius-sm)}
+.task-start-btn{font-size:11px;font-weight:600;color:var(--ink);background:none;border:1.5px solid var(--border);padding:5px 12px;border-radius:var(--radius-sm);cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:8px;transition:all .15s}
+.task-start-btn:hover{background:var(--bg)}
+
+/* ── FOUNDER REPORT ───────────────────────── */
+.fr-panel{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:14px;box-shadow:var(--shadow)}
+.fr-hero{background:var(--black);color:#fff;border-radius:var(--radius-sm);padding:20px;margin-bottom:18px}
+.fr-hero-lbl{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;opacity:.5;margin-bottom:5px}
+.fr-hero-val{font-size:18px;font-weight:700;letter-spacing:-.3px;margin-bottom:8px}
+.fr-hero-sum{font-size:13px;opacity:.8;line-height:1.7}
+.fr-scores{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.fr-score{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px}
+.fr-score-lbl{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--ink3);margin-bottom:8px}
+.fr-score-num{font-size:24px;font-weight:700;color:var(--ink);line-height:1}
+.fr-score-bar{background:var(--border);border-radius:999px;height:3px;margin-top:8px;overflow:hidden}
+.fr-score-fill{height:100%;background:var(--black);border-radius:999px}
+.fr-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.fr-box{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px}
+.fr-box-lbl{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--ink3);margin-bottom:8px}
+.fr-box-item{font-size:13px;color:var(--ink2);padding:4px 0;border-bottom:1px solid var(--border);line-height:1.4}
+.fr-box-item:last-child{border-bottom:none}
+.fr-styles{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.fr-style{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px}
+.fr-style-lbl{font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--ink3);margin-bottom:4px}
+.fr-style-val{font-size:12px;font-weight:600;color:var(--ink);text-transform:capitalize}
+
+/* ── CHAT ─────────────────────────────────── */
+.chat-wrap{display:flex;flex-direction:column;height:calc(100vh - 56px)}
+.chat-head{padding:14px 18px;border-bottom:1px solid var(--border);background:var(--white);flex-shrink:0;display:flex;align-items:center;justify-content:space-between}
+.chat-av{width:36px;height:36px;background:var(--black);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:14px;flex-shrink:0}
+.chat-title{font-weight:700;font-size:14px;color:var(--ink);letter-spacing:-.2px}
+.chat-online{font-size:11px;color:var(--green);font-weight:500;display:flex;align-items:center;gap:4px;margin-top:2px}
+.chat-online::before{content:'';width:5px;height:5px;background:var(--green);border-radius:50%;display:inline-block}
+.mode-row{display:flex;gap:5px;overflow-x:auto;padding-bottom:1px}
+.mode-row::-webkit-scrollbar{display:none}
+.mode-pill{padding:5px 12px;border-radius:999px;font-size:11px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:var(--white);color:var(--ink3);font-family:'DM Sans',sans-serif;white-space:nowrap;flex-shrink:0;transition:all .15s}
+.mode-pill.on{border-color:var(--black);background:var(--black);color:#fff}
+.qpills{padding:8px 16px;border-bottom:1px solid var(--border);display:flex;gap:6px;overflow-x:auto;background:var(--white);flex-shrink:0}
+.qpills::-webkit-scrollbar{display:none}
+.qpill{background:var(--bg);border:1px solid var(--border);color:var(--ink2);padding:5px 12px;border-radius:999px;font-size:11px;font-weight:500;cursor:pointer;white-space:nowrap;font-family:'DM Sans',sans-serif;flex-shrink:0;transition:all .15s}
+.qpill:hover,.qpill:active{border-color:var(--black);color:var(--ink);background:var(--white)}
+.chat-msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:16px;-webkit-overflow-scrolling:touch}
+.chat-msgs::-webkit-scrollbar{width:3px}
+.chat-msgs::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.msg{display:flex;gap:10px;align-items:flex-start;animation:msgIn .2s ease}
+@keyframes msgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.msg.user{flex-direction:row-reverse}
+.msg-av{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:2px;min-width:30px}
+.msg-av.ai{background:var(--black);color:#fff}
+.msg-av.user{background:var(--ink2);color:#fff}
+.msg-bubble{max-width:75%;padding:13px 15px;border-radius:14px;font-size:13.5px;line-height:1.75}
+.msg.ai .msg-bubble{background:var(--white);color:var(--ink2);border:1px solid var(--border);border-top-left-radius:4px}
+.msg.user .msg-bubble{background:var(--black);color:#fff;border-top-right-radius:4px}
+.msg-bubble pre{font-family:'DM Sans',sans-serif;white-space:pre-wrap;margin:0}
+.src-note{font-size:10px;color:var(--ink3);background:var(--bg);border:1px solid var(--border);padding:3px 10px;border-radius:999px;display:inline-block;margin:0 0 8px 40px}
+.typing{display:flex;gap:4px;padding:4px 0;align-items:center}
+.tdot{width:6px;height:6px;background:var(--ink3);border-radius:50%;animation:td 1.2s infinite;opacity:.5}
+.tdot:nth-child(2){animation-delay:.2s}
+.tdot:nth-child(3){animation-delay:.4s}
+@keyframes td{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-5px);opacity:1}}
+.file-bar{padding:7px 16px;background:#f6ffed;border-top:1px solid #b7eb8f;display:none;align-items:center;justify-content:space-between;font-size:12px;color:#389e0d;font-weight:500;flex-shrink:0}
+.plus-wrap{position:relative;flex-shrink:0}
+.plus-btn{width:42px;height:42px;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;color:var(--ink3);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.plus-btn:hover,.plus-btn:active{background:var(--white);border-color:var(--ink);color:var(--ink)}
+.plus-drop{position:absolute;bottom:calc(100% + 8px);left:0;background:var(--white);border:1px solid var(--border);border-radius:var(--radius);width:210px;overflow:hidden;display:none;z-index:200;box-shadow:var(--shadow-lg)}
+.plus-drop.on{display:block}
+.plus-opt{display:flex;align-items:center;gap:9px;padding:11px 14px;font-size:13px;cursor:pointer;color:var(--ink2);transition:background .12s;border-bottom:1px solid var(--border)}
+.plus-opt:last-child{border-bottom:none}
+.plus-opt:hover,.plus-opt:active{background:var(--bg)}
+.chat-bar{padding:10px 14px;border-top:1px solid var(--border);background:var(--white);display:flex;gap:8px;align-items:flex-end;flex-shrink:0;padding-bottom:max(10px,env(safe-area-inset-bottom))}
+.chat-inp{flex:1;background:var(--bg);border:1.5px solid var(--border);border-radius:12px;padding:10px 14px;color:var(--ink);font-size:14px;font-family:'DM Sans',sans-serif;resize:none;min-height:42px;max-height:120px;line-height:1.5;outline:none;transition:border-color .15s;-webkit-appearance:none}
+.chat-inp:focus{border-color:var(--black);background:var(--white)}
+.chat-inp::placeholder{color:var(--ink4)}
+.send-btn{background:var(--black);border:none;width:42px;height:42px;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;color:#fff;min-width:42px;transition:opacity .2s}
+.send-btn:hover{opacity:.8}
+.send-btn:disabled{opacity:.35;cursor:not-allowed}
+
+/* ── PLATFORM TABS ────────────────────────── */
+.ptabs{display:flex;gap:6px;margin-bottom:16px;overflow-x:auto;padding-bottom:2px}
+.ptabs::-webkit-scrollbar{display:none}
+.ptab{padding:7px 14px;border-radius:999px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:var(--white);color:var(--ink3);font-family:'DM Sans',sans-serif;white-space:nowrap;flex-shrink:0;transition:all .15s}
+.ptab.on{border-color:var(--black);background:var(--black);color:#fff}
+
+/* ── EMPTY STATE ──────────────────────────── */
+.empty{text-align:center;padding:36px 20px;color:var(--ink3)}
+.empty-ico{font-size:28px;margin-bottom:10px;opacity:.35;display:block}
+.empty-txt{font-size:13px;margin-bottom:16px;line-height:1.6;color:var(--ink3)}
+.empty-btn{background:var(--black);color:#fff;border:none;padding:10px 20px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity .15s}
+.empty-btn:hover{opacity:.8}
+
+/* ── BUTTONS ──────────────────────────────── */
+.run-btn{background:var(--black);color:#fff;border:none;padding:8px 16px;border-radius:var(--radius-sm);font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity .15s;white-space:nowrap}
+.run-btn:hover{opacity:.8}
+.run-btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* ── CHART EMPTY ──────────────────────────── */
+.chart-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:160px;color:var(--ink3);font-size:12px;gap:6px;text-align:center}
+
+/* ── LOADING ──────────────────────────────── */
+.loading{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:1000;gap:14px}
+.loading-icon{width:46px;height:46px;background:var(--black);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:20px;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+.loading-txt{font-size:13px;color:var(--ink3);font-weight:500}
+
+/* ── SPINNER ──────────────────────────────── */
+.spin{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,.25);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite}
+.spin-dark{border-color:rgba(0,0,0,.1);border-top-color:var(--black)}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* ── TOAST ────────────────────────────────── */
+.toast{position:fixed;bottom:76px;left:50%;transform:translateX(-50%) translateY(8px);background:var(--black);color:#fff;padding:10px 18px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;opacity:0;transition:all .3s;z-index:9999;pointer-events:none;white-space:nowrap;max-width:92vw}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ── RESPONSIVE ───────────────────────────── */
+@media(max-width:768px){
+  .topnav{display:none}
+  .mob-top{display:flex}
+  .botnav{display:block}
+  .main{margin-top:52px;padding:14px;padding-bottom:76px}
+  .main.fw{margin-top:52px}
+  .chat-wrap{height:calc(100vh - 52px - 60px)}
+  .stats-row{grid-template-columns:1fr 1fr;gap:10px}
+  .two-col{grid-template-columns:1fr}
+  .rp-tl{grid-template-columns:1fr 1fr}
+  .rp-grid{grid-template-columns:1fr}
+  .rp-scores{flex-direction:column}
+  .fr-grid{grid-template-columns:1fr}
+  .fr-styles{grid-template-columns:1fr 1fr}
+  .fr-scores{grid-template-columns:1fr 1fr}
+  .msg-bubble{max-width:86%}
+  .stat-val{font-size:24px}
+  .pg-title{font-size:19px}
+}
+@media(max-width:400px){
+  .stats-row{grid-template-columns:1fr 1fr}
+  .ob-opts{grid-template-columns:1fr}
+  .fr-styles{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div class="loading" id="loading">
+  <div class="loading-icon">F</div>
+  <div class="loading-txt">Loading FounderOS...</div>
+</div>
+
+<!-- LOGIN -->
+<div id="pg-login" style="display:none">
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="auth-brand">
+        <div class="auth-brand-icon">F</div>
+        <div class="auth-brand-name">FounderOS</div>
+      </div>
+      <div class="auth-title">Welcome back</div>
+      <div class="auth-sub">Sign in to your AI startup operating system</div>
+      <div class="auth-err" id="login-err"></div>
+      <div class="form-grp">
+        <label class="form-lbl">Email</label>
+        <input class="form-inp" id="login-email" type="email" placeholder="you@startup.com" autocomplete="email">
+      </div>
+      <div class="form-grp">
+        <label class="form-lbl">Password</label>
+        <div class="pw-wrap">
+          <input class="form-inp" id="login-pw" type="password" placeholder="Your password" onkeydown="if(event.key==='Enter')doLogin()" autocomplete="current-password">
+          <button class="pw-eye" onclick="togglePw('login-pw',this)" type="button">👁</button>
+        </div>
+      </div>
+      <div class="forgot-row"><a onclick="showForgot()">Forgot password?</a></div>
+      <button class="btn-main" onclick="doLogin()" id="login-btn">Sign In</button>
+      <div class="auth-foot">New here? <a onclick="showSignup()">Create account</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- SIGNUP -->
+<div id="pg-signup" style="display:none">
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="auth-brand">
+        <div class="auth-brand-icon">F</div>
+        <div class="auth-brand-name">FounderOS</div>
+      </div>
+      <div class="auth-title">Start your journey</div>
+      <div class="auth-sub">Join founders building with AI</div>
+      <div class="auth-err" id="signup-err"></div>
+      <div class="form-grp">
+        <label class="form-lbl">Your Name</label>
+        <input class="form-inp" id="signup-name" type="text" placeholder="What should we call you?" autocomplete="name">
+      </div>
+      <div class="form-grp">
+        <label class="form-lbl">Email</label>
+        <input class="form-inp" id="signup-email" type="email" placeholder="you@startup.com" autocomplete="email">
+      </div>
+      <div class="form-grp">
+        <label class="form-lbl">Password</label>
+        <div class="pw-wrap">
+          <input class="form-inp" id="signup-pw" type="password" placeholder="Minimum 6 characters" onkeydown="if(event.key==='Enter')doSignup()" autocomplete="new-password">
+          <button class="pw-eye" onclick="togglePw('signup-pw',this)" type="button">👁</button>
+        </div>
+      </div>
+      <button class="btn-main" onclick="doSignup()" id="signup-btn">Create Account</button>
+      <div class="auth-foot">Already have an account? <a onclick="showLogin()">Sign in</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- FORGOT PASSWORD -->
+<div id="pg-forgot" style="display:none">
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="auth-brand">
+        <div class="auth-brand-icon">F</div>
+        <div class="auth-brand-name">FounderOS</div>
+      </div>
+      <div class="auth-title">Reset password</div>
+      <div class="auth-sub">Enter your email and we will send reset instructions</div>
+      <div class="auth-err" id="forgot-err"></div>
+      <div class="auth-ok" id="forgot-ok">Reset instructions sent. Check your inbox.</div>
+      <div class="form-grp">
+        <label class="form-lbl">Email</label>
+        <input class="form-inp" id="forgot-email" type="email" placeholder="you@startup.com">
+      </div>
+      <button class="btn-main" onclick="doForgot()" id="forgot-btn">Send Reset Link</button>
+      <div class="auth-foot"><a onclick="showLogin()">Back to sign in</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ONBOARDING -->
+<div id="pg-ob" style="display:none">
+  <div class="ob-wrap">
+    <div class="ob-card">
+      <div class="ob-progress"><div class="ob-progress-fill" id="ob-fill" style="width:4%"></div></div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:22px">
+        <div style="flex:1;padding-right:16px">
+          <div class="ob-section" id="ob-section">About You</div>
+          <div class="ob-q" id="ob-q">Loading...</div>
+          <div class="ob-hint" id="ob-hint"></div>
+        </div>
+        <div class="ob-counter" id="ob-counter">1 of 25</div>
+      </div>
+      <div id="ob-content"></div>
+      <div class="ob-nav">
+        <button class="ob-back" id="ob-back" onclick="obBack()" style="visibility:hidden">Back</button>
+        <button class="ob-next" id="ob-next" onclick="obNext()">Continue</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOUNDER REPORT -->
+<div id="pg-report" style="display:none">
+  <div class="rp-wrap">
+    <div class="rp-card">
+      <div class="rp-title">Founder Intelligence Report</div>
+      <div class="rp-sub">Generated from your complete profile analysis</div>
+      <div class="rp-hero">
+        <div class="rp-hero-lbl">Your Founder Archetype</div>
+        <div class="rp-hero-val" id="rp-archetype">Analysing...</div>
+        <div class="rp-hero-sum" id="rp-summary"></div>
+      </div>
+      <div class="rp-tl" id="rp-tl"></div>
+      <div class="rp-scores">
+        <div class="rp-score">
+          <div class="rp-score-lbl">Growth Mindset</div>
+          <div class="rp-score-val" id="rp-gm">-</div>
+          <div class="rp-score-bar"><div class="rp-score-fill" id="rp-gm-bar" style="width:0%"></div></div>
+        </div>
+        <div class="rp-score">
+          <div class="rp-score-lbl">Focus Score</div>
+          <div class="rp-score-val" id="rp-fs">-</div>
+          <div class="rp-score-bar"><div class="rp-score-fill" id="rp-fs-bar" style="width:0%"></div></div>
+        </div>
+      </div>
+      <div class="rp-grid" id="rp-grid"></div>
+      <div class="rp-insight" id="rp-insight-box" style="display:none">
+        <div class="rp-insight-lbl">Key Insight</div>
+        <div class="rp-insight-txt" id="rp-insight"></div>
+      </div>
+      <button class="btn-enter" onclick="enterApp()">Enter FounderOS</button>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div class="app" id="app">
+
+  <!-- Desktop Nav -->
+  <nav class="topnav">
+    <div style="display:flex;align-items:center;gap:16px">
+      <div class="nav-brand">
+        <div class="nav-brand-icon">F</div>
+        FounderOS
+      </div>
+      <div class="nav-links">
+        <button class="nav-btn on" onclick="showPage('dashboard',this)">Dashboard</button>
+        <button class="nav-btn" onclick="showPage('chat',this)">AI Co-Founder</button>
+        <button class="nav-btn" onclick="showPage('tasks',this)">Tasks</button>
+        <button class="nav-btn" onclick="showPage('market',this)">Market</button>
+        <button class="nav-btn" onclick="showPage('competitors',this)">Competitors</button>
+        <button class="nav-btn" onclick="showPage('content',this)">Content</button>
+      </div>
+    </div>
+    <div class="nav-right">
+      <div class="nav-info">
+        <div class="nav-name" id="nav-name"></div>
+        <div class="nav-day" id="nav-day"></div>
+      </div>
+      <button class="run-btn" onclick="genIntel()">Briefing</button>
+      <button class="nav-menu-btn" onclick="openMenu()">
+        <div class="nav-menu-line"></div>
+        <div class="nav-menu-line"></div>
+        <div class="nav-menu-line"></div>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile Top Bar -->
+  <div class="mob-top" id="mob-top">
+    <div class="mob-brand">
+      <div class="mob-brand-icon">F</div>
+      FounderOS
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <button class="run-btn" style="font-size:11px;padding:6px 12px" onclick="genIntel()">Briefing</button>
+      <button class="nav-menu-btn" onclick="openMenu()">
+        <div class="nav-menu-line"></div>
+        <div class="nav-menu-line"></div>
+        <div class="nav-menu-line"></div>
+      </button>
+    </div>
+  </div>
+
+  <!-- Overlay + Side Menu -->
+  <div class="overlay" id="overlay" onclick="closeMenu()"></div>
+  <div class="sidemenu" id="sidemenu">
+    <div class="sm-head">
+      <div class="sm-user" id="sm-name">Founder</div>
+      <div class="sm-email" id="sm-email"></div>
+    </div>
+    <div class="sm-section">My Account</div>
+    <div class="sm-item" onclick="showMenuPage('fr-page');closeMenu()">
+      <span class="sm-item-icon">◎</span>Founder Intelligence Report
+    </div>
+    <div class="sm-item" onclick="showMenuPage('saved-page');closeMenu()">
+      <span class="sm-item-icon">◫</span>Saved Reports
+    </div>
+    <div class="sm-item" onclick="showMenuPage('progress-page');closeMenu()">
+      <span class="sm-item-icon">↗</span>Progress Tracking
+    </div>
+    <div class="sm-div"></div>
+    <div class="sm-section">Navigate</div>
+    <div class="sm-item" onclick="showPage('dashboard',null);setBnav('dashboard');closeMenu()">
+      <span class="sm-item-icon">⊞</span>Dashboard
+    </div>
+    <div class="sm-item" onclick="showPage('chat',null);setBnav('chat');closeMenu()">
+      <span class="sm-item-icon">◉</span>AI Co-Founder
+    </div>
+    <div class="sm-item" onclick="showPage('tasks',null);setBnav('tasks');closeMenu()">
+      <span class="sm-item-icon">◻</span>Tasks
+    </div>
+    <div class="sm-item" onclick="showPage('market',null);closeMenu()">
+      <span class="sm-item-icon">◈</span>Market Intelligence
+    </div>
+    <div class="sm-item" onclick="showPage('competitors',null);closeMenu()">
+      <span class="sm-item-icon">◎</span>Competitor Analysis
+    </div>
+    <div class="sm-item" onclick="showPage('content',null);closeMenu()">
+      <span class="sm-item-icon">◧</span>Content Calendar
+    </div>
+    <div class="sm-div"></div>
+    <div class="sm-logout" onclick="signOut()">
+      <span class="sm-item-icon">→</span>Sign Out
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="page on main" id="page-dashboard">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:12px">
+      <div>
+        <div class="pg-title" id="dash-greet">Good morning</div>
+        <div class="pg-sub" id="dash-sub">Here is your startup intelligence for today</div>
+      </div>
+      <button class="run-btn" onclick="genIntel()" id="brief-btn">Generate Briefing</button>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat">
+        <div class="stat-lbl">Tasks Today</div>
+        <div class="stat-val" id="s-done">-</div>
+        <div class="stat-sub" id="s-total">Generate tasks to begin</div>
+        <div class="stat-bar"><div class="stat-fill" id="s-prog" style="width:0%"></div></div>
+      </div>
+      <div class="stat">
+        <div class="stat-lbl">Journey</div>
+        <div class="stat-val" id="s-days">0</div>
+        <div class="stat-sub">days as founder</div>
+      </div>
+      <div class="stat">
+        <div class="stat-lbl">This Week</div>
+        <div class="stat-val" id="s-rate">-</div>
+        <div class="stat-sub" id="s-weekly">no data yet</div>
+      </div>
+      <div class="stat">
+        <div class="stat-lbl">Streak</div>
+        <div class="stat-val" id="s-streak">0</div>
+        <div class="stat-sub">days consistent</div>
+      </div>
+    </div>
+
+    <div id="intel-section" style="display:none">
+      <div class="intel-card">
+        <div class="intel-lbl">Morning Intelligence</div>
+        <div class="intel-txt" id="dash-brief">Generating your briefing...</div>
+        <div class="intel-footer">
+          <span class="intel-date" id="intel-date"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-lbl">
+          <span>Priority Tasks</span>
+          <button class="run-btn" style="font-size:11px;padding:5px 12px" onclick="genTasks()">Generate</button>
+        </div>
+        <div id="dash-tasks">
+          <div class="empty">
+            <span class="empty-ico">—</span>
+            <div class="empty-txt">Your personalised tasks will appear here</div>
+            <button class="empty-btn" onclick="genTasks()">Generate Tasks</button>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-lbl"><span>Execution Progress</span></div>
+        <div id="exec-chart">
+          <div class="chart-empty">
+            <span style="font-size:24px;opacity:.3">◎</span>
+            Complete tasks to see your progress
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOUNDER REPORT PAGE -->
+  <div class="page main" id="page-fr-page">
+    <div class="pg-head">
+      <div class="pg-title">Founder Intelligence Report</div>
+      <div class="pg-sub">Your complete profile analysis — updates as you use the platform</div>
+    </div>
+    <div id="fr-content">
+      <div class="empty"><span class="empty-ico">◎</span><div class="empty-txt">Loading your report...</div></div>
+    </div>
+  </div>
+
+  <!-- SAVED REPORTS PAGE -->
+  <div class="page main" id="page-saved-page">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px">
+      <div>
+        <div class="pg-title">Saved Reports</div>
+        <div class="pg-sub">Progress reports generated over time</div>
+      </div>
+      <button class="run-btn" onclick="genReport('progress')">Generate Report</button>
+    </div>
+    <div id="saved-list">
+      <div class="empty">
+        <span class="empty-ico">◫</span>
+        <div class="empty-txt">No reports yet. Generate your first progress report.</div>
+        <button class="empty-btn" onclick="genReport('progress')">Generate Now</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROGRESS PAGE -->
+  <div class="page main" id="page-progress-page">
+    <div class="pg-head">
+      <div class="pg-title">Progress Tracking</div>
+      <div class="pg-sub">Your execution velocity and consistency</div>
+    </div>
+    <div class="stats-row">
+      <div class="stat"><div class="stat-lbl">Total Tasks</div><div class="stat-val" id="pt-total">-</div><div class="stat-sub">ever assigned</div></div>
+      <div class="stat"><div class="stat-lbl">Completed</div><div class="stat-val" id="pt-done">-</div><div class="stat-sub">tasks finished</div></div>
+      <div class="stat"><div class="stat-lbl">Overall Rate</div><div class="stat-val" id="pt-rate">-</div><div class="stat-sub">completion</div></div>
+      <div class="stat"><div class="stat-lbl">Journey</div><div class="stat-val" id="pt-days">-</div><div class="stat-sub">days</div></div>
+    </div>
+    <div class="card">
+      <div class="card-lbl"><span>Weekly Execution</span></div>
+      <div id="prog-chart"><div class="chart-empty">Complete tasks to see your chart</div></div>
+    </div>
+  </div>
+
+  <!-- AI CHAT -->
+  <div class="page fw" id="page-chat">
+    <div class="chat-wrap">
+      <div class="chat-head">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="chat-av">AI</div>
+          <div>
+            <div class="chat-title">AI Co-Founder</div>
+            <div class="chat-online">Live — Google, Reddit, LinkedIn, News</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="mode-row">
+            <button class="mode-pill on" onclick="setMode('quick',this)">Quick</button>
+            <button class="mode-pill" onclick="setMode('deep',this)">Deep Research</button>
+            <button class="mode-pill" onclick="setMode('plan',this)">Action Plan</button>
+            <button class="mode-pill" onclick="setMode('devil',this)">Challenge Me</button>
+          </div>
+          <button onclick="clearChat()" style="font-size:11px;font-weight:500;color:var(--ink3);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">Clear</button>
+        </div>
+      </div>
+      <div class="qpills">
+        <div class="qpill" onclick="qsend('Write me a complete sales pitch for my product')">Sales pitch</div>
+        <div class="qpill" onclick="qsend('What is the real market opportunity for my startup right now?')">Market opportunity</div>
+        <div class="qpill" onclick="qsend('Who are my real local competitors and where are they weak?')">Competitor weakness</div>
+        <div class="qpill" onclick="qsend('How do I validate demand this week with almost no budget?')">Validate fast</div>
+        <div class="qpill" onclick="qsend('Give me a complete 30 day action plan for my current stage')">30 day plan</div>
+        <div class="qpill" onclick="qsend('What is the biggest risk that could kill my startup?')">Biggest risk</div>
+        <div class="qpill" onclick="qsend('I feel like giving up today. Talk me through this honestly.')">Struggling</div>
+        <div class="qpill" onclick="qsend('How should I price my product for the Indian market?')">Pricing strategy</div>
+      </div>
+      <div class="chat-msgs" id="chat-msgs">
+        <div class="msg ai">
+          <div class="msg-av ai">AI</div>
+          <div class="msg-bubble"><pre>Welcome to FounderOS. I am your AI Co-Founder.
+
+I know your startup, your stage, your market, and your patterns. I search Google, Reddit, LinkedIn, and News before every business answer.
+
+What is on your mind today?</pre></div>
+        </div>
+      </div>
+      <div class="file-bar" id="file-bar">
+        <span>Ready: <span id="file-name" style="color:var(--ink2);font-weight:400"></span></span>
+        <button onclick="clearFile()" style="background:none;border:none;color:var(--red);cursor:pointer;font-weight:600;font-family:'DM Sans',sans-serif">Remove</button>
+      </div>
+      <div class="chat-bar">
+        <div class="plus-wrap">
+          <button class="plus-btn" onclick="togglePlus()">+</button>
+          <div class="plus-drop" id="plus-drop">
+            <div class="plus-opt" onclick="triggerFile()">📄 Upload PDF or Document</div>
+            <div class="plus-opt" onclick="triggerFile()">🖼️ Upload Image</div>
+            <div class="plus-opt" onclick="setDeepR()">🔬 Deep Market Research</div>
+            <div class="plus-opt" onclick="setProgR()">📊 Progress Report</div>
+          </div>
+        </div>
+        <textarea class="chat-inp" id="chat-inp" placeholder="Ask anything about your business..." rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+        <button class="send-btn" id="send-btn" onclick="sendMsg()">&#10148;</button>
+        <input type="file" id="file-inp" style="display:none" accept=".pdf,.png,.jpg,.jpeg,.txt,.csv" onchange="handleFile(event)">
+      </div>
+    </div>
+  </div>
+
+  <!-- TASKS -->
+  <div class="page main" id="page-tasks">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:12px">
+      <div>
+        <div class="pg-title">Tasks</div>
+        <div class="pg-sub" id="tasks-sub">Step-by-step execution plan for today</div>
+      </div>
+      <button class="run-btn" onclick="genTasks()">Generate New</button>
+    </div>
+    <div class="two-col" style="margin-bottom:14px">
+      <div class="card" style="margin-bottom:0">
+        <div class="card-lbl"><span>Today</span></div>
+        <div id="task-donut"><div class="chart-empty">Generate tasks to see progress</div></div>
+      </div>
+      <div class="card" style="margin-bottom:0">
+        <div class="card-lbl"><span>This Week</span></div>
+        <div id="task-week"><div class="chart-empty">Complete tasks to see weekly data</div></div>
+      </div>
+    </div>
+    <div id="full-tasks">
+      <div class="empty">
+        <span class="empty-ico">◻</span>
+        <div class="empty-txt">Your personalised tasks will appear here with step-by-step instructions specific to your product and market.</div>
+        <button class="empty-btn" onclick="genTasks()">Generate Today's Tasks</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MARKET -->
+  <div class="page main" id="page-market">
+    <div class="pg-head">
+      <div class="pg-title">Market Intelligence</div>
+      <div class="pg-sub">Real data from Google, Reddit, LinkedIn, Quora, and News — only real data shown</div>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:16px">
+      <input class="form-inp" id="market-q" placeholder="Search any product, market, or industry..." style="flex:1;margin-bottom:0">
+      <button class="run-btn" onclick="runMarket()" id="market-btn">Research</button>
+    </div>
+    <div class="card">
+      <div class="card-lbl"><span>Market Analysis</span><span style="font-size:11px;color:var(--ink3)" id="market-src"></span></div>
+      <div class="content-txt" id="market-out" style="font-size:13.5px">Run research to see real-time data. We only show what was actually found — not generated estimates.</div>
+    </div>
+  </div>
+
+  <!-- COMPETITORS -->
+  <div class="page main" id="page-competitors">
+    <div class="pg-head">
+      <div class="pg-title">Competitor Intelligence</div>
+      <div class="pg-sub">Local competitors first. No global giants unless you asked for them.</div>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+      <input class="form-inp" id="comp-names" placeholder="Competitor names (optional)" style="flex:1;min-width:140px;margin-bottom:0">
+      <input class="form-inp" id="comp-loc" placeholder="Location eg India, Mumbai, USA" style="width:180px;flex-shrink:0;margin-bottom:0">
+      <button class="run-btn" onclick="runComp()" id="comp-btn">Analyse</button>
+    </div>
+    <div class="card">
+      <div class="card-lbl"><span>Competitor Analysis</span><span style="font-size:11px;color:var(--ink3)" id="comp-src"></span></div>
+      <div class="content-txt" id="comp-out" style="font-size:13.5px">Enter your location and click Analyse to see who you are competing against and how to beat them locally.</div>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="page main" id="page-content">
+    <div class="pg-head">
+      <div class="pg-title">Content Calendar</div>
+      <div class="pg-sub">Complete ready-to-post content based on current trends in your market</div>
+    </div>
+    <div class="ptabs">
+      <button class="ptab on" onclick="setPlatform('linkedin',this)">LinkedIn</button>
+      <button class="ptab" onclick="setPlatform('instagram',this)">Instagram</button>
+      <button class="ptab" onclick="setPlatform('twitter',this)">Twitter / X</button>
+      <button class="ptab" onclick="setPlatform('reddit',this)">Reddit</button>
+      <button class="ptab" onclick="setPlatform('whatsapp',this)">WhatsApp</button>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:16px">
+      <select class="form-inp" id="content-days" style="max-width:160px;margin-bottom:0">
+        <option value="7">7 days</option>
+        <option value="14">14 days</option>
+        <option value="30">30 days</option>
+      </select>
+      <button class="run-btn" onclick="genContent()" id="content-btn">Generate</button>
+    </div>
+    <div class="card">
+      <div class="card-lbl"><span id="content-title">Content Calendar</span></div>
+      <div class="content-txt" id="content-out" style="font-size:13.5px">Select a platform and click Generate to get your complete content calendar with ready-to-post captions.</div>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div class="botnav">
+    <div class="botnav-inner">
+      <button class="bnav-btn on" id="bnav-dashboard" onclick="showPage('dashboard',null);setBnav('dashboard')">
+        <span class="bnav-ico">⊞</span><span class="bnav-lbl">Home</span>
+      </button>
+      <button class="bnav-btn" id="bnav-chat" onclick="showPage('chat',null);setBnav('chat')">
+        <span class="bnav-ico">◉</span><span class="bnav-lbl">AI Chat</span>
+      </button>
+      <button class="bnav-btn" id="bnav-tasks" onclick="showPage('tasks',null);setBnav('tasks')">
+        <span class="bnav-ico">◻</span><span class="bnav-lbl">Tasks</span>
+      </button>
+      <button class="bnav-btn" id="bnav-more" onclick="toggleMore()">
+        <span class="bnav-ico">⋯</span><span class="bnav-lbl">More</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- MORE SHEET -->
+  <div class="more-sheet" id="more-sheet">
+    <div class="more-grid">
+      <button class="more-item" onclick="showPage('market',null);hideMore()">◈ Market</button>
+      <button class="more-item" onclick="showPage('competitors',null);hideMore()">◎ Competitors</button>
+      <button class="more-item" onclick="showPage('content',null);hideMore()">◧ Content</button>
+      <button class="more-item" onclick="showMenuPage('fr-page');hideMore()">◎ My Report</button>
+    </div>
+  </div>
+
+</div><!-- end .app -->
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = "";
+let token = localStorage.getItem("fo_token");
+let me = null;
+let chatMode = "quick";
+let platform = "linkedin";
+let chatHist = [];
+let obAnswers = {};
+let obStep = 0;
+let charts = {};
+let taskStarts = {};
+
+// ── QUESTIONS ─────────────────────────────────
+const questions = [
+  {id:"q1",sec:"About You",q:"What is your first name?",hint:"Your AI co-founder will use this name in every interaction.",type:"text",ph:"Your first name"},
+  {id:"q2",sec:"About You",q:"Where are you based right now?",hint:"Determines which market data, regulations, and competitors we show you.",type:"text",ph:"eg Mumbai, India or London, UK"},
+  {id:"q3",sec:"About You",q:"What is your current situation?",hint:"This determines how aggressive or realistic your plan should be.",type:"mcq",opts:["Full time on my startup","Building on the side while working","Student with limited time","Between jobs and all in now"]},
+  {id:"q4",sec:"About You",q:"Is this your first startup attempt?",hint:"First-timers and experienced founders need completely different guidance.",type:"mcq",opts:["Yes completely new to this","No I have tried before","No I have succeeded before","Running another business too"]},
+  {id:"q5",sec:"About You",q:"How do you make important decisions?",hint:"This shapes how your AI co-founder communicates with you.",type:"mcq",opts:["I analyse everything before deciding","I trust my gut and move fast","I consult others then decide","I overthink and often get stuck"]},
+  {id:"q6",sec:"About You",q:"How much risk are you comfortable with?",hint:"This determines how bold or conservative your strategy will be.",type:"mcq",opts:["Very conservative","Moderate calculated risks only","Aggressive high risk high reward","All in bet everything on this"]},
+  {id:"q7",sec:"About You",q:"What is your strongest skill?",hint:"The AI will build strategy around this and compensate where you are weakest.",type:"mcq",opts:["Technology and building","Sales and closing deals","Marketing and brand building","Finance and numbers","Operations and systems","Creative and design"]},
+  {id:"q8",sec:"About You",q:"What is your biggest weakness?",hint:"The AI will actively fill this gap in your daily tasks and advice.",type:"mcq",opts:["Technology and building","Sales and closing deals","Marketing and brand building","Finance and numbers","Operations and systems","Creative and design"]},
+  {id:"q9",sec:"About You",q:"How would you describe your working style?",hint:"This determines the type and intensity of tasks the AI assigns you.",type:"mcq",opts:["Highly structured and systematic","Flexible and opportunistic","Intense sprints then rest","Consistent slow and steady"]},
+  {id:"q10",sec:"About You",q:"How much time can you give daily?",hint:"Be completely honest. The AI plans around your real available time.",type:"mcq",opts:["Under 1 hour per day","1 to 3 hours per day","3 to 6 hours per day","Full time 8 or more hours"]},
+  {id:"q11",sec:"Your Startup",q:"What is your startup name or working title?",hint:"A rough name or codename is completely fine.",type:"text",ph:"eg FizziBomb or Project Alpha"},
+  {id:"q12",sec:"Your Startup",q:"Describe what you are building in one specific sentence.",hint:"The more specific and honest the better your AI guidance will be.",type:"text",ph:"eg A mocktail bomb that dissolves in water to create instant flavoured drinks at home"},
+  {id:"q13",sec:"Your Startup",q:"What industry are you in?",hint:"Select the closest match to your core product or service.",type:"mcq",opts:["Food and Beverage","Fashion and Apparel","Technology and SaaS","Health and Wellness","Finance and Fintech","Education","E-commerce and D2C","Service Business","Other"]},
+  {id:"q14",sec:"Your Startup",q:"Who exactly pays you money?",hint:"Think about who writes the cheque not just who uses the product.",type:"mcq",opts:["Individual consumers directly","Small business owners","Large enterprise companies","Other founders and startups","Both consumers and businesses"]},
+  {id:"q15",sec:"Your Startup",q:"What specific problem does it solve?",hint:"The most important question in this entire process. Be brutally honest.",type:"text",ph:"eg People want cocktail style drinks at home but mixing drinks is too complex expensive and requires expertise they don't have"},
+  {id:"q16",sec:"Stage and Progress",q:"What stage are you at right now?",hint:"Be completely honest. The wrong stage means completely wrong advice.",type:"mcq",opts:["Just an idea nothing built yet","Actively researching the market","Currently building the product","Have a working MVP","Talking to potential customers","Have at least one paying customer","Growing an existing user base"]},
+  {id:"q17",sec:"Stage and Progress",q:"Have you spent any money on this yet?",hint:"Including tools prototypes research anything at all.",type:"mcq",opts:["Zero spent so far","Under 10000 rupees","10000 to 1 lakh rupees","Over 1 lakh rupees"]},
+  {id:"q18",sec:"Stage and Progress",q:"Do you have users or customers yet?",hint:"Free users beta testers or paying customers any count.",type:"mcq",opts:["Absolutely zero","1 to 10 people","10 to 100 users","Over 100 users"]},
+  {id:"q19",sec:"Stage and Progress",q:"Where will you focus first?",hint:"Starting focused beats starting everywhere. You can expand later.",type:"mcq",opts:["My city or local area first","All of India first","Global from day one","Specific city or country"]},
+  {id:"q20",sec:"Stage and Progress",q:"Who are your main competitors?",hint:"Name them specifically. If genuinely not sure say so.",type:"text",ph:"eg BrandA BrandB or Not sure yet searching for them"},
+  {id:"q21",sec:"Goals and Mindset",q:"What is your single most important goal right now?",hint:"Pick the one that matters most this month not eventually.",type:"mcq",opts:["Prove that real people want this","Get my first actual paying customer","Build and launch the core product","Raise money from investors","Grow beyond my first 100 customers"]},
+  {id:"q22",sec:"Goals and Mindset",q:"What is your available budget for next 3 months?",hint:"For marketing tools product everything combined.",type:"mcq",opts:["Zero bootstrapping with no budget","Under 50000 rupees","50000 to 5 lakhs","Over 5 lakhs"]},
+  {id:"q23",sec:"Goals and Mindset",q:"What keeps you up at night about this startup?",hint:"Your deepest honest fear. This shapes how the AI supports you.",type:"mcq",opts:["Failing publicly and being judged","Running out of money before it works","A competitor winning before I get there","Not knowing enough to succeed","Being unable to execute fast enough","Wasting years on the wrong thing"]},
+  {id:"q24",sec:"Goals and Mindset",q:"How do you respond when things go wrong?",hint:"Helps the AI calibrate when to push you versus support you.",type:"mcq",opts:["I analyse and adjust quickly","I push through harder regardless","I get discouraged and slow down","I pivot quickly to something new","I look for someone to blame"]},
+  {id:"q25",sec:"Goals and Mindset",q:"In one honest word why are you really doing this?",hint:"The real answer not the inspiring answer. Defines your AI personality mode.",type:"mcq",opts:["Financial freedom and money","Freedom from working for others","Creating something that matters","Pure obsession with this idea","Proving something to myself","Providing for my family"]}
+];
+
+// ── INIT ──────────────────────────────────────
+window.onload = async () => {
+  if (token) {
+    try {
+      const r = await aFetch("/api/auth/me");
+      if (r.ok) {
+        me = await r.json();
+        hide("loading");
+        if (!me.onboarding_done) { showOb(); }
+        else { showApp(); }
+        return;
+      }
+    } catch(e) { console.log("init error", e); }
+  }
+  token = null;
+  localStorage.removeItem("fo_token");
+  hide("loading");
+  showLogin();
+};
+
+function aFetch(url, opts={}) {
+  opts.headers = opts.headers || {};
+  if (token) opts.headers["Authorization"] = "Bearer " + token;
+  if (!opts.headers["Content-Type"]) opts.headers["Content-Type"] = "application/json";
+  return fetch(API + url, opts);
+}
+
+// ── AUTH ──────────────────────────────────────
+function showLogin() { hideAll(); show("pg-login"); }
+function showSignup() { hideAll(); show("pg-signup"); }
+function showForgot() { hideAll(); show("pg-forgot"); }
+function hideAll() {
+  ["pg-login","pg-signup","pg-forgot","pg-ob","pg-report"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = "none";
+  });
+}
+
+async function doLogin() {
+  const email = document.getElementById("login-email").value.trim();
+  const pw = document.getElementById("login-pw").value;
+  const err = document.getElementById("login-err");
+  const btn = document.getElementById("login-btn");
+  err.style.display = "none";
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span>';
+  try {
+    const r = await fetch(API + "/api/auth/login", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({email, password: pw})
+    });
+    const d = await r.json();
+    if (d.success) {
+      token = d.token;
+      localStorage.setItem("fo_token", token);
+      me = {name: d.name, onboarding_done: d.onboarding_done};
+      if (!d.onboarding_done) { hideAll(); showOb(); }
+      else { hideAll(); showApp(); }
+    } else {
+      err.textContent = d.error || "Login failed";
+      err.style.display = "block";
+    }
+  } catch(e) {
+    err.textContent = "Connection error. Is server running?";
+    err.style.display = "block";
+  }
+  btn.disabled = false;
+  btn.textContent = "Sign In";
+}
+
+async function doSignup() {
+  const name = document.getElementById("signup-name").value.trim();
+  const email = document.getElementById("signup-email").value.trim();
+  const pw = document.getElementById("signup-pw").value;
+  const err = document.getElementById("signup-err");
+  const btn = document.getElementById("signup-btn");
+  err.style.display = "none";
+  if (!name || !email || !pw) { err.textContent = "All fields required"; err.style.display = "block"; return; }
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span>';
+  try {
+    const r = await fetch(API + "/api/auth/signup", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({name, email, password: pw})
+    });
+    const d = await r.json();
+    if (d.success) {
+      token = d.token;
+      localStorage.setItem("fo_token", token);
+      me = {name, onboarding_done: false};
+      hideAll();
+      showOb();
+    } else {
+      err.textContent = d.error || "Signup failed";
+      err.style.display = "block";
+    }
+  } catch(e) {
+    err.textContent = "Connection error.";
+    err.style.display = "block";
+  }
+  btn.disabled = false;
+  btn.textContent = "Create Account";
+}
+
+async function doForgot() {
+  const email = document.getElementById("forgot-email").value.trim();
+  const err = document.getElementById("forgot-err");
+  const ok = document.getElementById("forgot-ok");
+  const btn = document.getElementById("forgot-btn");
+  err.style.display = "none";
+  ok.style.display = "none";
+  if (!email) { err.textContent = "Enter your email address"; err.style.display = "block"; return; }
+  btn.disabled = true;
+  btn.textContent = "Sending...";
+  try {
+    const r = await fetch(API + "/api/auth/forgot-password", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({email})
+    });
+    const d = await r.json();
+    if (d.success) { ok.style.display = "block"; }
+    else { err.textContent = d.error || "Error"; err.style.display = "block"; }
+  } catch(e) {
+    err.textContent = "Connection error.";
+    err.style.display = "block";
+  }
+  btn.disabled = false;
+  btn.textContent = "Send Reset Link";
+}
+
+function signOut() {
+  token = null;
+  localStorage.removeItem("fo_token");
+  me = null;
+  chatHist = [];
+  location.reload();
+}
+
+function togglePw(id, btn) {
+  const inp = document.getElementById(id);
+  if (inp.type === "password") { inp.type = "text"; btn.textContent = "🙈"; }
+  else { inp.type = "password"; btn.textContent = "👁"; }
+}
+
+// ── ONBOARDING ────────────────────────────────
+function showOb() {
+  hideAll();
+  show("pg-ob");
+  obStep = 0;
+  renderOb();
+}
+
+function renderOb() {
+  const q = questions[obStep];
+  document.getElementById("ob-section").textContent = q.sec;
+  document.getElementById("ob-q").textContent = q.q;
+  document.getElementById("ob-hint").textContent = q.hint;
+  document.getElementById("ob-counter").textContent = (obStep + 1) + " of " + questions.length;
+  document.getElementById("ob-fill").style.width = ((obStep + 1) / questions.length * 100) + "%";
+  document.getElementById("ob-back").style.visibility = obStep === 0 ? "hidden" : "visible";
+  document.getElementById("ob-next").textContent = obStep === questions.length - 1 ? "Generate My Report" : "Continue";
+  const content = document.getElementById("ob-content");
+  if (q.type === "text") {
+    content.innerHTML = '<input class="ob-text" id="ob-inp" placeholder="' + q.ph + '" value="' + (obAnswers[q.id] || '') + '" onkeydown="if(event.key===\'Enter\')obNext()">';
+    setTimeout(function() { const el = document.getElementById("ob-inp"); if (el) el.focus(); }, 100);
+  } else {
+    const saved = obAnswers[q.id] || "";
+    content.innerHTML = '<div class="ob-opts">' + q.opts.map(function(opt) {
+      return '<button class="ob-opt' + (saved === opt ? ' sel' : '') + '" onclick="selOpt(\'' + q.id + '\',\'' + opt.replace(/'/g, "\\'") + '\',this)">' + opt + '</button>';
+    }).join("") + '</div>';
+  }
+}
+
+function selOpt(id, val, el) {
+  obAnswers[id] = val;
+  document.querySelectorAll(".ob-opt").forEach(function(b) { b.classList.remove("sel"); });
+  el.classList.add("sel");
+}
+
+function obBack() { if (obStep > 0) { obStep--; renderOb(); } }
+
+async function obNext() {
+  const q = questions[obStep];
+  if (q.type === "text") {
+    const val = (document.getElementById("ob-inp") || {}).value || "";
+    if (!val.trim()) { toast("Please answer this question to continue"); return; }
+    obAnswers[q.id] = val.trim();
+  } else {
+    if (!obAnswers[q.id]) { toast("Please select an option to continue"); return; }
+  }
+  if (obStep < questions.length - 1) { obStep++; renderOb(); }
+  else { await submitOb(); }
+}
+
+async function submitOb() {
+  const btn = document.getElementById("ob-next");
+  btn.textContent = "Generating your report...";
+  btn.disabled = true;
+  try {
+    const r = await aFetch("/api/onboarding/submit", {
+      method: "POST",
+      body: JSON.stringify({answers: obAnswers})
+    });
+    const d = await r.json();
+    if (d.success) { showReport(d.report); }
+    else { toast("Error generating report. Please try again."); btn.textContent = "Generate My Report"; btn.disabled = false; }
+  } catch(e) {
+    toast("Connection error.");
+    btn.textContent = "Generate My Report";
+    btn.disabled = false;
+  }
+}
+
+function showReport(report) {
+  hideAll();
+  show("pg-report");
+  document.getElementById("rp-archetype").textContent = report.archetype || "Determined Founder";
+  document.getElementById("rp-summary").textContent = report.report_summary || "";
+  const tl = report.predicted_timeline || {};
+  document.getElementById("rp-tl").innerHTML = [
+    ["First Customer", tl.first_customer || "2-3 months"],
+    ["First Revenue", tl.first_revenue || "3-4 months"],
+    ["10K Revenue", tl.first_10k_revenue || "6-9 months"],
+    ["Market Fit", tl.product_market_fit || "12-18 months"]
+  ].map(function(item) {
+    return '<div class="rp-tl-item"><div class="rp-tl-lbl">' + item[0] + '</div><div class="rp-tl-val">' + item[1] + '</div></div>';
+  }).join("");
+  const gms = report.growth_mindset_score || 0;
+  const fs = report.focus_score || 0;
+  document.getElementById("rp-gm").textContent = gms + "/10";
+  document.getElementById("rp-gm-bar").style.width = (gms * 10) + "%";
+  document.getElementById("rp-fs").textContent = fs + "/10";
+  document.getElementById("rp-fs-bar").style.width = (fs * 10) + "%";
+  const strengths = Array.isArray(report.strengths) ? report.strengths : [];
+  const weaknesses = Array.isArray(report.weaknesses) ? report.weaknesses : [];
+  document.getElementById("rp-grid").innerHTML =
+    '<div class="rp-box"><div class="rp-box-lbl">Strengths</div>' +
+    (strengths.map(function(s) { return '<div class="rp-box-item">+ ' + s + '</div>'; }).join("") || '<div class="rp-box-item">Analysing...</div>') +
+    '</div><div class="rp-box"><div class="rp-box-lbl">Development Areas</div>' +
+    (weaknesses.map(function(w) { return '<div class="rp-box-item">→ ' + w + '</div>'; }).join("") || '<div class="rp-box-item">Analysing...</div>') +
+    '</div>';
+  if (report.key_insight) {
+    document.getElementById("rp-insight-box").style.display = "block";
+    document.getElementById("rp-insight").textContent = report.key_insight;
+  }
+}
+
+function enterApp() { hideAll(); if (me) me.onboarding_done = true; showApp(); }
+
+// ── APP ───────────────────────────────────────
+async function showApp() {
+  hideAll();
+  document.getElementById("app").style.display = "block";
+  if (!me) {
+    try {
+      const r = await aFetch("/api/auth/me");
+      if (r.ok) me = await r.json();
+    } catch(e) { console.log("me error", e); }
+  }
+  const name = (me && me.name) ? me.name : "Founder";
+  const h = new Date().getHours();
+  const greet = h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening";
+  const setTxt = function(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; };
+  setTxt("nav-name", name);
+  setTxt("dash-greet", greet + ", " + name);
+  setTxt("sm-name", name);
+  setTxt("sm-email", (me && me.email) ? me.email : "");
+  try { await loadStats(); } catch(e) { console.log("stats err", e); }
+  try { await loadIntel(); } catch(e) { console.log("intel err", e); }
+  try { await loadDashTasks(); } catch(e) { console.log("tasks err", e); }
+}
+
+// ── MENU ──────────────────────────────────────
+function openMenu() {
+  document.getElementById("sidemenu").classList.add("on");
+  document.getElementById("overlay").classList.add("on");
+}
+function closeMenu() {
+  document.getElementById("sidemenu").classList.remove("on");
+  document.getElementById("overlay").classList.remove("on");
+}
+
+function showPage(name, el) {
+  document.querySelectorAll(".page").forEach(function(p) { p.classList.remove("on"); });
+  document.querySelectorAll(".nav-btn").forEach(function(n) { n.classList.remove("on"); });
+  const pg = document.getElementById("page-" + name);
+  if (pg) pg.classList.add("on");
+  if (el) el.classList.add("on");
+  if (name === "tasks") { loadFullTasks(); loadTaskCharts(); }
+  if (name === "dashboard") { loadStats(); loadDashTasks(); }
+}
+
+function showMenuPage(name) {
+  document.querySelectorAll(".page").forEach(function(p) { p.classList.remove("on"); });
+  document.querySelectorAll(".nav-btn").forEach(function(n) { n.classList.remove("on"); });
+  const pg = document.getElementById("page-" + name);
+  if (pg) {
+    pg.classList.add("on");
+    if (name === "fr-page") loadFR();
+    if (name === "saved-page") loadSaved();
+    if (name === "progress-page") loadProgress();
+  }
+}
+
+function setBnav(name) {
+  document.querySelectorAll(".bnav-btn").forEach(function(b) { b.classList.remove("on"); });
+  const el = document.getElementById("bnav-" + name);
+  if (el) el.classList.add("on");
+}
+
+function toggleMore() {
+  document.getElementById("more-sheet").classList.toggle("on");
+}
+function hideMore() {
+  document.getElementById("more-sheet").classList.remove("on");
+}
+
+document.addEventListener("click", function(e) {
+  const pd = document.getElementById("plus-drop");
+  const ms = document.getElementById("more-sheet");
+  if (pd && !pd.contains(e.target) && !e.target.closest(".plus-btn")) pd.classList.remove("on");
+  if (ms && !ms.contains(e.target) && !e.target.closest("#bnav-more")) ms.classList.remove("on");
+});
+
+// ── STATS ─────────────────────────────────────
+async function loadStats() {
+  try {
+    const r = await aFetch("/api/stats");
+    if (!r.ok) return;
+    const d = await r.json();
+    const set = function(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; };
+    set("s-days", d.days_journey || 0);
+    set("s-streak", d.streak_days || 0);
+    set("nav-day", "Day " + (d.days_journey || 0));
+    set("dash-sub", "Day " + (d.days_journey || 0) + " of your founder journey");
+    set("pt-total", d.total_ever || "-");
+    set("pt-done", d.done_ever || "-");
+    set("pt-rate", d.total_ever > 0 ? Math.round(d.done_ever / d.total_ever * 100) + "%" : "-");
+    set("pt-days", d.days_journey || "-");
+    if (d.has_tasks) {
+      set("s-done", d.tasks_done || 0);
+      set("s-total", "of " + d.tasks_total + " completed today");
+      const pct = d.tasks_total > 0 ? (d.tasks_done / d.tasks_total * 100) : 0;
+      const sp = document.getElementById("s-prog");
+      if (sp) sp.style.width = pct + "%";
+      set("s-rate", (d.completion_rate || 0) + "%");
+      set("s-weekly", d.weekly_done + " of " + d.weekly_total + " this week");
+    } else {
+      set("s-done", "0");
+      set("s-total", "Generate tasks to begin");
+      set("s-rate", "0%");
+      set("s-weekly", "no tasks yet");
+    }
+    if (d.total_ever > 0) {
+      const wrap = document.getElementById("exec-chart");
+      if (wrap) {
+        wrap.innerHTML = '<canvas id="exec-c" height="160"></canvas>';
+        const ctx = document.getElementById("exec-c");
+        if (charts.exec) charts.exec.destroy();
+        charts.exec = new Chart(ctx, {
+          type: "doughnut",
+          data: {
+            labels: ["Done", "Pending"],
+            datasets: [{data: [d.done_ever, d.total_ever - d.done_ever], backgroundColor: ["#0f0f0f", "#e5e5ea"], borderWidth: 0}]
+          },
+          options: {responsive: true, plugins: {legend: {position: "bottom", labels: {font: {size: 11}, color: "#8e8e93"}}}}
+        });
+      }
+    }
+  } catch(e) {
+    console.log("loadStats error", e);
+    ["s-done","s-rate"].forEach(function(id) { const el = document.getElementById(id); if (el) el.textContent = "0"; });
+  }
+}
+
+// ── INTELLIGENCE ──────────────────────────────
+async function loadIntel() {
+  try {
+    const r = await aFetch("/api/intelligence/daily");
+    if (!r.ok) return;
+    const d = await r.json();
+    if (d.briefing) {
+      const el = document.getElementById("dash-brief");
+      const sec = document.getElementById("intel-section");
+      if (el) el.textContent = d.briefing;
+      if (sec) sec.style.display = "block";
+    }
+  } catch(e) { console.log("loadIntel error", e); }
+}
+
+async function genIntel() {
+  const btn = document.getElementById("brief-btn");
+  if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spin"></span>'; }
+  try {
+    const r = await aFetch("/api/intelligence/generate", {method: "POST"});
+    const d = await r.json();
+    if (d.briefing) {
+      const el = document.getElementById("dash-brief");
+      const sec = document.getElementById("intel-section");
+      if (el) el.textContent = d.briefing;
+      if (sec) sec.style.display = "block";
+      toast("Morning intelligence ready");
+    }
+  } catch(e) { toast("Error generating briefing"); }
+  if (btn) { btn.disabled = false; btn.textContent = "Generate Briefing"; }
+}
+
+// ── FOUNDER REPORT ────────────────────────────
+async function loadFR() {
+  const container = document.getElementById("fr-content");
+  if (!container) return;
+  container.innerHTML = '<div class="empty"><span class="empty-ico">◎</span><div class="empty-txt">Loading...</div></div>';
+  try {
+    const r = await aFetch("/api/profile/report");
+    if (!r.ok) { container.innerHTML = '<div class="empty"><div class="empty-txt">Complete onboarding to see your report</div></div>'; return; }
+    const d = await r.json();
+    const strengths = Array.isArray(d.strengths) ? d.strengths : [];
+    const weaknesses = Array.isArray(d.weaknesses) ? d.weaknesses : [];
+    container.innerHTML =
+      '<div class="fr-panel">' +
+      '<div class="fr-hero"><div class="fr-hero-lbl">Your Archetype</div>' +
+      '<div class="fr-hero-val">' + (d.archetype || "Determined Founder") + '</div>' +
+      '<div class="fr-hero-sum">' + (d.report_summary || "") + '</div></div>' +
+      '<div class="fr-scores">' +
+      '<div class="fr-score"><div class="fr-score-lbl">Growth Mindset</div><div class="fr-score-num">' + (d.growth_mindset_score || 0) + '<span style="font-size:13px;color:#8e8e93">/10</span></div><div class="fr-score-bar"><div class="fr-score-fill" style="width:' + ((d.growth_mindset_score || 0) * 10) + '%"></div></div></div>' +
+      '<div class="fr-score"><div class="fr-score-lbl">Focus Score</div><div class="fr-score-num">' + (d.focus_score || 0) + '<span style="font-size:13px;color:#8e8e93">/10</span></div><div class="fr-score-bar"><div class="fr-score-fill" style="width:' + ((d.focus_score || 0) * 10) + '%"></div></div></div>' +
+      '<div class="fr-score"><div class="fr-score-lbl">Tasks Completed</div><div class="fr-score-num">' + (d.completed_tasks || 0) + '<span style="font-size:13px;color:#8e8e93">/' + (d.total_tasks || 0) + '</span></div><div class="fr-score-bar"><div class="fr-score-fill" style="width:' + (d.completion_rate || 0) + '%"></div></div></div>' +
+      '<div class="fr-score"><div class="fr-score-lbl">Journey</div><div class="fr-score-num">' + (d.days_journey || 0) + '<span style="font-size:13px;color:#8e8e93"> days</span></div><div class="fr-score-bar"><div class="fr-score-fill" style="width:' + Math.min((d.days_journey || 0) / 365 * 100, 100) + '%"></div></div></div>' +
+      '</div>' +
+      '<div class="fr-grid">' +
+      '<div class="fr-box"><div class="fr-box-lbl">Top Strengths</div>' + strengths.map(function(s) { return '<div class="fr-box-item">+ ' + s + '</div>'; }).join("") + '</div>' +
+      '<div class="fr-box"><div class="fr-box-lbl">Development Areas</div>' + weaknesses.map(function(w) { return '<div class="fr-box-item">→ ' + w + '</div>'; }).join("") + '</div>' +
+      '</div>' +
+      '<div class="fr-styles">' +
+      '<div class="fr-style"><div class="fr-style-lbl">Decision Style</div><div class="fr-style-val">' + (d.decision_style || "-") + '</div></div>' +
+      '<div class="fr-style"><div class="fr-style-lbl">Execution Style</div><div class="fr-style-val">' + (d.execution_style || "-") + '</div></div>' +
+      '<div class="fr-style"><div class="fr-style-lbl">Risk Profile</div><div class="fr-style-val">' + (d.risk_profile || "-") + '</div></div>' +
+      '</div>' +
+      (d.productivity_pattern ? '<div style="background:#fffbe6;border:1px solid #ffe58f;border-radius:9px;padding:14px;margin-top:14px"><div style="font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:#d48806;margin-bottom:6px">Productivity Pattern</div><div style="font-size:13px;color:#48484a;line-height:1.6">' + d.productivity_pattern + '</div></div>' : '') +
+      '</div>';
+  } catch(e) {
+    container.innerHTML = '<div class="empty"><div class="empty-txt">Error loading report. Please refresh.</div></div>';
+  }
+}
+
+// ── SAVED REPORTS ─────────────────────────────
+async function loadSaved() {
+  try {
+    const r = await aFetch("/api/reports/saved");
+    const d = await r.json();
+    const container = document.getElementById("saved-list");
+    if (!container) return;
+    if (!d.reports || !d.reports.length) {
+      container.innerHTML = '<div class="empty"><span class="empty-ico">◫</span><div class="empty-txt">No reports saved yet.</div><button class="empty-btn" onclick="genReport(\'progress\')">Generate First Report</button></div>';
+      return;
+    }
+    container.innerHTML = d.reports.map(function(rep) {
+      return '<div class="card" style="cursor:pointer"><div style="display:flex;align-items:center;justify-content:space-between"><div><div style="font-size:14px;font-weight:600;color:var(--ink);margin-bottom:3px">' + rep.title + '</div><div style="font-size:11px;color:var(--ink3)">' + rep.report_type + ' · ' + String(rep.created_at || "").substring(0, 10) + '</div></div><span style="font-size:12px;color:var(--ink3)">View →</span></div></div>';
+    }).join("");
+  } catch(e) {}
+}
+
+async function genReport(type) {
+  toast("Generating your report...");
+  try {
+    const r = await aFetch("/api/reports/generate", {method: "POST", body: JSON.stringify({type})});
+    const d = await r.json();
+    if (d.success) {
+      toast("Report saved!");
+      const el = document.getElementById("saved-list");
+      if (el) {
+        const newCard = document.createElement("div");
+        newCard.className = "card";
+        newCard.innerHTML = '<div class="card-lbl"><span>' + d.title + '</span></div><div class="content-txt" style="font-size:13.5px">' + d.report + '</div>';
+        el.insertBefore(newCard, el.firstChild);
+      }
+    }
+  } catch(e) { toast("Error generating report"); }
+}
+
+// ── PROGRESS ──────────────────────────────────
+async function loadProgress() {
+  await loadStats();
+  const wrap = document.getElementById("prog-chart");
+  if (!wrap) return;
+  wrap.innerHTML = '<canvas id="prog-c" height="200"></canvas>';
+  const ctx = document.getElementById("prog-c");
+  if (charts.prog) charts.prog.destroy();
+  charts.prog = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+      datasets: [{label: "Tasks Completed", data: [0, 0, 0, 0, 0, 0, 0], backgroundColor: "#0f0f0f", borderRadius: 6}]
+    },
+    options: {responsive: true, plugins: {legend: {display: false}}, scales: {y: {beginAtZero: true, grid: {color: "#e5e5ea"}}, x: {grid: {display: false}}}}
+  });
+}
+
+// ── TASKS ─────────────────────────────────────
+async function genTasks() {
+  toast("Generating your personalised tasks...");
+  try {
+    const r = await aFetch("/api/tasks/generate", {method: "POST"});
+    const d = await r.json();
+    if (d.success) {
+      toast(d.count + " tasks ready");
+      loadDashTasks();
+      loadFullTasks();
+      loadStats();
+      loadTaskCharts();
+    }
+  } catch(e) { toast("Error generating tasks"); }
+}
+
+async function loadDashTasks() {
+  const el = document.getElementById("dash-tasks");
+  if (!el) return;
+  try {
+    const r = await aFetch("/api/tasks");
+    if (!r.ok) {
+      el.innerHTML = '<div class="empty"><span class="empty-ico">-</span><div class="empty-txt">Generate your tasks for today</div><button class="empty-btn" onclick="genTasks()">Generate Tasks</button></div>';
+      return;
+    }
+    const d = await r.json();
+    if (!d.tasks || !d.tasks.length) {
+      el.innerHTML = '<div class="empty"><span class="empty-ico">-</span><div class="empty-txt">Generate your personalised tasks for today</div><button class="empty-btn" onclick="genTasks()">Generate Tasks</button></div>';
+      return;
+    }
+    el.innerHTML = d.tasks.slice(0, 3).map(function(t) { return miniTask(t); }).join("");
+  } catch(e) {
+    console.log("loadDashTasks err", e);
+    el.innerHTML = '<div class="empty"><span class="empty-ico">-</span><div class="empty-txt">Generate your tasks</div><button class="empty-btn" onclick="genTasks()">Generate</button></div>';
+  }
+}
+
+async function loadFullTasks() {
+  const el = document.getElementById("full-tasks");
+  if (!el) return;
+  try {
+    const r = await aFetch("/api/tasks");
+    if (!r.ok) {
+      el.innerHTML = '<div class="empty"><span class="empty-ico">◻</span><div class="empty-txt">Generate tasks to see them here</div><button class="empty-btn" onclick="genTasks()">Generate</button></div>';
+      return;
+    }
+    const d = await r.json();
+    const done = d.tasks ? d.tasks.filter(function(t) { return t.done; }).length : 0;
+    const sub = document.getElementById("tasks-sub");
+    if (sub) sub.textContent = d.tasks && d.tasks.length > 0 ? done + " of " + d.tasks.length + " completed today" : "Step-by-step execution plan for today";
+    if (!d.tasks || !d.tasks.length) {
+      el.innerHTML = '<div class="empty"><span class="empty-ico">◻</span><div class="empty-txt">Your personalised tasks will appear here with step-by-step instructions specific to your product and market.</div><button class="empty-btn" onclick="genTasks()">Generate Today\'s Tasks</button></div>';
+      return;
+    }
+    el.innerHTML = d.tasks.map(function(t) { return fullTask(t); }).join("");
+  } catch(e) { console.log("loadFullTasks err", e); }
+}
+
+function miniTask(t) {
+  return '<div class="task-item ' + (t.done ? 'done' : '') + '" id="mt-' + t.id + '">' +
+    '<div class="task-body">' +
+    '<div class="task-check-wrap"><div class="task-circle ' + (t.done ? 'done' : '') + '" onclick="handleTask(' + t.id + ',this)"></div></div>' +
+    '<div class="task-content">' +
+    '<div class="task-title">' + (t.title || '') + '</div>' +
+    '<div class="task-meta"><span class="task-tag priority-' + (t.priority || 'medium') + '">' + (t.priority || '') + '</span><span class="task-time">⏱ ' + (t.time_est || '') + '</span></div>' +
+    '</div></div></div>';
+}
+
+function fullTask(t) {
+  return '<div class="task-item ' + (t.done ? 'done' : '') + '" id="ft-' + t.id + '">' +
+    '<div class="task-body">' +
+    '<div class="task-check-wrap"><div class="task-circle ' + (t.done ? 'done' : '') + '" onclick="handleTask(' + t.id + ',this)"></div></div>' +
+    '<div class="task-content">' +
+    '<div class="task-priority priority-' + (t.priority || 'medium') + '">' + (t.priority || '') + '</div>' +
+    '<div class="task-title">' + (t.title || '') + '</div>' +
+    '<div class="task-desc">' + (t.description || '') + '</div>' +
+    '<div class="task-meta"><span class="task-tag">' + (t.category || '') + '</span><span class="task-time">⏱ ' + (t.time_est || '') + '</span><button class="task-expand" onclick="toggleHow(' + t.id + ')">How to do this ↓</button></div>' +
+    '</div></div>' +
+    '<div class="task-how" id="how-' + t.id + '">' +
+    '<div class="task-how-lbl">Step by Step</div>' +
+    '<div class="task-how-body">' + (t.how_to || '').replace(/Step (\d)/g, '<strong>Step $1</strong>') + '</div>' +
+    (t.outcome ? '<div class="task-outcome">Done when: ' + t.outcome + '</div>' : '') +
+    '<button class="task-start-btn" onclick="startTask(' + t.id + ',this)" id="st-' + t.id + '">Start this task</button>' +
+    '</div></div>';
+}
+
+function toggleHow(id) {
+  const sec = document.getElementById("how-" + id);
+  const btn = document.querySelector("#ft-" + id + " .task-expand");
+  if (sec) {
+    sec.classList.toggle("on");
+    if (btn) btn.textContent = sec.classList.contains("on") ? "Hide ↑" : "How to do this ↓";
+  }
+}
+
+async function startTask(id, btn) {
+  taskStarts[id] = Date.now();
+  btn.textContent = "In progress...";
+  btn.style.color = "#34c759";
+  btn.style.borderColor = "#34c759";
+  toast("Task started. Click the circle when done.");
+  await aFetch("/api/tasks/" + id + "/start", {method: "POST"});
+}
+
+async function handleTask(id, el) {
+  if (el.classList.contains("done")) return;
+  const startTime = taskStarts[id];
+  const timeSpent = startTime ? Math.floor((Date.now() - startTime) / 1000) : 0;
+  try {
+    const r = await aFetch("/api/tasks/" + id + "/complete", {method: "POST", body: JSON.stringify({time_spent: timeSpent})});
+    const d = await r.json();
+    if (!d.verified) {
+      if (confirm(d.message + "\n\nClick OK only if you genuinely completed this task.")) {
+        await aFetch("/api/tasks/" + id + "/confirm", {method: "POST"});
+        markDone(id);
+      }
+    } else { markDone(id); }
+    loadStats();
+  } catch(e) { toast("Error updating task"); }
+}
+
+function markDone(id) {
+  ["ft-" + id, "mt-" + id].forEach(function(sel) {
+    const el = document.getElementById(sel);
+    if (el) {
+      el.classList.add("done");
+      const c = el.querySelector(".task-circle");
+      if (c) c.classList.add("done");
+    }
+  });
+  toast("Task completed");
+}
+
+async function loadTaskCharts() {
+  try {
+    const r = await aFetch("/api/tasks");
+    if (!r.ok) return;
+    const d = await r.json();
+    if (!d.tasks || !d.tasks.length) return;
+    const done = d.tasks.filter(function(t) { return t.done; }).length;
+    const notDone = d.tasks.length - done;
+    const donutWrap = document.getElementById("task-donut");
+    if (donutWrap) {
+      donutWrap.innerHTML = '<canvas id="td-c" height="160"></canvas>';
+      if (charts.donut) charts.donut.destroy();
+      charts.donut = new Chart(document.getElementById("td-c"), {
+        type: "doughnut",
+        data: {labels: ["Done", "Remaining"], datasets: [{data: [done, notDone], backgroundColor: ["#0f0f0f", "#e5e5ea"], borderWidth: 0}]},
+        options: {responsive: true, plugins: {legend: {position: "bottom", labels: {font: {size: 11}, color: "#8e8e93"}}}}
+      });
+    }
+    const weekWrap = document.getElementById("task-week");
+    if (weekWrap) {
+      weekWrap.innerHTML = '<canvas id="tw-c" height="160"></canvas>';
+      if (charts.week) charts.week.destroy();
+      charts.week = new Chart(document.getElementById("tw-c"), {
+        type: "bar",
+        data: {labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"], datasets: [{label: "Done", data: [done, 0, 0, 0, 0, 0, 0], backgroundColor: "#0f0f0f", borderRadius: 5}]},
+        options: {responsive: true, plugins: {legend: {display: false}}, scales: {y: {beginAtZero: true, grid: {color: "#e5e5ea"}}, x: {grid: {display: false}}}}
+      });
+    }
+  } catch(e) {}
+}
+
+// ── CHAT ──────────────────────────────────────
+function setMode(mode, el) {
+  chatMode = mode;
+  document.querySelectorAll(".mode-pill").forEach(function(b) { b.classList.remove("on"); });
+  el.classList.add("on");
+}
+
+function handleKey(e) { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMsg(); } }
+
+function autoResize(el) {
+  el.style.height = "auto";
+  el.style.height = Math.min(el.scrollHeight, 120) + "px";
+}
+
+function qsend(t) {
+  document.getElementById("chat-inp").value = t;
+  sendMsg();
+}
+
+function clearChat() {
+  chatHist = [];
+  document.getElementById("chat-msgs").innerHTML =
+    '<div class="msg ai"><div class="msg-av ai">AI</div><div class="msg-bubble"><pre>Chat cleared. What would you like to work through?</pre></div></div>';
+}
+
+function togglePlus() { document.getElementById("plus-drop").classList.toggle("on"); }
+function triggerFile() { document.getElementById("plus-drop").classList.remove("on"); document.getElementById("file-inp").click(); }
+
+function setDeepR() {
+  document.getElementById("plus-drop").classList.remove("on");
+  document.getElementById("chat-inp").value = "Do a complete deep research on my market — real demand signals, who is buying, what they are saying on Reddit and LinkedIn, and what opportunities exist right now";
+  document.getElementById("chat-inp").focus();
+}
+
+function setProgR() {
+  document.getElementById("plus-drop").classList.remove("on");
+  genReport("progress");
+}
+
+function handleFile(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    window.pendingFile = e.target.result;
+    window.pendingFileName = file.name;
+    document.getElementById("file-name").textContent = file.name;
+    document.getElementById("file-bar").style.display = "flex";
+    const inp = document.getElementById("chat-inp");
+    if (!inp.value) inp.value = "Please analyse this file: " + file.name;
+    toast(file.name + " ready to send");
+  };
+  if (file.type.startsWith("image/")) reader.readAsDataURL(file);
+  else reader.readAsText(file);
+  event.target.value = "";
+}
+
+function clearFile() {
+  window.pendingFile = null;
+  window.pendingFileName = null;
+  document.getElementById("file-bar").style.display = "none";
+}
+
+async function sendMsg() {
+  const input = document.getElementById("chat-inp");
+  const msg = input.value.trim();
+  if (!msg) return;
+  input.value = "";
+  input.style.height = "auto";
+  document.getElementById("send-btn").disabled = true;
+  addMsg("user", msg);
+  chatHist.push({role: "user", content: msg});
+  const typingId = "ty-" + Date.now();
+  const tyEl = document.createElement("div");
+  tyEl.className = "msg ai";
+  tyEl.id = typingId;
+  tyEl.innerHTML = '<div class="msg-av ai">AI</div><div class="msg-bubble"><div class="typing"><div class="tdot"></div><div class="tdot"></div><div class="tdot"></div></div></div>';
+  document.getElementById("chat-msgs").appendChild(tyEl);
+  document.getElementById("chat-msgs").scrollTop = 999999;
+  try {
+    const fileData = window.pendingFile || null;
+    if (window.pendingFileName) clearFile();
+    const r = await aFetch("/api/chat", {
+      method: "POST",
+      body: JSON.stringify({message: msg, mode: chatMode, history: chatHist.slice(-8), file: fileData})
+    });
+    const data = await r.json();
+    const ty = document.getElementById(typingId);
+    if (ty) ty.remove();
+    addMsg("ai", data.reply);
+    if (data.sources_found > 0) {
+      const badge = document.createElement("div");
+      badge.className = "src-note";
+      badge.textContent = "Searched live data — " + data.sources_found + " sources found";
+      document.getElementById("chat-msgs").appendChild(badge);
+    }
+    chatHist.push({role: "assistant", content: data.reply});
+  } catch(e) {
+    const ty = document.getElementById(typingId);
+    if (ty) ty.remove();
+    addMsg("ai", "I am having trouble connecting right now. Please check your connection and try again.");
+  }
+  document.getElementById("send-btn").disabled = false;
+  document.getElementById("chat-inp").focus();
+}
+
+function addMsg(role, text) {
+  const el = document.getElementById("chat-msgs");
+  const initials = role === "ai" ? "AI" : ((me && me.name) ? me.name[0].toUpperCase() : "U");
+  const div = document.createElement("div");
+  div.className = "msg " + role;
+  div.innerHTML = '<div class="msg-av ' + role + '">' + initials + '</div><div class="msg-bubble"><pre>' + text.replace(/</g, "&lt;").replace(/>/g, "&gt;") + '</pre></div>';
+  el.appendChild(div);
+  el.scrollTop = el.scrollHeight;
+}
+
+// ── MARKET ────────────────────────────────────
+async function runMarket() {
+  const q = document.getElementById("market-q").value.trim();
+  const btn = document.getElementById("market-btn");
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span>';
+  document.getElementById("market-out").textContent = "Searching Google, Reddit, LinkedIn, Quora, and News for real data...";
+  document.getElementById("market-src").textContent = "";
+  try {
+    const r = await aFetch("/api/market/research", {method: "POST", body: JSON.stringify({query: q})});
+    const d = await r.json();
+    document.getElementById("market-out").textContent = d.analysis;
+    document.getElementById("market-src").textContent = d.sources_count > 0 ? d.sources_count + " real sources found" : "Limited data found";
+    toast("Market research complete");
+  } catch(e) {
+    document.getElementById("market-out").textContent = "Error running research. Is server running?";
+  }
+  btn.disabled = false;
+  btn.textContent = "Research";
+}
+
+// ── COMPETITORS ───────────────────────────────
+async function runComp() {
+  const names = document.getElementById("comp-names").value.trim();
+  const loc = document.getElementById("comp-loc").value.trim() || "India";
+  const btn = document.getElementById("comp-btn");
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span>';
+  document.getElementById("comp-out").textContent = "Searching for real competitor data in " + loc + "...";
+  document.getElementById("comp-src").textContent = "";
+  try {
+    const r = await aFetch("/api/competitors/analyse", {method: "POST", body: JSON.stringify({competitors: names, location: loc})});
+    const d = await r.json();
+    document.getElementById("comp-out").textContent = d.analysis;
+    document.getElementById("comp-src").textContent = d.sources_count > 0 ? d.sources_count + " sources in " + loc : "Limited data found";
+    toast("Competitor analysis complete");
+  } catch(e) {
+    document.getElementById("comp-out").textContent = "Error. Is server running?";
+  }
+  btn.disabled = false;
+  btn.textContent = "Analyse";
+}
+
+// ── CONTENT ───────────────────────────────────
+function setPlatform(pl, el) {
+  platform = pl;
+  document.querySelectorAll(".ptab").forEach(function(t) { t.classList.remove("on"); });
+  el.classList.add("on");
+}
+
+async function genContent() {
+  const days = document.getElementById("content-days").value;
+  const btn = document.getElementById("content-btn");
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span>';
+  document.getElementById("content-out").textContent = "Generating " + days + "-day " + platform + " calendar...";
+  document.getElementById("content-title").textContent = platform.charAt(0).toUpperCase() + platform.slice(1) + " — " + days + " Day Calendar";
+  try {
+    const r = await aFetch("/api/content/generate", {method: "POST", body: JSON.stringify({platform: platform, days: parseInt(days)})});
+    const d = await r.json();
+    document.getElementById("content-out").textContent = d.calendar;
+    toast("Content calendar ready");
+  } catch(e) {
+    document.getElementById("content-out").textContent = "Error. Is server running?";
+  }
+  btn.disabled = false;
+  btn.textContent = "Generate";
+}
+
+// ── UTILS ─────────────────────────────────────
+function show(id) { const el = document.getElementById(id); if (el) el.style.display = "block"; }
+function hide(id) { const el = document.getElementById(id); if (el) el.style.display = "none"; }
+
+function toast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("on");
+  clearTimeout(window._tt);
+  window._tt = setTimeout(function() { t.classList.remove("on"); }, 3000);
+}
+</script>
+</body>
+</html>
