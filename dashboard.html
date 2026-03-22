@@ -151,7 +151,8 @@ body{font-family:'Inter',sans-serif;background:#f7f8fc;color:#1a1d23;min-height:
 .card{background:white;border:1px solid #e8eaed;border-radius:14px;padding:20px;margin-bottom:14px}
 .card-label{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:#9ca3af;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
 .card-label-text{color:#9ca3af}
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;width:100%}
+.main{margin-top:54px;padding:20px;max-width:1160px;margin-left:auto;margin-right:auto;width:100%;box-sizing:border-box}
 .content-text{font-size:14px;line-height:1.9;color:#374151;white-space:pre-wrap}
 
 /* STATS ROW */
@@ -520,7 +521,7 @@ FounderOS
 <button class="nav-link" onclick="showPage('tasks',this)">Tasks</button>
 <button class="nav-link" onclick="showPage('market',this)">Market</button>
 <button class="nav-link" onclick="showPage('competitors',this)">Competitors</button>
-<button class="nav-link" onclick="showPage('content',this)">Content</button>
+<button class="nav-link" onclick="showPage('discover',this)">Discover Ideas</button>
 </div>
 </div>
 <div class="nav-right">
@@ -600,7 +601,7 @@ Content Calendar
 <span class="side-menu-item-icon">◈</span>
 
 <!-- DASHBOARD -->
-<div class="page active main" id="page-dashboard">
+<div class="page active main" id="page-dashboard" style="width:100%;overflow-x:hidden">
 <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px">
 <div>
 <div class="page-title" id="dash-greeting">Good morning</div>
@@ -1853,7 +1854,26 @@ document.getElementById("comp-content").textContent = "Error. Is server running?
 }
 btn.disabled = false; btn.textContent = "Analyse";
 }
-
+async function discoverIdeas() {
+  const interests = document.getElementById("discover-input").value.trim();
+  if (!interests) { toast("Enter your interests or skills first"); return; }
+  const btn = document.getElementById("discover-btn");
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>';
+  document.getElementById("discover-results").style.display = "block";
+  document.getElementById("discover-content").textContent = "Searching Reddit, LinkedIn, and live discussions for real opportunities...";
+  try {
+    const resp = await authFetch("/api/discover/ideas", {
+      method:"POST", body:JSON.stringify({interests})
+    });
+    const d = await resp.json();
+    document.getElementById("discover-content").textContent = d.ideas;
+    document.getElementById("discover-sources").textContent = d.sources > 0 ? `${d.sources} real sources` : "Limited data found";
+    toast("Opportunities found from real discussions");
+  } catch(e) {
+    document.getElementById("discover-content").textContent = "Error connecting. Is server running?";
+  }
+  btn.disabled = false; btn.textContent = "Find Opportunities";
+}
 // ── CONTENT ───────────────────────────────────
 function setPlatform(platform, el) {
 currentPlatform = platform;
@@ -1879,6 +1899,32 @@ document.getElementById("content-output").textContent = "Error. Is server runnin
 }
 btn.disabled = false; btn.textContent = "Generate";
 }
+
+<!-- DISCOVER IDEAS -->
+<div class="page main" id="page-discover">
+  <div class="page-header">
+    <div class="page-title">Discover Opportunities</div>
+    <div class="page-sub">Real demand signals from Reddit, LinkedIn, and live discussions — not generic advice</div>
+  </div>
+  <div class="card">
+    <div class="card-label"><span class="card-label-text">What are your skills or interests?</span></div>
+    <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+      <input class="form-input" id="discover-input" placeholder="eg food and beverages, fashion, technology, health..." style="flex:1;margin-bottom:0;min-width:200px">
+      <button class="run-brief-btn" onclick="discoverIdeas()" id="discover-btn">Find Opportunities</button>
+    </div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">
+      <button class="qpill" onclick="document.getElementById('discover-input').value='food and beverages India'">Food & Beverages</button>
+      <button class="qpill" onclick="document.getElementById('discover-input').value='fashion and clothing India'">Fashion</button>
+      <button class="qpill" onclick="document.getElementById('discover-input').value='health and wellness India'">Health</button>
+      <button class="qpill" onclick="document.getElementById('discover-input').value='technology SaaS India'">Tech SaaS</button>
+      <button class="qpill" onclick="document.getElementById('discover-input').value='education learning India'">Education</button>
+    </div>
+  </div>
+  <div class="card" id="discover-results" style="display:none">
+    <div class="card-label"><span class="card-label-text">Opportunities Found</span><span style="font-size:11px;color:#9ca3af" id="discover-sources"></span></div>
+    <div class="content-text" id="discover-content" style="font-size:13.5px"></div>
+  </div>
+</div>
 
 // ── AGENTS ────────────────────────────────────
 function openAgent(type, name) {
