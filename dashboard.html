@@ -971,22 +971,28 @@ const questions = [
 
 // ── INIT ──────────────────────────────────────
 window.onload = async () => {
-if (token) {
-try {
-const resp = await authFetch("/api/auth/me");
-if (resp.ok) {
-currentUser = await resp.json();
-if (!currentUser.onboarding_done) { showOnboarding(); return; }
-showApp(); return;
-}
-} catch(e) {}
-}
-token = null;
-localStorage.removeItem("fo_token");
-document.getElementById("loading").style.display = "none";
-showLogin();
+  if (token) {
+    try {
+      const resp = await authFetch("/api/auth/me");
+      if (resp.ok) {
+        currentUser = await resp.json();
+        document.getElementById("loading").style.display = "none";
+        if (!currentUser.onboarding_done) {
+          showOnboarding();
+        } else {
+          showApp();
+        }
+        return;
+      }
+    } catch(e) {
+      console.log("auth error", e);
+    }
+  }
+  token = null;
+  localStorage.removeItem("fo_token");
+  document.getElementById("loading").style.display = "none";
+  showLogin();
 };
-
 function authFetch(url, options={}) {
 options.headers = options.headers || {};
 if (token) options.headers["Authorization"] = `Bearer ${token}`;
@@ -1208,10 +1214,10 @@ async function showApp() {
   const name = currentUser?.name || "Founder";
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
-  document.getElementById("nav-name").textContent = name;
-  document.getElementById("dash-greeting").textContent = `${greeting}, ${name}`;
-  document.getElementById("menu-user-name").textContent = name;
-  document.getElementById("menu-user-email").textContent = currentUser?.email || "";
+  if (document.getElementById("nav-name")) document.getElementById("nav-name").textContent = name;
+  if (document.getElementById("dash-greeting")) document.getElementById("dash-greeting").textContent = greeting + ", " + name;
+  if (document.getElementById("menu-user-name")) document.getElementById("menu-user-name").textContent = name;
+  if (document.getElementById("menu-user-email")) document.getElementById("menu-user-email").textContent = currentUser?.email || "";
   try { await loadStats(); } catch(e) { console.log("stats error", e); }
   try { await loadDailyIntelligence(); } catch(e) { console.log("intel error", e); }
   try { await loadDashTasks(); } catch(e) { console.log("tasks error", e); }
