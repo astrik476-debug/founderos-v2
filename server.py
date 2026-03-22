@@ -873,25 +873,41 @@ def chat(user):
         "mentor": "Be wise and balanced. Guide through questions as much as answers."
     }
 
-    system = f"""You are the AI Co-Founder of FounderOS. You are not a chatbot. You are a deeply intelligent execution partner who has been working alongside this founder since day one.
+   system = f"""You are the AI Co-Founder of FounderOS. You have been working alongside this founder since day one and know their business deeply.
 
 {context}
 
-Communication rules:
-- Speak like a real co-founder who knows this person deeply. Use their name occasionally.
-- Never use basic bullet points as your main response format. Write in natural flowing paragraphs.
-- Give reasoning behind everything — not just what to do but why, based on their specific situation.
-- Always reference their actual startup name, product, and market.
-- Never start with Certainly, Great question, Absolutely, or any filler.
-- For greetings respond in 2-3 conversational sentences and ask one sharp question.
-- For business questions give thorough specific responses grounded in their context and live research data.
-- If they mention quitting — acknowledge the feeling honestly, then pull specific data about their progress and give one concrete small action.
-- For sales pitches — write the complete pitch, not advice about pitches.
-- If research data is not available say so clearly rather than inventing data.
-- Keep responses under 450 words unless writing a full document.
+YOUR PERSONALITY AND COMMUNICATION STYLE:
+- You speak like a brilliant co-founder who has built companies before and genuinely cares about this founder's success
+- You never give textbook advice or generic startup platitudes
+- Every response references their specific product, market, location, and stage
+- You write in flowing natural paragraphs — never robotic bullet lists as your primary format
+- You give reasoning behind every recommendation
+- You are honest even when it is uncomfortable — if their idea has a flaw you say so with care
+- You remember everything about their journey and reference it naturally
+- You never start with Certainly, Great, Absolutely, Sure, or any filler word
+- For greetings — warm, personal, under 3 sentences, ask one sharp question
+- For business questions — structured paragraphs with clear logic, specific examples, actionable next steps
+- For emotional moments like wanting to quit — acknowledge the feeling fully first, then ground them in their specific progress data, then give one small action
+
+WHAT MAKES YOUR ADVICE DIFFERENT FROM CHATGPT:
+- ChatGPT gives advice for any founder anywhere. You give advice for THIS founder with THIS product in THIS market.
+- You know their archetype, their fears, their skill gaps, their avoidance patterns
+- You reference real data from live research — not generic statistics
+- You push back when they are avoiding hard things
+- You celebrate real progress, not just activity
 
 Personality mode: {personality}
-{personality_map.get(personality, '')}"""
+{personality_map.get(personality, '')}
+
+CRITICAL RULES:
+- Always reference {profile.get('product', 'their product')} and {profile.get('location', 'India')} specifically
+- For sales pitches — write the complete pitch word for word, not advice about what to include
+- For competitor questions — name real LOCAL competitors first, not global giants
+- For market research — cite what you actually found in research, say clearly when data was not found
+- For idea generation — search real platforms like Reddit, LinkedIn, and news to find real demand signals
+- Keep responses under 400 words unless writing a complete document
+- If they have no idea yet — help them discover opportunities from real market demand signals"""
 
     history_text = "\n".join([
         f"{h['role'].upper()}: {h['content']}" for h in history[-8:]
@@ -1359,16 +1375,41 @@ def competitor_analysis(user):
             "success": True
         })
 
-    prompt = f"""
-Competitor intelligence report based ONLY on research data below. Never invent company details or revenue figures.
+   prompt = f"""
+You are a competitive intelligence expert who specialises deeply in {location} market specifically.
 
+Founder Context:
 {build_deep_context(user, profile)}
 
-Location: {location}
+IMPORTANT INSTRUCTION: This founder is building {product} in {location}. They want to know about competitors specifically in {location} — NOT global giants like Pepsi, Coca Cola, or Paper Boat unless they are specifically operating in the same niche and price range in {location}.
+
 Research Data ({total} sources):
 {web_data}
 
-Cover: local competitors in {location} with what they do and visible weaknesses, global players, gaps in the market based on real complaints found, positioning opportunity, 30-day strategy to win. If founder information is not in the data say "Founder information not available on public platforms." Write in clear paragraphs. Maximum 500 words.
+Write competitor analysis in this exact structure:
+
+LOCAL COMPETITORS IN {location.upper()} — SAME NICHE AS {product.upper()}
+Find 3-5 real local or regional competitors operating in {location} that are in the same product category and price range as {profile.get('product','')}. For each one:
+- Company name and where they sell
+- What their product actually is and their price range in rupees
+- Their strongest advantage
+- Their biggest weakness based on customer feedback
+
+DO NOT include Pepsi, Coca Cola, Paper Boat, or any giant national brands unless {profile.get('startup_name','')} is directly competing with them at scale. Focus on startups and small brands in {location} that a new founder would actually compete with.
+
+ONLINE COMPETITORS
+Brands selling similar products online in India — D2C brands, Instagram brands, quick commerce brands.
+
+WHERE THEY ARE ALL WEAK
+Based on real customer complaints found in research — what are customers frustrated about that {profile.get('product','')} could solve better.
+
+YOUR POSITIONING TO WIN {location.upper()}
+Specific positioning strategy against these local competitors. Specific to {profile.get('product','')} at their current stage and budget.
+
+FIRST 30 DAYS TO BEAT LOCAL COMPETITION
+3 specific moves to gain advantage over local competitors. Name real platforms, communities, and distribution channels in {location}.
+
+Be specific. Name real local brands. Never pad the list with giants the founder cannot compete with.
 """
 
     analysis = ask_groq(prompt, max_tokens=1000)
@@ -1630,7 +1671,49 @@ def get_all_users():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route("/api/discover/ideas", methods=["POST"])
+@require_auth
+def discover_ideas(user):
+    profile = get_profile(user["id"])
+    data = request.json
+    interests = data.get("interests", "")
+    location = profile.get("location", "India")
 
+    search_queries = {
+        "reddit_problems": (f"problems people face {location} {interests} reddit 2025", "reddit_native"),
+        "reddit_gaps": (f"I wish someone made {interests} {location} reddit", "reddit_native"),
+        "trending": (f"trending startup ideas {location} {interests} 2025", "search"),
+        "demand": (f"people looking for {interests} solution {location}", "search"),
+        "news": (f"gap in market {interests} {location} opportunity 2025", "news"),
+        "linkedin": (f"startup opportunity {interests} {location} 2025", "linkedin"),
+    }
+
+    all_results = multi_search(search_queries)
+    web_data, total = format_search_results(all_results)
+
+    prompt = f"""
+You are a market opportunity analyst. Based on REAL data from Reddit, LinkedIn, and news below, identify genuine startup opportunities.
+
+Location: {location}
+Interests/Skills: {interests}
+Real Research Data ({total} sources found):
+{web_data}
+
+Find 5 real startup opportunities based ONLY on what people are actually discussing and complaining about in the research data. For each opportunity:
+
+OPPORTUNITY NAME
+What the gap is — based on real discussions found
+Evidence — quote the type of complaints or requests found in research
+Market size signal — is this a small niche or large market based on discussion volume
+Who would pay — specific type of customer
+Simple first version — what could be built in 30 days to test this
+Why {location} specifically — local angle
+
+Only include opportunities that have real evidence in the research data. If data is limited say so honestly and suggest better search terms.
+"""
+
+    ideas = ask_groq(prompt, max_tokens=1500)
+    return jsonify({"ideas": ideas, "sources": total, "success": True})
 @app.route("/api/status")
 def api_status():
     return jsonify({
