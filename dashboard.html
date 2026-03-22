@@ -80,8 +80,8 @@ body{font-family:'Inter',sans-serif;background:#f7f8fc;color:#1a1d23;min-height:
 .btn-enter{width:100%;padding:14px;background:#1a1d23;color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;letter-spacing:-.2px}
 
 /* APP SHELL */
-.app{display:none}
-
+.app{display:none;width:100%;min-height:100vh}
+  
 /* TOP NAV */
 .topnav{position:fixed;top:0;left:0;right:0;height:54px;background:white;border-bottom:1px solid #e8eaed;display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:100}
 .nav-logo{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:800;color:#1a1d23;letter-spacing:-.4px;text-decoration:none}
@@ -134,10 +134,10 @@ body{font-family:'Inter',sans-serif;background:#f7f8fc;color:#1a1d23;min-height:
 .more-item:hover,.more-item:active{background:#f3f4f6}
 
 /* PAGES */
-.main{margin-top:54px;padding:20px;max-width:1160px;margin-left:auto;margin-right:auto;width:100%}
+.main{margin-top:54px;padding:20px;max-width:1160px;margin-left:auto;margin-right:auto;width:100%;box-sizing:border-box;display:block}
 .main.fullw{padding:0;max-width:100%;margin-top:54px}
-.page{display:none}
-.page.active{display:block}
+.page{display:none;width:100%}
+.page.active{display:block;width:100%}
 .page-header{margin-bottom:20px}
 .page-title{font-size:20px;font-weight:800;color:#1a1d23;letter-spacing:-.4px}
 .page-sub{font-size:13px;color:#9ca3af;margin-top:3px;line-height:1.5}
@@ -509,6 +509,9 @@ onkeydown="if(event.key==='Enter')doLogin()" autocomplete="current-password">
 <div class="app" id="app">
 
 <!-- Desktop Nav -->
+<style>
+.app { display: none; }
+</style>
 <nav class="topnav">
 <div style="display:flex;align-items:center;gap:16px">
 <div class="nav-logo">
