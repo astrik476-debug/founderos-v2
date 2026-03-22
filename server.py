@@ -33,8 +33,8 @@ password_reset_tokens = {}
 
 
 def get_db():
-conn = psycopg2.connect(DATABASE_URL)
-return conn
+    conn = psycopg2.connect(DATABASE_URL)
+    return conn
 
 
 def setup_db():
